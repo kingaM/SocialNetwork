@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule "(^|/)\." - [F]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !=/favicon.ico
+RewriteRule ^ /router.php [NC,NS,L]
