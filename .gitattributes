@@ -6,9 +6,9 @@
 *.js     text
 *.php    text
 
-# Force LF endings on shell and sql scripts
-*.sh     text eol=crlf
-*.sql    text eol=crlf
+# Declare files that will always have LF line endings on checkout.
+*.sh     text eol=lf
+*.sql    text eol=lf
 
 # Declare files that will always have CRLF line endings on checkout.
 *.sln    text eol=crlf
