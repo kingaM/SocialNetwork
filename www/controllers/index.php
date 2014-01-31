@@ -1,7 +1,8 @@
 <?php
     class Index {
         public function getPage($req, $res) {
-            echo "Home Page";
+			require_once('mustache_conf.php');
+            echo $m->render('main', array('title' => 'Test'));
         }
     }
 ?>
