@@ -1,5 +1,7 @@
 <?php
 
+// Source: http://zaphpa.org/
+
 /** Invalid path exception **/
 class Zaphpa_InvalidPathException extends Exception {}
 /** Non existant middleware class **/
