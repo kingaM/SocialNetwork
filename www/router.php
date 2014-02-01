@@ -17,12 +17,21 @@
         'get' => array('Index', 'getPage'),
     ));
 
+    $router->addRoute(array(
+        'path' => '/friends',
+        'get' => array('Friends', 'getPage'),
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {
-        header("Content-Type: application/json;", TRUE, 404);
-        $out = array("error" => "not found");
-        die(json_encode($out));
+        header("Content-Type: text/html;", TRUE, 404);
+        $uri = $_SERVER['REQUEST_URI'];
+        require_once('mustache_conf.php');
+        $content = $m->render('404', array('page' => $uri));
+        $out = $m->render('main', array('title' => '404', 'content' => $content));
+        //$out = array("404" => "Page $uri not found");
+        die($out);
     }
 
 ?>
