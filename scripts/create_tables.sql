@@ -13,3 +13,13 @@ CREATE TABLE IF NOT EXISTS `users` (
 	UNIQUE (`login`),
 	PRIMARY KEY(`ID`)
 );
+
+CREATE TABLE IF NOT EXISTS `friendships` (
+  `user1` int(11) NOT NULL,
+  `user2` int(11) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 0,
+  `startTimestamp` int(11) NOT NULL,
+  PRIMARY KEY (`user1`,`user2`),
+  FOREIGN KEY (`user1`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`user2`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);

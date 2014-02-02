@@ -1,6 +1,6 @@
 <?php
     /**
-     * Exception thrown if thers is a problem with the conncection or sql.
+     * Exception thrown if there is a problem with the conncection or sql.
      *
      * @package database
      */
