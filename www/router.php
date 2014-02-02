@@ -21,6 +21,19 @@
         'file' => 'controllers/friends.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/login',
+        'get' => array('Login', 'getPage'),
+        'post' => array('Login', 'verifyUser'),
+        'file' => 'controllers/login.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/logout',
+        'get' => array('Login', 'logout'),
+        'file' => 'controllers/login.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {
