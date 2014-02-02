@@ -67,7 +67,7 @@
                 $q = $this->pdo->prepare($sql);
                 return $q->execute($array);
             } catch (PDOException $e) {
-                throw new DatabaseException($e->getMessage, $e->getCode);
+                throw new DatabaseException($e->getMessage(), $e->getCode());
             }
         }
 
@@ -103,7 +103,7 @@
                 $q->execute($array);
                 return $q->fetchAll();
             } catch (PDOException $e) {
-                throw new DatabaseException($e->getMessage, $e->getCode);
+                throw new DatabaseException($e->getMessage(), $e->getCode());
             }
         }
 
@@ -116,7 +116,7 @@
             try {
                 return $this->pdo->lasInsertId();
             } catch (PDOException $e) {
-                throw new DatabaseException($e->getMessage, $e->getCode);
+                throw new DatabaseException($e->getMessage(), $e->getCode());
             }
         }
 
@@ -130,6 +130,28 @@
         public function __destruct() {
             $this->disconnect();
         }
+    }
+
+    class UsersTable {
+
+        /**
+         * Function to check if the user credentials are correct
+         * 
+         * @param  string $username User's username
+         * @param  string $password User's password
+         * @return integer Username ID if the credentials are correct, -1 otherwise
+         */
+        public static function verifyUser($username, $password) {
+            $db = new DatabaseHelper();
+            $result = $db->fetch("SELECT login, password, ID FROM users WHERE login = :username", Array(':username' => $username));
+
+            if(sizeof($result) != 1 || !($result[0]["login"] == $username && $result[0]["password"] == sha1($password))) {
+                return -1;
+            }
+
+            return $result[0]["ID"];
+        }
+
     }
 
 ?>
