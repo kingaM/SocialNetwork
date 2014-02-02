@@ -103,7 +103,7 @@
                 $q->execute($array);
                 return $q->fetchAll();
             } catch (PDOException $e) {
-                throw new DatabaseException($e->getMessage, $e->getCode);
+                throw new DatabaseException($e->getMessage(), $e->getCode());
             }
         }
 
@@ -116,7 +116,7 @@
             try {
                 return $this->pdo->lasInsertId();
             } catch (PDOException $e) {
-                throw new DatabaseException($e->getMessage, $e->getCode);
+                throw new DatabaseException($e->getMessage(), $e->getCode());
             }
         }
 
@@ -130,6 +130,41 @@
         public function __destruct() {
             $this->disconnect();
         }
+    }
+
+    class FriendsTable extends DatabaseHelper {
+
+        /**
+         * Creates a friend request
+         *
+         * @param int $requester The user ID of the person making the request
+         * @param int $addFriend The user ID of the person to be added as a friend
+         *
+         * @return void 
+         **/
+        public function createFriendshipReq($requester, $addFriend) {
+            
+        }
+
+        /**
+         * Gets the ID's of a user's friends
+         *
+         * @param int $userID The user to show friends from
+         *
+         * @return int[] Array of friend ID's
+         **/
+        public function getFriends($userID) {
+            $friendIDs = array();
+            $result = $this->fetch("SELECT user1, user2 FROM friendships WHERE (user1 = :user OR user2 = :user) AND status = 1", Array(':user' => $userID));
+            foreach ($result as $r) {
+                if($r['user1'] != $userID)
+                    $friendIDs[] = $r['user1'];
+                else
+                    $friendIDs[] = $r['user2'];
+            }
+            return $friendIDs;
+        }
+
     }
 
 ?>
