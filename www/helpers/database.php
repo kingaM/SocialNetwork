@@ -186,5 +186,7 @@
                     $friendIDs[] = $r['user2'];
             }
             return $friendIDs;
+        }
+    }
 
 ?>
