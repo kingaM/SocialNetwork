@@ -4,7 +4,14 @@
 
     class Friends {
 
-        private $current_user = 1;
+        private $current_user;
+
+        public function __construct() {
+            if(isset($_SESSION['id']))
+                $this->current_user = $_SESSION['id'];
+            else
+               $this->current_user = -1;
+        }
 
         public function getPage($req, $res) {
             require_once('mustache_conf.php');

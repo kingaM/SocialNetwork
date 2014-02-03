@@ -170,22 +170,27 @@
         }
 
         /**
-         * Gets the ID's of a user's friends
+         * Gets the names of a user's friends
          *
          * @param int $userID The user to show friends from
          *
-         * @return int[] Array of friend ID's
+         * @return String[] Array of friend names
          **/
         public function getFriends($userID) {
-            $friendIDs = array();
-            $result = $this->fetch("SELECT user1, user2 FROM friendships WHERE (user1 = :user OR user2 = :user) AND status = 1", Array(':user' => $userID));
+            $friends = array();
+            $result = $this->fetch("SELECT first_name, middle_name, last_name 
+                FROM friendships as f, users as u
+                WHERE ((f.user1=:user AND NOT u.ID=:user) OR (user2=:user AND NOT u.ID=:user)) 
+                AND status = 1",
+                Array(':user' => $userID));
+
             foreach ($result as $r) {
-                if($r['user1'] != $userID)
-                    $friendIDs[] = $r['user1'];
+                if($r['middle_name'])
+                    $friends[] = $r['first_name'] . ' ' . $r['middle_name'] . ' ' . $r['last_name'];
                 else
-                    $friendIDs[] = $r['user2'];
+                    $friends[] = $r['first_name'] . ' ' . $r['last_name'];
             }
-            return $friendIDs;
+            return $friends;
         }
     }
 
