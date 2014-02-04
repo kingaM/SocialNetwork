@@ -5,7 +5,8 @@
         		header('Location: /login');
         	}
 			require_once('mustache_conf.php');
-            echo $m->render('main', array('title' => 'Test'));
+            $res->add($m->render('main', array('title' => 'Test')));
+            $res->send();
         }
     }
 ?>

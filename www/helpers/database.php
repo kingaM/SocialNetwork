@@ -154,6 +154,23 @@
             }
 
             return $result[0]["ID"];
+
+        }
+
+    }
+
+    class FriendsTable extends DatabaseHelper {
+
+        /**
+         * Creates a friend request
+         *
+         * @param int $requester The user ID of the person making the request
+         * @param int $addFriend The user ID of the person to be added as a friend
+         *
+         * @return void 
+         */
+        public function createFriendshipReq($requester, $addFriend) {
+            
         }
 
         /**
@@ -203,6 +220,29 @@
             return $db->getLastId();
         }
 
+        /**
+         * Gets the names of a user's friends
+         *
+         * @param int $userID The user to show friends from
+         *
+         * @return String[] Array of friend names
+         */
+        public function getFriends($userID) {
+            $friends = array();
+            $result = $this->fetch("SELECT first_name, middle_name, last_name 
+                FROM friendships as f, users as u
+                WHERE ((f.user1=:user AND NOT u.ID=:user) OR (user2=:user AND NOT u.ID=:user)) 
+                AND status = 1",
+                Array(':user' => $userID));
+
+            foreach ($result as $r) {
+                if($r['middle_name'])
+                    $friends[] = $r['first_name'] . ' ' . $r['middle_name'] . ' ' . $r['last_name'];
+                else
+                    $friends[] = $r['first_name'] . ' ' . $r['last_name'];
+            }
+            return $friends;
+        }
     }
 
 ?>
