@@ -157,10 +157,6 @@
 
         }
 
-    }
-
-    class FriendsTable extends DatabaseHelper {
-
         /**
          * Creates a friend request
          *
@@ -219,6 +215,10 @@
                     ':password' => $password));
             return $db->getLastId();
         }
+
+    }
+
+    class FriendsTable extends DatabaseHelper {
 
         /**
          * Gets the names of a user's friends
