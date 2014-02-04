@@ -37,7 +37,8 @@
          */
         protected function connect() {
             try {
-                $this->pdo = new PDO('mysql:host=localhost;dbname=SocialNetwork', $this->username, $this->password, array(
+                $this->pdo = new PDO('mysql:host=localhost;dbname=SocialNetwork', 
+                    $this->username, $this->password, array(
                     PDO::ATTR_PERSISTENT => true,
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
                 ));
@@ -114,7 +115,7 @@
          */
         public function getLastId() {
             try {
-                return $this->pdo->lasInsertId();
+                return $this->pdo->lastInsertId();
             } catch (PDOException $e) {
                 throw new DatabaseException($e->getMessage(), $e->getCode());
             }
@@ -139,17 +140,67 @@
          * 
          * @param  string $username User's username
          * @param  string $password User's password
+         * 
          * @return integer Username ID if the credentials are correct, -1 otherwise
          */
         public static function verifyUser($username, $password) {
             $db = new DatabaseHelper();
-            $result = $db->fetch("SELECT login, password, ID FROM users WHERE login = :username", Array(':username' => $username));
+            $result = $db->fetch("SELECT login, password, ID FROM users WHERE login = :username", 
+                Array(':username' => $username));
 
-            if(sizeof($result) != 1 || !($result[0]["login"] == $username && $result[0]["password"] == sha1($password))) {
+            if(sizeof($result) != 1 || !($result[0]["login"] == $username && $result[0]["password"] 
+                == sha1($password))) {
                 return -1;
             }
 
             return $result[0]["ID"];
+        }
+
+        /**
+         * Checks if the username is in the database already.
+         * 
+         * @param  string $username User's usernam
+         * 
+         * @return boolean True if the username is already present in the database, 
+         *         False otherwise
+         */
+        public static function checkUsernameExists($username) {
+            $db = new DatabaseHelper();
+            $array = $db->fetch("SELECT ID FROM users WHERE login = :username", 
+                Array(':username' => $username));
+
+            if(sizeof($array) != 0) {
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * Adds a user to the database. 
+         * 
+         * @param string $username   User's username, has to be unique
+         * @param string $password   User's password, not encrypted
+         * @param string $firstName  User's first name
+         * @param string $lastName   User's last name
+         * @param string $email      User's email address
+         * @param string $middleName User's middle name, defaults to NULL
+         *
+         * @return integer The ID of the newly added user or -1 if there is an error
+         */
+        public static function addUser($username, $password, $firstName, $lastName, $email, 
+            $middleName = NULL) {
+            $db = new DatabaseHelper();
+            if(UsersTable::checkUsernameExists($username)) {
+                return -1;
+            }
+            $db->execute("INSERT INTO " .
+                "users(first_name, middle_name, last_name, email, login, password)" .
+                "VALUES (:firstName, :middleName, :lastName, :email, :username, SHA1(:password));",
+                Array(':firstName' => $firstName, ':middleName' => $middleName,
+                    'lastName' => $lastName, ':email' => $email, ':username' => $username, 
+                    ':password' => $password));
+            return $db->getLastId();
         }
 
     }

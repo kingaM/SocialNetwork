@@ -33,6 +33,13 @@
         'file' => 'controllers/login.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/register',
+        'get' => array('Register', 'getPage'),
+        'post' => array('Register', 'addUser'),
+        'file' => 'controllers/register.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {
