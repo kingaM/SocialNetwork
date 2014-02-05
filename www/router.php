@@ -41,6 +41,12 @@
         'file' => 'controllers/register.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/activate/{hash}',
+        'get' => array('Register', 'activate'),
+        'file' => 'controllers/register.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {

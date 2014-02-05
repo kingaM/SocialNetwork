@@ -158,29 +158,39 @@
         }
 
         /**
-         * Creates a friend request
-         *
-         * @param int $requester The user ID of the person making the request
-         * @param int $addFriend The user ID of the person to be added as a friend
-         *
-         * @return void 
-         */
-        public function createFriendshipReq($requester, $addFriend) {
-            
-        }
-
-        /**
          * Checks if the username is in the database already.
          * 
          * @param  string $username User's usernam
+         * @param  DatabaseHelper $db The databaseHelper object used to connect to database. Since
+         *         this is a helper class there is no need to create a new connection.
          * 
          * @return boolean True if the username is already present in the database, 
          *         False otherwise
          */
-        public static function checkUsernameExists($username) {
-            $db = new DatabaseHelper();
+        private static function checkUsernameExists($username, $db) {
             $array = $db->fetch("SELECT ID FROM users WHERE login = :username", 
                 Array(':username' => $username));
+
+            if(sizeof($array) != 0) {
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * Checks if the email is in the database already.
+         * 
+         * @param  string $email User's usernam
+         * @param  DatabaseHelper $db The databaseHelper object used to connect to database. Since
+         *         this is a helper class there is no need to create a new connection.
+         * 
+         * @return boolean True if the email is already present in the database, 
+         *         False otherwise
+         */
+        private static function checkEmailExists($email, $db) {
+            $array = $db->fetch("SELECT ID FROM users WHERE email = :email", 
+                Array(':email' => $email));
 
             if(sizeof($array) != 0) {
                 return true;
@@ -199,21 +209,49 @@
          * @param string $email      User's email address
          * @param string $middleName User's middle name, defaults to NULL
          *
-         * @return integer The ID of the newly added user or -1 if there is an error
+         * @return integer The ID of the newly added user or -1 if both username and email are not 
+         *         unique, -2 if the username exists, -3 if the email exists. 
          */
-        public static function addUser($username, $password, $firstName, $lastName, $email, 
-            $middleName = NULL) {
+        public static function addUser($username, $password, $firstName, $lastName, $email, $hash, 
+            $activated = 0, $middleName = NULL) {
             $db = new DatabaseHelper();
-            if(UsersTable::checkUsernameExists($username)) {
+            $uniqueUsername = UsersTable::checkUsernameExists($username, $db);
+            $uniqueEmail = UsersTable::checkEmailExists($email, $db);
+            if($uniqueUsername && $uniqueEmail) {
                 return -1;
+            } else if ($uniqueUsername) {
+                return -2;
+            } else if ($uniqueEmail) {
+                return -3;
             }
             $db->execute("INSERT INTO " .
-                "users(first_name, middle_name, last_name, email, login, password)" .
-                "VALUES (:firstName, :middleName, :lastName, :email, :username, SHA1(:password));",
+                "users(first_name, middle_name, last_name, email, login, password, hash, activated)" .
+                "VALUES (:firstName, :middleName, :lastName, :email, :username, SHA1(:password)," .
+                    "SHA1(:hash), :activated);",
                 Array(':firstName' => $firstName, ':middleName' => $middleName,
                     'lastName' => $lastName, ':email' => $email, ':username' => $username, 
-                    ':password' => $password));
+                    ':password' => $password, ':activated' => $activated, ':hash' => $hash));
             return $db->getLastId();
+        }
+
+        public static function checkIfAuthenticated($hash) {
+            $db = new DatabaseHelper();
+            $result = $db->fetch("SELECT activated FROM users WHERE hash = :hash",
+                array(':hash' => $hash));
+            if(sizeof($result) != 1) {
+                return -1;
+            } 
+            if ($result[0]['activated'] == true) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        public static function updateAuthenticated($hash) {
+            $db = new DatabaseHelper();
+            $db->execute("UPDATE users SET activated = 1 WHERE hash = :hash",
+                array(':hash' => $hash));
         }
 
     }
@@ -242,6 +280,18 @@
                     $friends[] = $r['first_name'] . ' ' . $r['last_name'];
             }
             return $friends;
+        }
+
+        /**
+         * Creates a friend request
+         *
+         * @param int $requester The user ID of the person making the request
+         * @param int $addFriend The user ID of the person to be added as a friend
+         *
+         * @return void 
+         */
+        public function createFriendshipReq($requester, $addFriend) {
+            
         }
     }
 

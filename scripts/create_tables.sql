@@ -10,7 +10,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`email` VARCHAR(100) NOT NULL, 
 	`login` VARCHAR(50) NOT NULL, 
 	`password` VARCHAR(50) NOT NULL,
+	`hash` VARCHAR(50) NOT NULL, 
+	`activated` BOOLEAN NOT NULL DEFAULT FALSE,
 	UNIQUE (`login`),
+	UNIQUE (`email`),
 	PRIMARY KEY(`ID`)
 );
 
