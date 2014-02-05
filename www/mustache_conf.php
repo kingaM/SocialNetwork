@@ -1,5 +1,5 @@
 <?php
-require 'libs/mustache/Autoloader.php';
+require 'libs/Mustache/Autoloader.php';
 Mustache_Autoloader::register();
 
 $m = new Mustache_Engine(array(
