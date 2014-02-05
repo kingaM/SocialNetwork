@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`activated` BOOLEAN NOT NULL DEFAULT FALSE,
 	UNIQUE (`login`),
 	UNIQUE (`email`),
+	UNIQUE (`hash`),
 	PRIMARY KEY(`ID`)
 );
 
