@@ -1,6 +1,6 @@
 <?php
 
-    require_once('/helpers/database.php');
+    require_once('helpers/database.php');
 
     class Friends {
 
