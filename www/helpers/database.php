@@ -145,7 +145,8 @@
          */
         public static function verifyUser($username, $password) {
             $db = new DatabaseHelper();
-            $result = $db->fetch("SELECT login, password, ID FROM users WHERE login = :username", 
+            $result = $db->fetch("SELECT login, password, ID FROM users " .
+                "WHERE login = :username AND activated = 1", 
                 Array(':username' => $username));
 
             if(sizeof($result) != 1 || !($result[0]["login"] == $username && $result[0]["password"] 
