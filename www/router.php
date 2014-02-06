@@ -4,7 +4,9 @@
 	
     session_start();
 
-    if((!isset($_SESSION['id']) && $_SERVER['REQUEST_URI'] != '/login') ||
+    $public_pages = '#(^/login|/register$)|^/activate/#';
+
+    if((!isset($_SESSION['id']) && !preg_match($public_pages, $_SERVER['REQUEST_URI'])) ||
         (isset($_SESSION['id']) && $_SESSION['id'] == -1)) {
         header('Location: /login');
         die();
@@ -24,6 +26,13 @@
         'path' => '/friends',
         'get' => array('Friends', 'getPage'),
         'post' => array('Friends', 'addFriend'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/friends/{login}',
+        // Until we add JS properly, POST will have to do instead of DELETE
+        'post' => array('Friends', 'removeFriend'),
         'file' => 'controllers/friends.php',
     ));
 
