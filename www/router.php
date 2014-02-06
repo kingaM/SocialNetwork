@@ -4,6 +4,12 @@
 	
     session_start();
 
+    if((!isset($_SESSION['id']) && $_SERVER['REQUEST_URI'] != '/login') ||
+        (isset($_SESSION['id']) && $_SESSION['id'] == -1)) {
+        header('Location: /login');
+        die();
+    }
+
     require_once(__DIR__ . '/libs/zaphpa.lib.php');
 
     $router = new Zaphpa_Router();
