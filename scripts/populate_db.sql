@@ -9,6 +9,8 @@ VALUES
 	('Test', NULL, 'User', 'fake@gmail.com', 'test', SHA1('test'),
 		SHA1('fake@gmail.com1391362036'), 1);
 
-INSERT INTO friendships(user1, user2, startTimestamp)
+INSERT INTO friendships(user1, user2, status, startTimestamp)
 VALUES
-    (1, 2, 1391362436);
+    (1, 2, 1, 1391362436),
+    (1, 3, 1, 1391362436),
+    (2, 3, 1, 1391362436);

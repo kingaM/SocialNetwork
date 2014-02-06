@@ -270,7 +270,8 @@
             $friends = array();
             $result = $this->fetch("SELECT first_name, middle_name, last_name 
                 FROM friendships as f, users as u
-                WHERE ((f.user1=:user AND NOT u.ID=:user) OR (user2=:user AND NOT u.ID=:user)) 
+                WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID)
+                OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
                 AND status = 1",
                 Array(':user' => $userID));
 
