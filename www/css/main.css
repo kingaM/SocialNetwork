@@ -2,30 +2,78 @@ body {
 	margin: 0;
 	padding: 0;
 	text-align: center;
+	font-family: 'Gill Sans', 'Gill Sans MT', Helvetica, 'Trebuchet MS', sans-serif;
+	font-size: 14px;
 }
-#center {
+#black-top {
+	background: #2a2a2a;
+	color: #eee;
+	padding: 8px 0;
+	min-height: 19px;
+}
+
+#black-top a:link, #black-top a:visited {
+	color: white;
+}
+
+.center {
+	width: 1050px;
 	text-align: left;
-	background-color: red;
 	padding: 0;
 	margin: 0 auto;
-	width: 800px;
-	
 }
-#header {
-	min-height: 50px;
-	background: green;
+
+.one-col {
+	padding: 0 25px;
 }
-#menu {
+
+.float-left {
 	float: left;
-	background: blue;
+}
+
+#right-box {
+	text-align: right;
+}
+
+h1 {
+	margin: 0 0 0 25px;
+	font-size: 16px;
+	font-weight: normal;
+}
+h2 {
+/* 	margin: 0 0 14px; */
+	font-size: 16px;
+	font-weight: normal;
+}
+
+#col1 {
+	float: left;
+	background: #005d9f;
 	width: 200px;
-	min-height: 100px;
+	min-height: 300px;
+}
+#col1 > ul {
+	list-style: none;
+	margin: 14px 25px;
+	padding: 0;
+}
+#col1 > ul > li {
+	padding: 3px 0;
+}
+#col1 > ul > li a:link,
+#col1 > ul > li a:visited {
+	color: white;
+	text-decoration: none;
+}
+
+#col2 {
+	float: left;
+	width: 800px;
+	min-height: 300px;
 }
 #content {
-	float: left;
-	background: aqua;
-	width: 600px;
-	min-height: 100px;
+	margin: 14px 25px 25px 25px;
+/* 	padding: 14px 0 0 0; */
 }
 #footer {
 	min-height: 50px;
