@@ -1,6 +1,7 @@
 <?php
 
 	include_once('helpers/database/UsersHelper.php');
+    require_once('libs/FirePHPCore/FirePHP.class.php');
 
     class Login {
         public function getPage($req, $res) {
