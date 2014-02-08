@@ -15,7 +15,11 @@
             $db = new FriendsHelper();
             $friends = $db->getFriends($_SESSION['id']);
             $friendRequests = $db->getFriendRequests($_SESSION['id']);
-            $friendsInfo = array('friends' => $friends, 'friendRequests' => $friendRequests);
+            $friendsOfFriends = $db->getFriendsOfFriends($_SESSION['id']);
+            $friendsInfo = array(
+                'friends' => $friends, 
+                'friendRequests' => $friendRequests,
+                'friendsOfFriends' => $friendsOfFriends);
             $res->add(json_encode($friendsInfo));
             $res->send();
         }

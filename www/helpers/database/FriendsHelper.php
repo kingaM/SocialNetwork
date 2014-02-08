@@ -33,6 +33,37 @@
         }
 
         /**
+         * Gets the names of a user's friends of friends
+         *
+         * @param int $userID The user to show friends from
+         *
+         * @return String[] Array of friend names
+         */
+        public function getFriendsOfFriends($userID) {
+            $friends = array();
+            // MySQL doesn't support the WITH syntax ... this is the best we can do
+            // ID's of all friends
+            $subq = "(SELECT u.ID 
+                FROM friendships as f, users as u
+                WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID) 
+                    OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
+                AND status = 1)";
+            $result = $this->db->fetch("SELECT login
+                FROM friendships as f, users as u
+                WHERE ((f.user1 IN " . $subq . " AND NOT u.ID IN " . $subq . " AND f.user2=u.ID) 
+                    OR (f.user2 IN " . $subq . " AND NOT u.ID IN " . $subq . " AND f.user1=u.ID))
+                AND status = 1 
+                AND NOT u.ID=:user 
+                GROUP BY login",
+                Array(':user' => $userID));
+
+            foreach ($result as $r) {
+                $friends[] = $r['login'];
+            }
+            return $friends;
+        }
+
+        /**
          * Creates a friend request or accepts an existing request
          *
          * @param int $requester The user ID of the person making the request
