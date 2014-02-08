@@ -1,5 +1,6 @@
 <?php
 	error_reporting(E_ALL);
+    ob_start();
 	ini_set('display_errors', 1);
 	
     session_start();
@@ -44,6 +45,11 @@
     $router->addRoute(array(
         'path' => '/login',
         'get' => array('Login', 'getPage'),
+        'file' => 'controllers/login.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/login',
         'post' => array('Login', 'verifyUser'),
         'file' => 'controllers/login.php',
     ));
