@@ -74,11 +74,10 @@
         public function addFriend($requester, $addFriend) {
             
             // Check is user exists
-            // Skip until users helper is done
-            // require_once('helpers/database/UsersHelper.php');
-            // $users = new UsersHelper();
-            // if(!$users->checkUsernameExists($addFriend))
-            //     throw new Exception('Invalid username');
+            require_once('helpers/database/UsersHelper.php');
+            $users = new UsersHelper();
+            if(!$users->checkUsernameExists($addFriend))
+                throw new Exception('Invalid username');
 
             // Check if friend already exists
             $result = $this->db->fetch("SELECT * 
@@ -101,7 +100,7 @@
             if(sizeof($result) != 0)
                 throw new Exception("Friend request already sent to $addFriend");
 
-            // Check for (and accept) an existing request from the other user
+            // Check for an existing request from the other user
             $result = $this->db->fetch("SELECT * 
                 FROM friendships as f, users as u
                 WHERE (f.user2=:requester AND f.user1=u.ID) 
@@ -109,6 +108,7 @@
                 Array(':requester' => $requester, ':addFriend' => $addFriend));
 
             if(sizeof($result) != 0) {
+                // Accept the friend request if there is an existing one
                 $result = $this->db->execute("UPDATE friendships
                     SET status=1
                     WHERE user2=:requester AND user1 IN
@@ -118,7 +118,9 @@
             }
 
             // TODO: What if the user deletes their account in this gap?
-            //       Find a way to find out as part of the return
+            //       Doesn't matter too much and nothing will be added but it would be nice to
+            //       find a way to let the user know an error instead
+
             // Add request
             $result = $this->db->execute("INSERT INTO friendships(user1, user2, startTimestamp)
                 SELECT :requester, ID as user2, :time 
