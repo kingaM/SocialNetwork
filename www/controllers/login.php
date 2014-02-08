@@ -19,10 +19,11 @@
         	if($id != -1) {
         		$_SESSION['username'] = $username;
         		$_SESSION['id'] = $id;
-        		header('Location: /');
+                $res->add(json_encode(array('valid' => true)));
         	} else {
-        		header('Location: /login');
+                $res->add(json_encode(array('valid' => false)));
         	}
+            $res->send();  
         } 
 
         public function logout($req, $res) {
