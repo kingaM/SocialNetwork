@@ -1,6 +1,6 @@
 <?php
     
-    require_once('helpers/database.php');
+    require_once('helpers/database/database.php');
 
     class UsersHelper {
 
@@ -34,7 +34,7 @@
         /**
          * Checks if the username is in the database already.
          * 
-         * @param  string $username User's usernam
+         * @param  string $username User's username
          * @param  DatabaseHelper $db The databaseHelper object used to connect to database. Since
          *         this is a helper class there is no need to create a new connection.
          * 
