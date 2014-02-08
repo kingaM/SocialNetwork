@@ -9,6 +9,11 @@ VALUES
 	('Test', NULL, 'User', 'fake@gmail.com', 'test', SHA1('test'),
 		SHA1('fake@gmail.com1391362036'), 1);
 
+INSERT INTO profile(userId, gender, dob, about, locations, languages)
+VALUES
+	(1, 'Male', 593136000, 'A young man looking for love', 'England, Germany', 'English, German'),
+	(3, 'Female', 593106000, 'A young woman studying in Cambridge', 'England', 'English');
+
 INSERT INTO friendships(user1, user2, status, startTimestamp)
 VALUES
     (1, 2, 1, 1391362436),
