@@ -13,11 +13,9 @@ $('#login_form').submit(function(e) {
 
     $.ajax({
     type: "post",
-    url: "/login",
+    url: "/api/login",
     data: values,
     success: function(response) {
-               console.log(response);
-               console.log($.parseJSON(response));
                var valid = $.parseJSON(response)['valid'];
                if(valid) {
                     window.location.href = "./";

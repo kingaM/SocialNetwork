@@ -45,6 +45,11 @@
     $router->addRoute(array(
         'path' => '/login',
         'get' => array('Login', 'getPage'),
+        'file' => 'controllers/login.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/login',
         'post' => array('Login', 'verifyUser'),
         'file' => 'controllers/login.php',
     ));
