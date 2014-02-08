@@ -125,9 +125,7 @@
             $friends = array();
             $result = $this->db->fetch("SELECT login 
                 FROM friendships as f, users as u
-                WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID)
-                OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
-                AND status = 0",
+                WHERE f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID AND status = 0",
                 Array(':user' => $userID));
 
             foreach ($result as $r) {

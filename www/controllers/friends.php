@@ -21,8 +21,6 @@
         }
 
         public function addFriend($req, $res) {
-
-            require_once('mustache_conf.php');
             $addUsername = $req->data['username'];
 
             try {
@@ -30,9 +28,10 @@
                 $accepted = $db->addFriend($_SESSION['id'], $addUsername);
 
                 if($accepted) {
-                    header('Location: /friends');
-                    return;
+                    $res->add(json_encode(array('result' => 'accepted')));
+                    $res->send();
                 }
+                $res->add(json_encode(array('result' => 'requested')));
                 $res->send();
             }
             catch (Exception $e) {
@@ -46,7 +45,7 @@
             $delUsername = $req->params['login'];
             $db = new FriendsHelper();
             $db->deleteFriend($_SESSION['username'], $delUsername);
-            header('Location: /friends');
+            $res->send();
         }
     }
 ?>

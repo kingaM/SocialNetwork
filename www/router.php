@@ -36,9 +36,8 @@
     ));
 
     $router->addRoute(array(
-        'path' => '/friends/{login}',
-        // Until we add JS properly, POST will have to do instead of DELETE
-        'post' => array('Friends', 'removeFriend'),
+        'path' => '/api/friends/{login}',
+        'delete' => array('Friends', 'removeFriend'),
         'file' => 'controllers/friends.php',
     ));
 
