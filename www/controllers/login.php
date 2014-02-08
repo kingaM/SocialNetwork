@@ -1,6 +1,6 @@
 <?php
 
-	include_once('helpers/database.php');
+	include_once('helpers/database/UsersHelper.php');
 
     class Login {
         public function getPage($req, $res) {
@@ -13,8 +13,8 @@
         public function verifyUser($req, $res) {
         	$username = $req->data['username'];
         	$password = $req->data['password'];
-
-        	$id = UsersTable::verifyUser($username, $password);
+            $db = new UsersHelper();
+        	$id = $db->verifyUser($username, $password);
 
         	if($id != -1) {
         		$_SESSION['username'] = $username;

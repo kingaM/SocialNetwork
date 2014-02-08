@@ -1,6 +1,6 @@
 <?php
 
-	include_once('helpers/database.php');
+	include_once('helpers/database/UsersHelper.php');
     include_once('helpers/mail.php');
 
     class Register {
@@ -53,7 +53,8 @@
                     $middlename = NULL;
                 }
                 $hash = $email.time();
-                $result = UsersTable::addUser($username, $password, $firstname, $lastname, $email, 
+                $db = new UsersHelper();
+                $result = $db->addUser($username, $password, $firstname, $lastname, $email, 
                     $hash, 0, $middlename);
                 if ($result < 0) {
                     // TODO: Add a more fine-grained error message
@@ -74,13 +75,14 @@
 
         public function activate($req, $res) {
             $hash = $req->params['hash'];
-            $authenticated = UsersTable::checkIfAuthenticated($hash);
+            $db = new UsersHelper();
+            $authenticated = $db->checkIfAuthenticated($hash);
             if ($authenticated == -1) {
                 echo 'The user does not exist';
             } else if ($authenticated == 1) {
                 echo 'You have already authenticated, now you can login.';
             } else if ($authenticated == 0) {
-                UsersTable::updateAuthenticated($hash);
+                $db->updateAuthenticated($hash);
                 header('Location: /login');
             } else {
                 echo 'Something went massively wrong';
