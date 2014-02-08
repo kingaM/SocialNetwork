@@ -16,7 +16,7 @@
             $friends = $db->getFriends($_SESSION['id']);
             $friendRequests = $db->getFriendRequests($_SESSION['id']);
             $friendsInfo = array('friends' => $friends, 'friendRequests' => $friendRequests);
-            $res->add(json_encode(friendsInfo));
+            $res->add(json_encode($friendsInfo));
             $res->send();
         }
 
@@ -33,12 +33,10 @@
                     header('Location: /friends');
                     return;
                 }
-
-                $res->add($m->render('main', array('title' => 'Friends', 'content' => 'Friend request sent')));
                 $res->send();
             }
-            catch (DatabaseException $e) {
-                $res->add($m->render('main', array('title' => 'Friends', 'content' => $e->getMessage())));
+            catch (Exception $e) {
+                $res->add(json_encode(array('error' => $e->getMessage())));
                 $res->send();
             }
         }

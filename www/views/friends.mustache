@@ -1,7 +1,7 @@
 <div id="add_friends">
     <h2>Add Friend:</h2>
 
-    <form name="input" action="/friends" method="post">
+    <form name="input" action="/api/friends" method="post">
         <input type="text" name="username" value="Username">
         <input type="submit" value="Add">
     </form> 
@@ -10,16 +10,7 @@
 
 <div id="current_friends">
     <h2>Current Friends:</h2>
-    <ul>
-        {{#friendsList}}
-        <li>{{.}}
-            <form action="/friends/{{.}}" method="post">
-                <input type="hidden" name="username" value="{{.}}">
-                <input type="submit" value="Delete">
-            </form>
-        </li>
-        {{/friendsList}}
-    </ul>
+    <ul></ul>
 </div>
 
 <div id="pending_friends">
@@ -39,3 +30,9 @@
         {{/pendingFriendsList}}
     </ul>
 </div>
+
+<script>
+    function content() {
+
+    }
+</script>

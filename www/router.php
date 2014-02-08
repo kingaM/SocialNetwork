@@ -25,6 +25,12 @@
     $router->addRoute(array(
         'path' => '/friends',
         'get' => array('Friends', 'getPage'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/friends',
+        'get' => array('Friends', 'getFriends'),
         'post' => array('Friends', 'addFriend'),
         'file' => 'controllers/friends.php',
     ));
