@@ -18,6 +18,19 @@ CREATE TABLE IF NOT EXISTS `users` (
 	PRIMARY KEY(`ID`)
 );
 
+# TODO: Enable multiple locations and languages as a seperate table. Create a table with all 
+# languages and locations for reference and to check the validity of the data. 
+CREATE TABLE IF NOT EXISTS `profile` (
+	`userId` INT NOT NULL,
+	`gender` VARCHAR(10),
+	`dob` INT,
+	`about` VARCHAR(10000),
+	`locations` VARCHAR(1000),
+	`languages` VARCHAR(1000),
+	PRIMARY KEY (`userId`),
+	FOREIGN KEY (`userId`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS `friendships` (
   `user1` int(11) NOT NULL,
   `user2` int(11) NOT NULL,
