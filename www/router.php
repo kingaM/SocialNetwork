@@ -4,7 +4,7 @@
 	
     session_start();
 
-    $public_pages = '#(^/login|/register$)|^/activate/#';
+    $public_pages = '#^(/api)?(/login|/register)$|^/activate/#';
 
     if((!isset($_SESSION['id']) && !preg_match($public_pages, $_SERVER['REQUEST_URI'])) ||
         (isset($_SESSION['id']) && $_SESSION['id'] == -1)) {
