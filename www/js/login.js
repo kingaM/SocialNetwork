@@ -20,7 +20,7 @@ $('#login_form').submit(function(e) {
                if(valid) {
                     window.location.href = "./";
                } else {
-                    $("#error").append("The username and/or password are not valid." +
+                    $("#error").text("The username and/or password are not valid." +
                         " Please try again.");
                     $("#password").val("");
                }
