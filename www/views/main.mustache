@@ -1,44 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<title>{{title}}</title>
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="/css/main.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script type="text/javascript" src="../js/main.js"></script>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{{title}}</title>
+		
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
 	</head>
 	<body>
-		<div id="black-top">
-			<div class="center">
-				<div class="one-col">
-					<h1 class="float-left">Social Network</h1>
-					<div id="right-box">Logout</div>
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">Social Network</a>
 				</div>
 			</div>
 		</div>
-		<div class="center">
-			<div class="one-col">
-				<div id="main">
-					<div id="col1">
-						<ul>
-							<li><a href="/">Home</a></li>
-							<li><a href="/friends">Friends</a></li>
-							<li><a href="/login">Login</a></li>
-							<li><a href="/logout">Logout</a></li>
-						</ul>
-					</div>
-					<div id="col2">
-						<div id="content">
-							{{{content}}}
-						</div>
-					</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar">
+					<ul class="nav nav-sidebar">
+						<li class="active"><a href="/">Home</a></li>
+						<li><a href="/friends">Friends</a></li>
+						<li><a href="/photos">Photos</a></li>
+						<li><a href="/blog">Blog</a></li>
+					</ul>
+					<ul class="nav nav-sidebar">
+						<li><a href="/login">Login</a></li>
+						<li><a href="/logout">Logout</a></li>
+					</ul>
 				</div>
-				<div id="footer">
-				This Website is the  coursework for one of the modules at UCL Computer Science Department.
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+					<h1 class="page-header">Dashboard</h1>
+					{{{content}}}
 				</div>
 			</div>
 		</div>
+	    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="js/bootstrap.min.js"></script>
+	    
+	    <!-- Manual Scripts -->
+		<script type="text/javascript" src="../js/main.js"></script>
 	</body>
 </html>
 
