@@ -38,19 +38,15 @@
         public function getReciepients($from) {
             try{
                 $sql = "SELECT DISTINCT 
-                        CASE  `to` 
-                        WHEN  :from 
-                        THEN  `from` 
-                        ELSE  `to` 
-                        END, login FROM messages, users
-                        WHERE (
-                        `from` = :from
-                        AND  `to` = users.id
-                        )
-                        OR (
-                        `to` = :from
-                        AND  `from` = users.id
-                        )";
+                        CASE  `to` WHEN  :from THEN  `from` ELSE  `to` END AS id, 
+                        login, first_name, middle_name, last_name, content, timestamp
+                        FROM messages, users
+                        WHERE ((`from` = :from AND  `to` = users.id)
+                            OR (`to` = :from AND  `from` = users.id))
+                        AND timestamp = (SELECT timestamp 
+                                        FROM messages 
+                                        ORDER BY timestamp DESC
+                                        LIMIT 1)";
                 $array = array(':from' => $from);
                 return $this->db->fetch($sql, $array);
             } catch(Exception $e) {

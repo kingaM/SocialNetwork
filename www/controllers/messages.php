@@ -19,7 +19,11 @@
             $result = $db->getReciepients($_SESSION['id']);
             $json = array("reciepients" => array());
             foreach ($result as $r) {
-                $json["reciepients"][] = $r['login'];
+                $json["reciepients"][] = array('username' => $r['login'], 
+                    'firstName' => $r['first_name'], 
+                    'middleName' => ($r['middle_name'] ? $r['middle_name'] : ''),
+                    'lastName' => $r['last_name'], 'message' => $r['content'], 
+                    'timestamp' => $r['timestamp']);
             }
             $firephp->log("test", 'PHP');
             $firephp->log($result, 'PHP');

@@ -8,7 +8,9 @@ function getReciepients() {
     $.getJSON( "/api/messages/reciepients", function(data) {
         var data_length = data["reciepients"].length;
         for (var i = 0; i < data_length; i++) {
-          addConversation(data["reciepients"][i]);
+          addConversation(data["reciepients"][i]["username"], data["reciepients"][i]["firstName"],
+            data["reciepients"][i]["middleName"], data["reciepients"][i]["lastName"], 
+            data["reciepients"][i]["message"]);
         }
     });
 }
@@ -41,11 +43,16 @@ function addMessages(from, to, message, timestamp) {
     $("#messages").append(content);
 }
 
-function addConversation(username) {
+function addConversation(username, firstName, middleName, lastName, message) {
     var content = "<div class=\"media conversation\">" +
-                "<a class=\"pull-left\" href=\"#\" id=\"" + username + "\">" +
-                    username +
-                "</a>" +
+                "<div class=\"media-body\">" + 
+                    "<h5 class=\"media-heading\">" + 
+                        "<a href=\"#\" id=\"" + username + "\">" 
+                            + firstName + " " + middleName + " " + lastName + 
+                        "</a>" +
+                    "</h5>" + 
+                    "<small>" + message + "</small>" + 
+                "</div>" + 
             "</div>";
     $("#conversations").append(content);
     var id = "#" + username;
