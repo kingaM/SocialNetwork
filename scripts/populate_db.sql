@@ -19,3 +19,12 @@ VALUES
     (1, 2, 1, 1391362436),
     (1, 3, 1, 1391362436),
     (2, 3, 1, 1391362436);
+
+
+INSERT INTO messages(`from`, `to`, `content`, `timestamp`)
+VALUES
+    (1, 2, 'Message', 1391362436),
+    (1, 3, 'Message', 1391362436),
+    (2, 3, 'Message', 1391362436),
+    (3, 1, 'Message', 1391362436),
+    (3, 2, 'Message', 1391362436);

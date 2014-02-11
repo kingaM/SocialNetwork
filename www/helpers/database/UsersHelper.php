@@ -185,6 +185,15 @@
             $this->db->execute($sql, $array);
         }
 
+        public function getIdFromUsername($username) {
+            $result = $this->db->fetch("SELECT ID FROM users WHERE login = :username",
+                array(':username' => $username));
+            if(sizeof($result) != 1) {
+                return -1;
+            } 
+            return $result[0]['ID'];
+        }
+
     }
 
 ?>

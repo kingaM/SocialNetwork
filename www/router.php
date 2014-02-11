@@ -73,6 +73,24 @@
         'file' => 'controllers/register.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/messages',
+        'get' => array('Messages', 'getPage'),
+        'file' => 'controllers/messages.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/messages/reciepients',
+        'get' => array('Messages', 'getReciepients'),
+        'file' => 'controllers/messages.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/messages/{username}',
+        'get' => array('Messages', 'getMessages'),
+        'file' => 'controllers/messages.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {
