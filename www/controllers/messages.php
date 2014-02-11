@@ -43,9 +43,23 @@
             $json = array("messages" => array());
             foreach ($result as $r) {
                 $json["messages"][] = array('message' => $r['content'], 'from' => $r['from'], 
-                    'to' => $r['to'], 'timestamp' => $r['timestamp']);
+                    'to' => $r['to'], 'timestamp' => $r['timestamp'],
+                    'firstName' => $r['first_name'], 
+                    'middleName' => ($r['middle_name'] ? $r['middle_name'] : ''),
+                    'lastName' => $r['last_name']);
             }
             $res->add(json_encode($json));
+            $res->send();
+        }
+
+        public function addMessage($req, $res) {
+            $username = $req->params['username'];
+            $firephp = FirePHP::getInstance(true); 
+            $firephp->log($req->data["messageText"], 'Messages');
+            $messagesDB = new MessagesHelper();
+            $usersDB = new UsersHelper();
+            $result = $messagesDB->addMessage($_SESSION['id'], 
+                $usersDB->getIdFromUsername($username), $req->data["messageText"], time());
             $res->send();
         }
     }

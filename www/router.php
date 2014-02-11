@@ -88,6 +88,7 @@
     $router->addRoute(array(
         'path' => '/api/messages/{username}',
         'get' => array('Messages', 'getMessages'),
+        'post' => array('Messages', 'addMessage'),
         'file' => 'controllers/messages.php',
     ));
 

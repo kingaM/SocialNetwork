@@ -6,7 +6,24 @@
     <div class="row">
         <div class="col-lg-3">
             <div class="btn-panel btn-panel-conversation">
-                <a href="" class="btn  col-lg-6  send-message-btn pull-right" role="button"><i class="fa fa-plus"></i> New Message</a>
+                    <a href="#" class="btn col-lg-6 send-message-btn pull-left btn-block" data-toggle="dropdown">New Message <b class="caret"></b></a>
+                 <ul class="dropdown-menu pull-left" style="padding: 15px;min-width: 500px;">
+                        <li>
+                           <div class="row">
+                              <div class="col-md-12">
+                                 <form class="form" role="form" method="post" accept-charset="UTF-8" id="new-message-form">
+                                    <div class="form-group">
+                                       <input type="text" class="form-control" id="to" placeholder="Username" required> <br>
+                                       <textarea class="form-control send-message" rows="3" placeholder="Write a reply..." id="new-message"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                       <button type="submit" class="btn send-message-btn btn-block">Send</button>
+                                    </div>
+                                 </form>
+                              </div>
+                           </div>
+                        </li>
+                     </ul>
             </div>
         </div>
     </div>
@@ -23,10 +40,11 @@
 
             <div class="send-wrap ">
 
-                <textarea class="form-control send-message" rows="3" placeholder="Write a reply..."></textarea>
+                <textarea class="form-control send-message" rows="3" placeholder="Write a reply..." id="message-text"></textarea>
             </div>
             <div class="btn-panel">
-                <a href="" class=" col-lg-4 text-right btn   send-message-btn pull-right" role="button"><i class="fa fa-plus"></i> Send Message</a>
+                <a href="#" class=" col-lg-4 text-right btn   send-message-btn pull-right" role="button" id="send-message">
+                    <i class="fa fa-plus"></i> Send Message</a>
             </div>
         </div>
     </div>

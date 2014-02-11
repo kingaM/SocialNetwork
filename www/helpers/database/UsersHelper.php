@@ -194,6 +194,15 @@
             return $result[0]['ID'];
         }
 
+        public function getUsernameFromId($id) {
+            $result = $this->db->fetch("SELECT login FROM users WHERE ID = :id",
+                array(':id' => $id));
+            if(sizeof($result) != 1) {
+                return -1;
+            }
+            return $result[0]['login'];
+        }
+
     }
 
 ?>

@@ -1,5 +1,41 @@
+var currentReciepient = null;
+
 function content() {
+    sendMessage();
     getReciepients();
+    // Handles menu drop down
+    $('.dropdown-menu').find('form').click(function (e) {
+        e.stopPropagation();
+    });
+    $('#new-message-form').submit(function(e) {
+        e.preventDefault();
+        var messageText = $("#new-message").val();
+        var to = $("#to").val();
+        postMessage(to, messageText);
+        $('[data-toggle="dropdown"]').parent().removeClass('open');
+    });
+}
+
+function sendMessage() {
+    $("#send-message").click(function(e) {
+        e.preventDefault();
+        var messageText = $("#message-text").val();
+        $("#message-text").val("");
+        postMessage(currentReciepient, messageText);        
+    });
+}
+
+function postMessage(to, message) {
+    var values = {};
+        values["messageText"] = message;
+    $.ajax({
+            type: "post",
+            url: "/api/messages/" + to,
+            data: values,
+            success: function() {
+                       console.log("success");                      
+                    },
+            });
 }
 
 function getReciepients() {
@@ -18,24 +54,28 @@ function getReciepients() {
 function showMessages(username) {
     $("#messages").empty();
     console.log("showMessages " + username);
+    currentReciepient = username;
+    console.log("showMessages " + currentReciepient);
     $.getJSON( "/api/messages/" + username, function(data) {
         console.log(data);
         var data_length = data["messages"].length;
         for (var i = 0; i < data_length; i++) {
-          addMessages(data["messages"][i]["from"], data["messages"][i]["to"], 
-            data["messages"][i]["message"], data["messages"][i]["timestamp"]);
+          addMessages( data["messages"][i]["firstName"], data["messages"][i]["middleName"], 
+            data["messages"][i]["lastName"], data["messages"][i]["message"], 
+            data["messages"][i]["timestamp"]);
         }
     });
 }
 
-function addMessages(from, to, message, timestamp) {
+function addMessages(firstName, middleName, lastName, message, timestamp) {
     var content = "<div class=\"msg-wrap\">" +
                 "<div class=\"media msg\">" +
                     "<div class=\"media-body\">" +
                         "<small class=\"pull-right time\"><i class=\"fa fa-clock-o\"></i>" +
-                            new Date(timestamp*1000).toString() + "</small>" +
+                            new Date(timestamp*1000).toLocaleString() + "</small>" +
 
-                        "<h5 class=\"media-heading\">" + from + "</h5>" +
+                        "<h5 class=\"media-heading\">" + firstName + " " + middleName + " " + 
+                            lastName +  "</h5>" +
                         "<small class=\"col-lg-10\">" + message + "</small>" +
                     "</div>" +
                 "</div>" +

@@ -23,9 +23,11 @@
         public function getMessages($from, $to) {
             $firephp = FirePHP::getInstance(true); 
             try{
-            $sql = "SELECT `from`, `to`, content, `timestamp` FROM messages
-                    WHERE (`from` = :from AND `to` = :to) OR 
-                    (`from` = :to AND `to` = :from)";
+            $sql = "SELECT `from`, `to`, content, `timestamp`,
+                        first_name, middle_name, last_name
+                    FROM messages, users
+                    WHERE (`from` = :from AND `to` = :to AND `from` = users.id) OR 
+                        (`from` = :to AND `to` = :from AND `from` = users.id)";
             $array = array(':from' => $from, ':to' => $to);
             $result = $this->db->fetch($sql, $array);
             $firephp->log($result, 'PHP');
@@ -37,16 +39,19 @@
 
         public function getReciepients($from) {
             try{
-                $sql = "SELECT DISTINCT 
-                        CASE  `to` WHEN  :from THEN  `from` ELSE  `to` END AS id, 
+                $sql = "SELECT 
+                        DISTINCT CASE  `to` WHEN  :from THEN  `from` ELSE  `to` END AS id, 
                         login, first_name, middle_name, last_name, content, timestamp
                         FROM messages, users
                         WHERE ((`from` = :from AND  `to` = users.id)
                             OR (`to` = :from AND  `from` = users.id))
                         AND timestamp = (SELECT timestamp 
                                         FROM messages 
+                                        WHERE ((`from` = :from AND  `to` = users.id)
+                                            OR (`to` = :from AND  `from` = users.id))
                                         ORDER BY timestamp DESC
-                                        LIMIT 1)";
+                                        LIMIT 1)
+                        ORDER BY timestamp DESC";
                 $array = array(':from' => $from);
                 return $this->db->fetch($sql, $array);
             } catch(Exception $e) {
