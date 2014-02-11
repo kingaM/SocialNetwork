@@ -5,7 +5,14 @@ var prevMessages = null;
 function content() {
     sendMessage();
     getReciepients();
-    // Handles menu drop down
+    setupDropdown();
+    window.setInterval(function(){
+        getReciepients();
+        showMessages(currentReciepient);
+    }, 5000);
+}
+
+function setupDropdown() {
     $('.dropdown-menu').find('form').click(function (e) {
         e.stopPropagation();
     });
@@ -18,10 +25,6 @@ function content() {
         $("#to").val("");
         $('[data-toggle="dropdown"]').parent().removeClass('open');
     });
-    window.setInterval(function(){
-        getReciepients();
-        showMessages(currentReciepient);
-    }, 5000);
 }
 
 function sendMessage() {
@@ -35,66 +38,64 @@ function sendMessage() {
 
 function postMessage(to, message) {
     var values = {};
-        values["messageText"] = message;
+    values["messageText"] = message;
     $.ajax({
             type: "post",
             url: "/api/messages/" + to,
             data: values,
             success: function() {
-                       console.log("success");                      
+                        console.log("success");       
+                        showMessages(currentReciepient);           
                     },
             });
 }
 
 function getReciepients() {
-  //  $("#conversations").empty();
-    console.log("In get reciepients");
     $.getJSON( "/api/messages/reciepients", function(data) {
         var data_length = data["reciepients"].length;
+        var reciepients = data["reciepients"];
         for (var i = 0; i < data_length; i++) {
-            if(prevConversations != null && i < prevConversations["reciepients"].length) {
-                if(prevConversations["reciepients"][i]["username"] != data["reciepients"][i]["username"] ) {
-                    addConversation(data["reciepients"][i]["username"], data["reciepients"][i]["firstName"],
-                        data["reciepients"][i]["middleName"], data["reciepients"][i]["lastName"], 
-                        data["reciepients"][i]["message"]);
-                } else if(prevConversations["reciepients"][i]["message"] != data["reciepients"][i]["message"]) {
-                    $("#"+data["reciepients"][i]["username"] +"-message").html(data["reciepients"][i]["message"]);
+            if(prevConversations != null && i < prevConversations.length) {
+                if(prevConversations[i]["username"] != reciepients[i]["username"] ) {
+                    addConversation(reciepients[i]["username"], reciepients[i]["firstName"],
+                        reciepients[i]["middleName"], reciepients[i]["lastName"], 
+                        reciepients[i]["message"]);
+                } else if(prevConversations[i]["message"] != reciepients[i]["message"]) {
+                    $("#"+reciepients[i]["username"] +"-message").html(reciepients[i]["message"]);
                 }
             } else {
-                addConversation(data["reciepients"][i]["username"], data["reciepients"][i]["firstName"],
-                        data["reciepients"][i]["middleName"], data["reciepients"][i]["lastName"], 
-                        data["reciepients"][i]["message"]);
+                addConversation(reciepients[i]["username"], reciepients[i]["firstName"],
+                        reciepients[i]["middleName"], reciepients[i]["lastName"], 
+                        reciepients[i]["message"]);
             }          
         }
         if(data_length > 0 && prevConversations == null) {
-            $("#" + data["reciepients"][0]["username"]).trigger('click');
+            $("#" + data["reciepients"][data_length - 1]["username"]).trigger('click');
         }
-        prevConversations = data;
+        prevConversations = reciepients;
         
     });
 }
 
 function showMessages(username) {
-    console.log("showMessages " + username);
     currentReciepient = username;
-    console.log("showMessages " + currentReciepient);
     $.getJSON( "/api/messages/" + username, function(data) {
-        console.log(data);
         var data_length = data["messages"].length;
+        var messages = data["messages"];
         for (var i = 0; i < data_length; i++) {
-            if(prevMessages != null && i < prevMessages["messages"].length) {
-                if(prevMessages["messages"][i]["timestamp"] != data["messages"][i]["timestamp"]) {
-                  addMessages(data["messages"][i]["firstName"], data["messages"][i]["middleName"], 
-                    data["messages"][i]["lastName"], data["messages"][i]["message"], 
-                    data["messages"][i]["timestamp"]);
+            if(prevMessages != null && i < prevMessages.length) {
+                if(prevMessages[i]["timestamp"] != messages[i]["timestamp"]) {
+                  addMessages(messages[i]["firstName"], messages[i]["middleName"], 
+                    messages[i]["lastName"], messages[i]["message"], 
+                    messages[i]["timestamp"]);
                 }
             } else {
-                addMessages(data["messages"][i]["firstName"], data["messages"][i]["middleName"], 
-                    data["messages"][i]["lastName"], data["messages"][i]["message"], 
-                    data["messages"][i]["timestamp"]);
+                addMessages(messages[i]["firstName"], messages[i]["middleName"], 
+                    messages[i]["lastName"], messages[i]["message"], 
+                    messages[i]["timestamp"]);
             }
         }
-        prevMessages = data;
+        prevMessages = messages;
     });
 }
 
@@ -125,12 +126,16 @@ function addConversation(username, firstName, middleName, lastName, message) {
                     "<small id=\"" + username + "-message" + "\">" + message + "</small>" + 
                 "</div>" + 
             "</div>";
-    $("#conversations").append(content);
+    // Assumes that each new item is newer than the last one. Should work for most cases. 
+    $("#conversations").prepend(content);
     var id = "#" + username;
             $(id).click(function(e) {
                 e.preventDefault();
                 $("#messages").empty();
                 prevMessages = null;
                 showMessages(username);
+                // Should scroll down to the most recent message, but it doesn't work, and I 
+                // cannot figure out why.
+                $("#messages").scrollTop($("#messages").prop("scrollHeight"));
             });
 }

@@ -185,6 +185,11 @@
             $this->db->execute($sql, $array);
         }
 
+        /**
+         * Get ID of the user with the given username
+         * @param  string $username The unique username of a user. 
+         * @return integer          The unique id of the user.
+         */
         public function getIdFromUsername($username) {
             $result = $this->db->fetch("SELECT ID FROM users WHERE login = :username",
                 array(':username' => $username));
@@ -194,6 +199,11 @@
             return $result[0]['ID'];
         }
 
+        /**
+         * Get the username from the given id.
+         * @param  integer $id The id of the user.
+         * @return string      The username of the user.
+         */
         public function getUsernameFromId($id) {
             $result = $this->db->fetch("SELECT login FROM users WHERE ID = :id",
                 array(':id' => $id));
