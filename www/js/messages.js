@@ -1,4 +1,6 @@
 var currentReciepient = null;
+var prevConversations = null;
+var prevMessages = null;
 
 function content() {
     sendMessage();
@@ -12,8 +14,14 @@ function content() {
         var messageText = $("#new-message").val();
         var to = $("#to").val();
         postMessage(to, messageText);
+        $("#new-message").val("");
+        $("#to").val("");
         $('[data-toggle="dropdown"]').parent().removeClass('open');
     });
+    window.setInterval(function(){
+        getReciepients();
+        showMessages(currentReciepient);
+    }, 5000);
 }
 
 function sendMessage() {
@@ -39,20 +47,34 @@ function postMessage(to, message) {
 }
 
 function getReciepients() {
-    $("#conversations").empty();
+  //  $("#conversations").empty();
     console.log("In get reciepients");
     $.getJSON( "/api/messages/reciepients", function(data) {
         var data_length = data["reciepients"].length;
         for (var i = 0; i < data_length; i++) {
-          addConversation(data["reciepients"][i]["username"], data["reciepients"][i]["firstName"],
-            data["reciepients"][i]["middleName"], data["reciepients"][i]["lastName"], 
-            data["reciepients"][i]["message"]);
+            if(prevConversations != null && i < prevConversations["reciepients"].length) {
+                if(prevConversations["reciepients"][i]["username"] != data["reciepients"][i]["username"] ) {
+                    addConversation(data["reciepients"][i]["username"], data["reciepients"][i]["firstName"],
+                        data["reciepients"][i]["middleName"], data["reciepients"][i]["lastName"], 
+                        data["reciepients"][i]["message"]);
+                } else if(prevConversations["reciepients"][i]["message"] != data["reciepients"][i]["message"]) {
+                    $("#"+data["reciepients"][i]["username"] +"-message").html(data["reciepients"][i]["message"]);
+                }
+            } else {
+                addConversation(data["reciepients"][i]["username"], data["reciepients"][i]["firstName"],
+                        data["reciepients"][i]["middleName"], data["reciepients"][i]["lastName"], 
+                        data["reciepients"][i]["message"]);
+            }          
         }
+        if(data_length > 0 && prevConversations == null) {
+            $("#" + data["reciepients"][0]["username"]).trigger('click');
+        }
+        prevConversations = data;
+        
     });
 }
 
 function showMessages(username) {
-    $("#messages").empty();
     console.log("showMessages " + username);
     currentReciepient = username;
     console.log("showMessages " + currentReciepient);
@@ -60,10 +82,19 @@ function showMessages(username) {
         console.log(data);
         var data_length = data["messages"].length;
         for (var i = 0; i < data_length; i++) {
-          addMessages( data["messages"][i]["firstName"], data["messages"][i]["middleName"], 
-            data["messages"][i]["lastName"], data["messages"][i]["message"], 
-            data["messages"][i]["timestamp"]);
+            if(prevMessages != null && i < prevMessages["messages"].length) {
+                if(prevMessages["messages"][i]["timestamp"] != data["messages"][i]["timestamp"]) {
+                  addMessages(data["messages"][i]["firstName"], data["messages"][i]["middleName"], 
+                    data["messages"][i]["lastName"], data["messages"][i]["message"], 
+                    data["messages"][i]["timestamp"]);
+                }
+            } else {
+                addMessages(data["messages"][i]["firstName"], data["messages"][i]["middleName"], 
+                    data["messages"][i]["lastName"], data["messages"][i]["message"], 
+                    data["messages"][i]["timestamp"]);
+            }
         }
+        prevMessages = data;
     });
 }
 
@@ -91,13 +122,15 @@ function addConversation(username, firstName, middleName, lastName, message) {
                             + firstName + " " + middleName + " " + lastName + 
                         "</a>" +
                     "</h5>" + 
-                    "<small>" + message + "</small>" + 
+                    "<small id=\"" + username + "-message" + "\">" + message + "</small>" + 
                 "</div>" + 
             "</div>";
     $("#conversations").append(content);
     var id = "#" + username;
             $(id).click(function(e) {
                 e.preventDefault();
+                $("#messages").empty();
+                prevMessages = null;
                 showMessages(username);
             });
 }
