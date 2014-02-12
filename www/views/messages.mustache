@@ -12,8 +12,11 @@
                            <div class="row">
                               <div class="col-md-12">
                                  <form class="form" role="form" method="post" accept-charset="UTF-8" id="new-message-form">
+                                    <div class="form-group" id="form-group-to">
+                                       <input type="text" class="form-control" id="to" placeholder="Username" required>
+                                       <label class="control-label" for="to" id="control-label-to" hidden></label>
+                                    </div>
                                     <div class="form-group">
-                                       <input type="text" class="form-control" id="to" placeholder="Username" required> <br>
                                        <textarea class="form-control send-message" rows="3" placeholder="Write a reply..." id="new-message"></textarea>
                                     </div>
                                     <div class="form-group">

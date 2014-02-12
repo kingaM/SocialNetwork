@@ -33,6 +33,27 @@
         }
 
         /**
+         * Checks if the users are friends.
+         * 
+         * @param  integer  $user1 Id of one of the users.
+         * @param  integer  $user2 Id of the second user.
+         * 
+         * @return boolean         True if the users are friends, false otherwise. 
+         */
+        public function isFriend($user1, $user2) {
+            $sql = "SELECT * FROM friendships as f
+                    WHERE ((f.user1=:user1 AND f.user2=:user2) 
+                        OR (f.user2=:user1 AND f.user1=:user2)) 
+                        AND status = 1";
+            $array = array(':user1' => $user1, ':user2' => $user2);
+            $result = $this->db->fetch($sql, $array);
+            if(sizeof($result) != 1) {
+                return false;
+            } 
+            return true;
+        }
+
+        /**
          * Gets the names of a user's friends of friends
          *
          * @param int $userID The user to show friends from

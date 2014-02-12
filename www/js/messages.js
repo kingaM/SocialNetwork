@@ -13,6 +13,9 @@ function content() {
 }
 
 function setupDropdown() {
+     $('.dropdown-menu').find('form').click(function (e) {
+        e.stopPropagation();
+    });
     $('.dropdown-menu').find('form').click(function (e) {
         e.stopPropagation();
     });
@@ -20,11 +23,35 @@ function setupDropdown() {
         e.preventDefault();
         var messageText = $("#new-message").val();
         var to = $("#to").val();
-        postMessage(to, messageText);
+        postMessage(to, messageText, true);
+    });
+    $('body').click(function(e) {
         $("#new-message").val("");
         $("#to").val("");
         $('[data-toggle="dropdown"]').parent().removeClass('open');
+        $("#form-group-to").removeClass("has-error");
+        $("#control-label-to").hide();
     });
+}
+
+function hideDropdown(valid, friend) {
+    if(valid && friend) {
+        $("#new-message").val("");
+        $("#to").val("");
+        $('[data-toggle="dropdown"]').parent().removeClass('open');
+        $("#form-group-to").removeClass("has-error");
+        $("#control-label-to").hide();
+    } else {
+        $("#form-group-to").addClass("has-error");
+        $("#control-label-to").show();
+        if(!valid) {
+            $("#control-label-to").text("The username is invalid");
+        } else if (!friend) {
+            $("#control-label-to").text("This user is not your friend, so you cannot send him a message");
+        }
+        
+        console.log("Username invalid");
+    }
 }
 
 function sendMessage() {
@@ -32,22 +59,30 @@ function sendMessage() {
         e.preventDefault();
         var messageText = $("#message-text").val();
         $("#message-text").val("");
-        postMessage(currentReciepient, messageText);        
+        postMessage(currentReciepient, messageText, false);        
     });
 }
 
-function postMessage(to, message) {
+function postMessage(to, message, newM) {
     var values = {};
     values["messageText"] = message;
     $.ajax({
-            type: "post",
-            url: "/api/messages/" + to,
-            data: values,
-            success: function() {
-                        console.log("success");       
-                        showMessages(currentReciepient);           
-                    },
-            });
+        type: "post",
+        url: "/api/messages/" + to,
+        data: values,
+        success: function(data) {
+            console.log(data);
+            var json = $.parseJSON(data);
+            var valid = json['valid'];
+            var friend = json['testfriend'];      
+            if(valid && friend) {
+                showMessages(currentReciepient);
+            }
+            if(newM) {
+                hideDropdown(valid, friend);
+            }
+        }
+    });
 }
 
 function getReciepients() {

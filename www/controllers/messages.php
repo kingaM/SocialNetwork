@@ -2,6 +2,7 @@
 
     include_once('helpers/database/MessagesHelper.php');
     include_once('helpers/database/UsersHelper.php');
+    include_once('helpers/database/FriendsHelper.php');
 
     class Messages {
         public function getPage($req, $res) {
@@ -46,10 +47,22 @@
 
         public function addMessage($req, $res) {
             $username = $req->params['username'];
-            $messagesDB = new MessagesHelper();
             $usersDB = new UsersHelper();
+            if(!$usersDB->checkUsernameExists($username)) {
+                $res->add(json_encode(array('valid' => 0, 'testfriend' => 0)));
+                $res->send();
+            }
+            $messagesDB = new MessagesHelper();
+            $friendsDB = new FriendsHelper();
+            $reciepientId = $usersDB->getIdFromUsername($username);
+            if(!$friendsDB->isFriend($reciepientId, $_SESSION['id'])) {
+                $res->add(json_encode(array('valid' => 1, 'testfriend' => 0)));
+                $res->send();
+            }
+            
             $result = $messagesDB->addMessage($_SESSION['id'], 
-                $usersDB->getIdFromUsername($username), $req->data["messageText"], time());
+                $reciepientId, $req->data["messageText"], time());
+            $res->add(json_encode(array('valid' => 1, 'testfriend' => 1)));
             $res->send();
         }
     }

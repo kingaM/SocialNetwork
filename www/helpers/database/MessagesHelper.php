@@ -51,7 +51,6 @@
                     ORDER BY timestamp ASC";
             $array = array(':from' => $from, ':to' => $to);
             $result = $this->db->fetch($sql, $array);
-            $firephp->log($result, 'PHP');
             return $result;
             } catch(Exception $e) {
                 $firephp->log($e, 'PHP');
