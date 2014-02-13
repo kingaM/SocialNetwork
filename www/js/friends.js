@@ -7,13 +7,18 @@ function getFriends() {
     $.getJSON( "/api/friends", function(data) {
         var friends;
         var requests;
+        var circles;
         $.each( data, function(key, val) {
             if(key == "friends")
                 friends = val;
             if(key == "friendRequests")
                 requests = val;
+            if(key == "circles")
+                requests = val;
         });
-        showFriends(friends, requests);
+        showFriends(friends);
+        showRequests(requests);
+        showCircles(circles);
     });
 }
 
@@ -25,7 +30,9 @@ function showFriends (friends, requests) {
         $("#friends_list").append(listItem);
         $("#" + friends[i] + "_del").click(deleteFriend);
     };
+}
 
+function showRequests(requests) {
     $("#requests_list").empty();
     for (var i = 0; i < requests.length; i++) {
         var listItem = "<li>" + requests[i] + 
@@ -36,6 +43,10 @@ function showFriends (friends, requests) {
         $("#" + requests[i] + "_add").click(acceptFriend);
         $("#" + requests[i] + "_del").click(deleteFriend);
     };
+}
+
+function showCircles(circles) {
+    
 }
 
 function deleteFriend(event) {
@@ -81,5 +92,35 @@ function prepare() {
     $("#addForm").submit(function(e){
         e.preventDefault();
         addFriend($("#addForm :input").val());
+    });
+
+    $("#pending_friends").hide();
+    $("#circles").hide();
+
+    $("#friendsTab").click(function() {
+        $("#friendsTab").addClass("active");
+        $("#requestsTab").removeClass("active");
+        $("#circlesTab").removeClass("active");
+        $("#friends").show();
+        $("#pending_friends").hide();
+        $("#circles").hide();
+    });
+
+    $("#requestsTab").click(function() {
+        $("#friendsTab").removeClass("active");
+        $("#requestsTab").addClass("active");
+        $("#circlesTab").removeClass("active");
+        $("#friends").hide();
+        $("#pending_friends").show();
+        $("#circles").hide();
+    });
+
+    $("#circlesTab").click(function() {
+        $("#friendsTab").removeClass("active");
+        $("#requestsTab").removeClass("active");
+        $("#circlesTab").addClass("active");
+        $("#friends").hide();
+        $("#pending_friends").hide();
+        $("#circles").show();
     });
 }

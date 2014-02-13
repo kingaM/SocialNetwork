@@ -16,10 +16,12 @@
             $friends = $db->getFriends($_SESSION['id']);
             $friendRequests = $db->getFriendRequests($_SESSION['id']);
             $friendsOfFriends = $db->getFriendsOfFriends($_SESSION['id']);
+            $circles = $db->getCircles($_SESSION['id']);
             $friendsInfo = array(
                 'friends' => $friends, 
                 'friendRequests' => $friendRequests,
-                'friendsOfFriends' => $friendsOfFriends);
+                'friendsOfFriends' => $friendsOfFriends,
+                'circles' => $circles);
             $res->add(json_encode($friendsInfo));
             $res->send();
         }
@@ -51,5 +53,10 @@
             $db->deleteFriend($_SESSION['username'], $delUsername);
             $res->send();
         }
+
+        public function addCircle($req, $res) {
+            
+        }
+
     }
 ?>

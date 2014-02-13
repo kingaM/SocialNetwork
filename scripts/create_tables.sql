@@ -32,22 +32,39 @@ CREATE TABLE IF NOT EXISTS `profile` (
 );
 
 CREATE TABLE IF NOT EXISTS `friendships` (
-  `user1` int(11) NOT NULL,
-  `user2` int(11) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT 0,
-  `startTimestamp` int(11) NOT NULL,
-  PRIMARY KEY (`user1`,`user2`),
-  FOREIGN KEY (`user1`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`user2`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    `user1` int(11) NOT NULL,
+    `user2` int(11) NOT NULL,
+    `status` int(11) NOT NULL DEFAULT 0,
+    `startTimestamp` int(11) NOT NULL,
+    PRIMARY KEY (`user1`,`user2`),
+    FOREIGN KEY (`user1`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`user2`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `messages` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `from` INT NOT NULL,
-  `to` INT NOT NULL,
-  `content` VARCHAR(10000) NOT NULL DEFAULT 0,
-  `timestamp` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`to`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `from` INT NOT NULL,
+    `to` INT NOT NULL,
+    `content` VARCHAR(10000) NOT NULL DEFAULT 0,
+    `timestamp` INT NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`to`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `circles` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `owner` int(11) NOT NULL,
+    `name` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`owner`, `name`),
+    FOREIGN KEY (`owner`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `circle_memberships` (
+    `user` int(11) NOT NULL,
+    `circle` int(11) NOT NULL,
+    PRIMARY KEY (`user`,`circle`),
+    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`circle`) REFERENCES `circles` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );

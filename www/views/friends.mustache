@@ -1,21 +1,33 @@
 <script src="/js/friends.js"></script>
 
-<div id="add_friends">
-    <h2>Add Friend:</h2>
+<ul class="nav nav-tabs">
+  <li class="active" id="friendsTab"><a href="#" style="outline:0;">Friends</a></li>
+  <li id="requestsTab"><a href="#" style="outline:0;">Requests</a></li>
+  <li id="circlesTab"><a href="#" style="outline:0;">Circles</a></li>
+</ul>
 
-    <form id="addForm">
-        <input type="text" name="username">
-        <input type="submit" value="Add">
-    </form> 
+<div id="friends">
+    <div id="add_friends">
+        <h2>Add Friend:</h2>
 
-</div>
+        <form id="addForm">
+            <input type="text" name="username">
+            <input type="submit" value="Add">
+        </form> 
 
-<div id="current_friends">
-    <h2>Current Friends:</h2>
-    <ul id="friends_list"></ul>
+    </div>
+
+    <div id="current_friends">
+        <h2>Current Friends:</h2>
+        <ul id="friends_list"></ul>
+    </div>
 </div>
 
 <div id="pending_friends">
     <h2>Friend Requests:</h2>
     <ul id="requests_list"></ul>
+</div>
+
+<div id="circles">
+    <h2>Circles:</h2>
 </div>

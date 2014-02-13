@@ -188,5 +188,33 @@
             return $friends;
         }
 
+        /**
+         * Gets a users circles
+         *
+         * @param int $userID The user to show friends from
+         *
+         * @return String[][] Array of circles and their friends
+         */
+        public function getCircles($userID) {
+            $result = $this->db->fetch("SELECT u.login, c.name as circleName
+                FROM users as u, circles as c, circle_memberships as cm
+                WHERE cm.circle=c.id AND cm.user=u.id
+                AND c.owner=:user
+                ORDER BY c.name",
+                Array(':user' => $userID));
+
+            $circles = array();
+
+            foreach ($result as $r) {
+                $circle = $r['circleName'];
+                if(!array_key_exists($circle, $circles))
+                    $circles[$circle] = array();
+
+                $login = $r['login'];
+                $circles[$circle][] = $login;
+            }
+            return $circles;
+        }
+
     }
 ?>
