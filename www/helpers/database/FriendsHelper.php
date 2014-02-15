@@ -204,14 +204,18 @@
                 Array(':user' => $userID));
 
             $circles = array();
-
+            $addedCircles = array();
             foreach ($result as $r) {
-                $circle = $r['circleName'];
-                if(!array_key_exists($circle, $circles))
-                    $circles[$circle] = array();
-
-                $login = $r['login'];
-                $circles[$circle][] = $login;
+                $circleName = $r['circleName'];
+                if(!in_array($circleName, $addedCircles)) {
+                    $addedCircles[] = $circleName;
+                    $circle = array();
+                    $circles[] = &$circle;
+                    $circle['name'] = $circleName;
+                    $users = array();
+                    $circle['users'] = &$users;
+                }
+                $users[] = $r['login'];
             }
             return $circles;
         }

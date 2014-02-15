@@ -14,7 +14,7 @@ function getFriends() {
             if(key == "friendRequests")
                 requests = val;
             if(key == "circles")
-                requests = val;
+                circles = val;
         });
         showFriends(friends);
         showRequests(requests);
