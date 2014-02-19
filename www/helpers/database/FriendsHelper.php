@@ -165,6 +165,15 @@
                 OR (user1 IN (SELECT ID FROM users WHERE login=:user2) 
                     AND user2 IN (SELECT ID FROM users WHERE login=:user1))",
                 Array(':user1' => $user1, 'user2' => $user2));
+
+            $this->db->execute("DELETE FROM circle_memberships 
+                WHERE (user IN (SELECT ID FROM users WHERE login=:user1) 
+                    AND circle IN (SELECT c.ID FROM circles as c, users as u 
+                                    WHERE owner=u.id AND login=:user2))
+                OR (user IN (SELECT ID FROM users WHERE login=:user2) 
+                    AND circle IN (SELECT c.ID FROM circles as c, users as u 
+                                    WHERE owner=u.id AND login=:user1))",
+                Array(':user1' => $user1, 'user2' => $user2));
         }
 
         /**
@@ -196,6 +205,19 @@
          * @return String[][] Array of circles and their friends
          */
         public function getCircles($userID) {
+            $result = $this->db->fetch("SELECT *
+                FROM circles
+                WHERE owner=:user",
+                Array(':user' => $userID));
+
+            $circles = array();
+            foreach ($result as $r) {
+                $circle = array();
+                $circle['name'] = $r['name'];
+                $circle['users'] = array();
+                array_push($circles, $circle);
+            }
+
             $result = $this->db->fetch("SELECT u.login, c.name as circleName
                 FROM users as u, circles as c, circle_memberships as cm
                 WHERE cm.circle=c.id AND cm.user=u.id
@@ -203,25 +225,96 @@
                 ORDER BY c.name",
                 Array(':user' => $userID));
 
-            $circles = array();
-            $addedCircles = array();
             foreach ($result as $r) {
+                $login = $r['login'];
                 $circleName = $r['circleName'];
-                if(!in_array($circleName, $addedCircles)) {
-                    $addedCircles[] = $circleName;
-
-                    unset($circle);
-                    $circle = array();
-                    $circles[] = &$circle;
-                    $circle['name'] = $circleName;
-
-                    unset($users);
-                    $users = array();
-                    $circle['users'] = &$users;
+                foreach ($circles as &$circle) {
+                    if($circle['name'] == $circleName) {
+                        $users = &$circle['users'];
+                        $users[] = $login;
+                        break;
+                    }
                 }
-                $users[] = $r['login'];
             }
+
             return $circles;
+        }
+
+        /**
+         * Adds a circle for a user
+         *
+         * @param int $userID The user adding the circle
+         * @param String $circleName The name of the circle
+         *
+         */
+        public function addCircle($userID, $circleName) {
+
+            // Check circle doesn't already exist
+            $result = $this->db->fetch("SELECT *
+                FROM circles 
+                WHERE owner=:user AND name=:name",
+                Array(':user' => $userID, ':name' => $circleName));
+            if(sizeof($result) != 0)
+                throw new Exception("You already have a circle called '$circleName'");
+
+            $result = $this->db->execute("INSERT INTO circles(owner, name) VALUES(:user, :name)",
+                Array(':user' => $userID, ':name' => $circleName));
+        }
+
+        /**
+         * Deletes a circle for a user
+         *
+         * @param int $userID The user deleting the circle
+         * @param String $circleName The name of the circle
+         *
+         */
+        public function deleteCircle($userID, $circleName) {
+            $result = $this->db->execute("DELETE FROM circles WHERE owner=:user AND name=:name",
+                Array(':user' => $userID, ':name' => $circleName));
+        }
+
+        /**
+         * Adds a user to a circle
+         *
+         * @param int $userID The user adding the circle
+         * @param String $circleName The name of the circle
+         *
+         */
+        public function addToCircle($owner, $circleName, $username) {
+
+            // Check is user exists and is a friend
+            $result = $this->db->fetch("SELECT *
+                FROM users as u, friendships as f 
+                WHERE ((f.user1=:u1 AND f.user2=u.ID) OR (f.user2=:u1 AND f.user1=u.ID)) 
+                AND u.login=:u2 AND status = 1",
+                Array(':u1' => $owner, ':u2' => $username));
+            if(sizeof($result) == 0)
+                throw new Exception("You are not friends with '$username'");
+
+            // Check circle exists
+            // Note: Should only not exist with concurrency conflicts or abusing the form
+            $result = $this->db->fetch("SELECT *
+                FROM circles 
+                WHERE owner=:user AND name=:name",
+                Array(':user' => $owner, ':name' => $circleName));
+            if(sizeof($result) == 0)
+                throw new Exception("'$circleName' doesn't exist");
+
+            // Check user isn't already in that circle
+            $result = $this->db->fetch("SELECT *
+                FROM circles as c, circle_memberships as cm, users as u
+                WHERE cm.circle=c.id AND c.name=:circleName AND cm.user=u.id
+                AND c.owner=:owner AND u.login=:username",
+                Array(':owner' => $owner, ':circleName' => $circleName, ':username' => $username));
+            if(sizeof($result) != 0)
+                throw new Exception("'$username' is already in '$circleName'");
+
+            // Checks passed ... add user to circle
+            $result = $this->db->execute("INSERT INTO circle_memberships(user, circle)
+                SELECT u.id as user, c.id as circle
+                FROM users as u, circles as c
+                WHERE c.owner=:owner AND c.name=:circleName AND u.login=:username",
+                Array(':owner' => $owner, ':circleName' => $circleName, ':username' => $username));
         }
 
     }
