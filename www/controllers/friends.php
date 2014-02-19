@@ -16,10 +16,12 @@
             $friends = $db->getFriends($_SESSION['id']);
             $friendRequests = $db->getFriendRequests($_SESSION['id']);
             $friendsOfFriends = $db->getFriendsOfFriends($_SESSION['id']);
+            $circles = $db->getCircles($_SESSION['id']);
             $friendsInfo = array(
                 'friends' => $friends, 
                 'friendRequests' => $friendRequests,
-                'friendsOfFriends' => $friendsOfFriends);
+                'friendsOfFriends' => $friendsOfFriends,
+                'circles' => $circles);
             $res->add(json_encode($friendsInfo));
             $res->send();
         }
@@ -45,11 +47,47 @@
         }
 
         public function removeFriend($req, $res) {
-            require_once('mustache_conf.php');
             $delUsername = $req->params['login'];
             $db = new FriendsHelper();
             $db->deleteFriend($_SESSION['username'], $delUsername);
             $res->send();
         }
+
+        public function addCircle($req, $res) {
+            $circleName = $req->data['circleName'];
+            try {
+                $db = new FriendsHelper();
+                $db->addCircle($_SESSION['id'], $circleName);
+                $res->add(json_encode(array('result' => 'added')));
+                $res->send();
+            }
+            catch (Exception $e) {
+                $res->add(json_encode(array('error' => $e->getMessage())));
+                $res->send();
+            }
+        }
+
+        public function deleteCircle($req, $res) {
+             $circleName = $req->params['circleName'];
+             $db = new FriendsHelper();
+             $db->deleteCircle($_SESSION['id'], $circleName);
+             $res->send();
+        }
+
+        public function addToCircle($req, $res) {
+            $circleName = $req->params['circleName'];
+            $username = $req->data['username'];
+            try {
+                $db = new FriendsHelper();
+                $db->addToCircle($_SESSION['id'], $circleName, $username);
+                $res->add(json_encode(array('result' => 'added')));
+                $res->send();
+            }
+            catch (Exception $e) {
+                $res->add(json_encode(array('error' => $e->getMessage())));
+                $res->send();
+            }
+        }
+
     }
 ?>

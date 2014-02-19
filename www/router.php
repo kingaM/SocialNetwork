@@ -43,6 +43,19 @@
     ));
 
     $router->addRoute(array(
+        'path' => '/api/circles',
+        'post' => array('Friends', 'addCircle'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/circles/{circleName}',
+        'post' => array('Friends', 'addToCircle'),
+        'delete' => array('Friends', 'deleteCircle'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
         'path' => '/login',
         'get' => array('Login', 'getPage'),
         'file' => 'controllers/login.php',

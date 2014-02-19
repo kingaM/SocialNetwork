@@ -28,3 +28,14 @@ VALUES
     (2, 3, 'Message', 1391362436),
     (3, 1, 'Message', 1391362436),
     (3, 2, 'Message', 1391362436);
+
+INSERT INTO circles(owner, name)
+VALUES
+    (3, 'Work'),
+    (3, 'Family');
+
+INSERT INTO circle_memberships(user, circle)
+VALUES
+    (1, 1),
+    (2, 1),
+    (2, 2);
