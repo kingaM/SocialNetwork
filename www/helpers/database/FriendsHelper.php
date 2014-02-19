@@ -209,10 +209,12 @@
                 $circleName = $r['circleName'];
                 if(!in_array($circleName, $addedCircles)) {
                     $addedCircles[] = $circleName;
+
                     unset($circle);
                     $circle = array();
                     $circles[] = &$circle;
                     $circle['name'] = $circleName;
+
                     unset($users);
                     $users = array();
                     $circle['users'] = &$users;
