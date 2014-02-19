@@ -44,12 +44,16 @@ CREATE TABLE IF NOT EXISTS `friendships` (
 CREATE TABLE IF NOT EXISTS `messages` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `from` INT NOT NULL,
-    `to` INT NOT NULL,
+    `to_user` INT,
+    `to_circle` INT,
+    `type` char(1) NOT NULL,
     `content` VARCHAR(10000) NOT NULL DEFAULT 0,
     `timestamp` INT NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`to`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`to_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`to_circle`) REFERENCES `circles` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `circles` (

@@ -16,9 +16,6 @@ function setupDropdown() {
      $('.dropdown-menu').find('form').click(function (e) {
         e.stopPropagation();
     });
-    $('.dropdown-menu').find('form').click(function (e) {
-        e.stopPropagation();
-    });
     $('#new-message-form').submit(function(e) {
         e.preventDefault();
         var messageText = $("#new-message").val();
@@ -93,15 +90,13 @@ function getReciepients() {
         for (var i = 0; i < data_length; i++) {
             if(prevConversations != null && i < prevConversations.length) {
                 if(prevConversations[i]["username"] != reciepients[i]["username"] ) {
-                    addConversation(reciepients[i]["username"], reciepients[i]["firstName"],
-                        reciepients[i]["middleName"], reciepients[i]["lastName"], 
+                    addConversation(reciepients[i]["username"], reciepients[i]["name"], 
                         reciepients[i]["message"]);
                 } else if(prevConversations[i]["message"] != reciepients[i]["message"]) {
                     $("#"+reciepients[i]["username"] +"-message").html(reciepients[i]["message"]);
                 }
             } else {
-                addConversation(reciepients[i]["username"], reciepients[i]["firstName"],
-                        reciepients[i]["middleName"], reciepients[i]["lastName"], 
+                addConversation(reciepients[i]["username"], reciepients[i]["name"], 
                         reciepients[i]["message"]);
             }          
         }
@@ -151,12 +146,12 @@ function addMessages(firstName, middleName, lastName, message, timestamp) {
     $("#messages").append(content);
 }
 
-function addConversation(username, firstName, middleName, lastName, message) {
+function addConversation(username, name, message) {
     var content = "<div class=\"media conversation\">" +
                 "<div class=\"media-body\">" + 
                     "<h5 class=\"media-heading\">" + 
                         "<a href=\"#\" id=\"" + username + "\">" 
-                            + firstName + " " + middleName + " " + lastName + 
+                            + name + 
                         "</a>" +
                     "</h5>" + 
                     "<small id=\"" + username + "-message" + "\">" + message + "</small>" + 

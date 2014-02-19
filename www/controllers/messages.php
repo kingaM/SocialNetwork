@@ -17,10 +17,10 @@
             $result = $db->getReciepients($_SESSION['id']);
             $json = array("reciepients" => array());
             foreach ($result as $r) {
-                $json["reciepients"][] = array('username' => $r['login'], 
-                    'firstName' => $r['first_name'], 
-                    'middleName' => ($r['middle_name'] ? $r['middle_name'] : ''),
-                    'lastName' => $r['last_name'], 'message' => $r['content'], 
+                $json["reciepients"][] = array(
+                    'username' => $r['login'], 
+                    'name' => $r['name'],
+                    'message' => $r['content'], 
                     'timestamp' => $r['timestamp']);
             }
             $res->add(json_encode($json));
@@ -30,13 +30,24 @@
         public function getMessages($req, $res) {
             $messagesDB = new MessagesHelper();
             $usersDB = new UsersHelper();
+            $friendsDB = new FriendsHelper();
             $username = $req->params['username'];
-            $id = $usersDB->getIdFromUsername($username);
-            $result = $messagesDB->getMessages($_SESSION['id'], $id);
+            $pos = strpos($username,'_');
+            if( $pos === false) {
+                $id = $usersDB->getIdFromUsername($username);
+                $result = $messagesDB->getMessagesUser($_SESSION['id'], $id);
+            } else {
+                $circle = explode('_', $username);
+                $owner = $circle[0];
+                $name = $circle[1];
+                $id = $friendsDB->getCircleId($owner, $name);
+                $result = $messagesDB->getMessagesCircle($_SESSION['id'], $id);
+            }
+            
             $json = array("messages" => array());
             foreach ($result as $r) {
                 $json["messages"][] = array('message' => $r['content'], 'from' => $r['from'], 
-                    'to' => $r['to'], 'timestamp' => $r['timestamp'],
+                    'timestamp' => $r['timestamp'],
                     'firstName' => $r['first_name'], 
                     'middleName' => ($r['middle_name'] ? $r['middle_name'] : ''),
                     'lastName' => $r['last_name']);

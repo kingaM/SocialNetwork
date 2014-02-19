@@ -224,5 +224,26 @@
             return $circles;
         }
 
+        /**
+         * Get the id of the circle.
+         * 
+         * @param  integer $owner The id of the user that owns the circle.
+         * @param  string  $name  The name of the circle.
+         * 
+         * @return integer        The id of the circle. 
+         */
+        public function getCircleId($owner, $name) {
+            $sql = "SELECT id FROM circles  
+                WHERE owner = :owner AND name = :name";
+            $array = array(':owner' => $owner, ':name' => $name);
+
+            $result = $this->db->fetch($sql, $array);
+            if (sizeof($result) != 1) {
+                return -1;
+            } else {
+                return $result[0]['id'];
+            }
+        }
+
     }
 ?>
