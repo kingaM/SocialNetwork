@@ -145,7 +145,8 @@
                                                     AND `to_user` IS NULL))
                                             ORDER BY timestamp DESC
                                             LIMIT 1)
-                        ORDER BY timestamp ASC ) AS reciepients";
+                        ORDER BY timestamp ASC ) AS reciepients
+                    ORDER BY timestamp, login ASC ";
             $array = array(':from' => $from);
             return $this->db->fetch($sql, $array);
         }

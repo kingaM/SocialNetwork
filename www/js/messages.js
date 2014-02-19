@@ -189,7 +189,7 @@ function addMessages(firstName, middleName, lastName, message, timestamp) {
 }
 
 function addConversation(username, name, message) {
-    var content = "<div class=\"media conversation\">" +
+    var content = "<div class=\"media conversation\" id=\"" + username  + "-wrapper\">" +
                 "<div class=\"media-body\">" + 
                     "<h5 class=\"media-heading\">" + 
                         "<a href=\"#\" id=\"" + username + "\">" 
@@ -200,6 +200,7 @@ function addConversation(username, name, message) {
                 "</div>" + 
             "</div>";
     // Assumes that each new item is newer than the last one. Should work for most cases. 
+    $("#" + username + "-wrapper").remove()
     $("#conversations").prepend(content);
     var id = "#" + username;
     $(id).click(function(e) {
