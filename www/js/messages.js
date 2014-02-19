@@ -47,7 +47,8 @@ function hideDropdown(valid, friend) {
         if(!valid) {
             $("#control-label-to").text("The username is invalid");
         } else if (!friend) {
-            $("#control-label-to").text("This user is not your friend, so you cannot send him a message");
+            $("#control-label-to").text("This user is not your friend, so you cannot send him a" +
+                "message");
         }
         
         console.log("Username invalid");
@@ -74,7 +75,7 @@ function postMessage(to, message, newM) {
             console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
-            var friend = json['testfriend'];      
+            var friend = json['friend'];      
             if(valid && friend) {
                 showMessages(currentReciepient);
             }
@@ -164,13 +165,17 @@ function addConversation(username, firstName, middleName, lastName, message) {
     // Assumes that each new item is newer than the last one. Should work for most cases. 
     $("#conversations").prepend(content);
     var id = "#" + username;
-            $(id).click(function(e) {
-                e.preventDefault();
-                $("#messages").empty();
-                prevMessages = null;
-                showMessages(username);
-                // Should scroll down to the most recent message, but it doesn't work, and I 
-                // cannot figure out why.
-                $("#messages").scrollTop($("#messages").prop("scrollHeight"));
-            });
+    $(id).click(function(e) {
+        e.preventDefault();
+        $("#messages").empty();
+        prevMessages = null;
+        showMessages(username);
+        // A hack to make it scroll to the bottom. 
+        window.setTimeout(scrollBottom, 100);
+        
+    });
+}
+
+function scrollBottom() {
+    $("#messages").scrollTop($("#messages").prop("scrollHeight"));
 }

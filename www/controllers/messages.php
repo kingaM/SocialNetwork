@@ -49,20 +49,20 @@
             $username = $req->params['username'];
             $usersDB = new UsersHelper();
             if(!$usersDB->checkUsernameExists($username)) {
-                $res->add(json_encode(array('valid' => 0, 'testfriend' => 0)));
+                $res->add(json_encode(array('valid' => 0, 'friend' => 0)));
                 $res->send();
             }
             $messagesDB = new MessagesHelper();
             $friendsDB = new FriendsHelper();
             $reciepientId = $usersDB->getIdFromUsername($username);
             if(!$friendsDB->isFriend($reciepientId, $_SESSION['id'])) {
-                $res->add(json_encode(array('valid' => 1, 'testfriend' => 0)));
+                $res->add(json_encode(array('valid' => 1, 'friend' => 0)));
                 $res->send();
             }
             
             $result = $messagesDB->addMessage($_SESSION['id'], 
                 $reciepientId, $req->data["messageText"], time());
-            $res->add(json_encode(array('valid' => 1, 'testfriend' => 1)));
+            $res->add(json_encode(array('valid' => 1, 'friend' => 1)));
             $res->send();
         }
     }
