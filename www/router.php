@@ -86,9 +86,15 @@
     ));
 
     $router->addRoute(array(
-        'path' => '/api/messages/{username}',
+        'path' => '/api/messages/user/{username}',
         'get' => array('Messages', 'getMessages'),
         'post' => array('Messages', 'addMessage'),
+        'file' => 'controllers/messages.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/messages/circle/{circleName}',
+        'post' => array('Messages', 'addCircleMessage'),
         'file' => 'controllers/messages.php',
     ));
 

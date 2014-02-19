@@ -6,8 +6,10 @@
     <div class="row">
         <div class="col-lg-3">
             <div class="btn-panel btn-panel-conversation">
-                    <a href="#" class="btn col-lg-6 send-message-btn pull-left btn-block" data-toggle="dropdown">New Message <b class="caret"></b></a>
-                 <ul class="dropdown-menu pull-left" style="padding: 15px;min-width: 500px;">
+                <div class="btn-group">
+                    <div class="btn-group">
+                    <a href="#" class="btn send-message-btn" data-toggle="dropdown" id="message-user">Message <b class="caret"></b></a>
+                        <ul class="dropdown-menu pull-left" style="padding: 15px;min-width: 500px;">
                         <li>
                            <div class="row">
                               <div class="col-md-12">
@@ -27,6 +29,31 @@
                            </div>
                         </li>
                      </ul>
+                 </div>
+                 <div class="btn-group">
+                    <a href="#" class="btn send-message-btn" data-toggle="dropdown" id="message-circles">Message to Circles<b class="caret"></b></a>
+                    <ul class="dropdown-menu pull-left" style="padding: 15px;min-width: 500px;">
+                        <li>
+                           <div class="row">
+                              <div class="col-md-12">
+                                 <form class="form" role="form" method="post" accept-charset="UTF-8" id="new-message-circles-form">
+                                    <div class="form-group" id="form-group-to-circles">
+                                       <input type="text" class="form-control" id="to-circles" placeholder="Name of Circle" required>
+                                       <label class="control-label" for="to" id="control-label-to-circles" hidden></label>
+                                    </div>
+                                    <div class="form-group">
+                                       <textarea class="form-control send-message" rows="3" placeholder="Write a reply..." id="new-message-circles"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                       <button type="submit" class="btn send-message-btn btn-block">Send</button>
+                                    </div>
+                                 </form>
+                              </div>
+                           </div>
+                        </li>
+                     </ul>
+                </div>
+            </div>
             </div>
         </div>
     </div>

@@ -22,6 +22,12 @@ function setupDropdown() {
         var to = $("#to").val();
         postMessage(to, messageText, true);
     });
+    $('#new-message-circles-form').submit(function(e) {
+        e.preventDefault();
+        var messageText = $("#new-message-circles").val();
+        var to = $("#to-circles").val();
+        postMessageCircle(to, messageText, true);
+    });
     $('body').click(function(e) {
         $("#new-message").val("");
         $("#to").val("");
@@ -52,6 +58,23 @@ function hideDropdown(valid, friend) {
     }
 }
 
+function hideDropdownCircles(valid) {
+    if(valid) {
+        $("#new-message-circles").val("");
+        $("#to-circles").val("");
+        $('[data-toggle="dropdown"]').parent().removeClass('open');
+        $("#form-group-to-circles").removeClass("has-error");
+        $("#control-label-to-circles").hide();
+    } else {
+        $("#form-group-to-circles").addClass("has-error");
+        $("#control-label-to-circles").show();
+        if(!valid) {
+            $("#control-label-to-circles").text("The name of the circle is invalid");
+        }         
+        console.log("Username invalid");
+    }
+}
+
 function sendMessage() {
     $("#send-message").click(function(e) {
         e.preventDefault();
@@ -66,7 +89,7 @@ function postMessage(to, message, newM) {
     values["messageText"] = message;
     $.ajax({
         type: "post",
-        url: "/api/messages/" + to,
+        url: "/api/messages/user/" + to,
         data: values,
         success: function(data) {
             console.log(data);
@@ -79,6 +102,25 @@ function postMessage(to, message, newM) {
             if(newM) {
                 hideDropdown(valid, friend);
             }
+        }
+    });
+}
+
+function postMessageCircle(to, message) {
+    var values = {};
+    values["messageText"] = message;
+    $.ajax({
+        type: "post",
+        url: "/api/messages/circle/" + to,
+        data: values,
+        success: function(data) {
+            console.log(data);
+            var json = $.parseJSON(data);
+            var valid = json['valid'];    
+            if(valid) {
+                showMessages(currentReciepient);
+            }
+            hideDropdownCircles(valid);
         }
     });
 }
@@ -110,7 +152,7 @@ function getReciepients() {
 
 function showMessages(username) {
     currentReciepient = username;
-    $.getJSON( "/api/messages/" + username, function(data) {
+    $.getJSON( "/api/messages/user/" + username, function(data) {
         var data_length = data["messages"].length;
         var messages = data["messages"];
         for (var i = 0; i < data_length; i++) {

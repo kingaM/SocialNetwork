@@ -18,16 +18,22 @@
         /**
          * Adds a message into the database.
          * @param integer $from      The creator of the message.
-         * @param integer $to_user        The reciepient of the message.
+         * @param integer $to_user   The reciepient of the message.
          * @param string  $content   The content of the message.
          * @param integer $timestamp The time the message was created.
          */
-        public function addMessage($from, $to_user, $content, $timestamp) {
-            $sql = "INSERT INTO messages(`from`, `to_user`, `content`, `timestamp`)
+        public function addMessage($from, $to_user, $to_circle, $content, $timestamp) {
+            if ($to_user == NULL) {
+                $type = 'C';
+            } else {
+                $type = 'P';
+            }
+            $sql = "INSERT INTO messages(`from`, `to_user`, `to_circle`, `type`, `content`, 
+                        `timestamp`)
                     VALUES
-                        (:from, :to_user, :content, :timestamp)";
+                        (:from, :to_user, :to_circle, :type, :content, :timestamp)";
             $array = array(':from' => $from, ':to_user' => $to_user, ':content' => $content, 
-                ':timestamp' => $timestamp);
+                ':timestamp' => $timestamp, ':to_circle' => $to_circle, ':type' => $type);
             $this->db->execute($sql, $array);
         }
 
@@ -99,7 +105,16 @@
                     FROM (
                         SELECT
                             CASE `type` 
-                                WHEN 'C' THEN name 
+                                WHEN 'C' THEN CONCAT('Circle: ', name, ' owned by ', (
+                                    SELECT CASE 
+                                        WHEN id = :from THEN 'You'
+                                        WHEN middle_name IS NULL 
+                                            THEN CONCAT(first_name, ' ', last_name) 
+                                        ELSE CONCAT(first_name, ' ', middle_name, ' ', last_name)
+                                        END
+                                    FROM users 
+                                    WHERE users.id = owner)
+                                ) 
                                 ELSE (CASE 
                                         WHEN middle_name IS NULL 
                                             THEN CONCAT(first_name, ' ', last_name) 
