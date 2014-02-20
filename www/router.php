@@ -24,6 +24,12 @@
     ));
 
     $router->addRoute(array(
+        'path' => '/api/users/autocomplete/{name}',
+        'get' => array('Users', 'autoComplete'),
+        'file' => 'controllers/users.php',
+    ));
+
+    $router->addRoute(array(
         'path' => '/friends',
         'get' => array('Friends', 'getPage'),
         'file' => 'controllers/friends.php',

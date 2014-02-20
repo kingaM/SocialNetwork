@@ -213,6 +213,23 @@
             return $result[0]['login'];
         }
 
+        /**
+         * Suggests users starting with a given string
+         * @param  string $name The name to complete
+         */
+        public function autoCompleteUsers($name) {
+            $result = $this->db->fetch("SELECT login 
+                FROM users 
+                WHERE login LIKE :name",
+                array(':name' => $name . '%'));
+
+            $suggestions = array();
+            foreach ($result as $r) {
+                $suggestions[] = $r['login'];
+            }
+            return $suggestions;
+        }
+
     }
 
 ?>
