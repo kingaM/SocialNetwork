@@ -101,7 +101,7 @@
                 VALUES (:firstName, :middleName, :lastName, :email, :username, SHA1(:password),
                     SHA1(:hash), :activated);",
                 array(':firstName' => $firstName, ':middleName' => $middleName,
-                    'lastName' => $lastName, ':email' => $email, ':username' => $username, 
+                    ':lastName' => $lastName, ':email' => $email, ':username' => $username, 
                     ':password' => $password, ':activated' => $activated, ':hash' => $hash));
             $id = $this->db->getLastId();
             $this->db->execute('INSERT INTO profile(userId) VALUES (:id)', 
@@ -181,7 +181,7 @@
                 WHERE id = :id AND id = userId";
             $array = array(':firstName' => $firstName, ':middleName' => $middleName, 
                 ':lastName' => $lastName, ':gender' => $gender, ':dob' => $dob, ':about' => $about,
-                ':locations' => $locations, ':languages' => $languages);
+                ':locations' => $locations, ':languages' => $languages, ':id' => $id);
             $this->db->execute($sql, $array);
         }
 

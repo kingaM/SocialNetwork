@@ -1,6 +1,6 @@
 body{padding-top:30px;}
 
-.glyphicon {  margin-bottom: 10px;margin-right: 10px;}
+.glyphicon {  /*margin-bottom: 10px;*/margin-right: 10px;}
 
 small {
 display: block;
@@ -11,4 +11,9 @@ color: #999;
 .form-horizontal .control-label{
 /* text-align:right; */
 text-align:left;
+}
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
 }

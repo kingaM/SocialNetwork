@@ -124,6 +124,7 @@
     $router->addRoute(array(
         'path' => 'api/user/{username}/profile',
         'get' => array('Profile', 'getProfileInfo'),
+        'post' => array('Profile', 'editProfileInfo'),
         'file' => 'controllers/profile.php',
     ));
 

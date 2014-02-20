@@ -1,7 +1,6 @@
 <?php
 
     include_once('helpers/database/UsersHelper.php');
-    require_once('libs/FirePHPCore/FirePHP.class.php');
 
     class Profile {
         public function getProfile($req, $res) {
@@ -51,5 +50,21 @@
                 $res->send();
         }
 
+        public function editProfileInfo($req, $res) {
+            $username = $req->params['username'];
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if(!$usersDB->checkUsernameExists($username) || $userId !== $_SESSION['id']) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+            $usersDB->updateProfileInfo($_SESSION['id'], $req->data["firstName"], 
+                $req->data["middleName"], $req->data["lastName"], $req->data["gender"], 
+                $req->data["dob"], $req->data["about"], $req->data["locations"], 
+                $req->data["languages"]);
+            $res->add(json_encode(array('valid' => true)));
+            $res->send();
+        }
     }
+
 ?>
