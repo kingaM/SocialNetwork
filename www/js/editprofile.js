@@ -2,14 +2,12 @@ var g_data = null;
 
 function content() {
     var pathArray = window.location.pathname.split( '/' );
-    console.log(pathArray[2]);
     $("#edit-btn-group").click(function(e) {
-                        e.preventDefault();
-                        if(g_data) {
-                            editInfo(g_data['user']);
-                        }
-                        
-                    });
+        e.preventDefault();
+        if(g_data) {
+            editInfo(g_data['user']);
+        }    
+    });
     $("#submit-btn").click(function(e) {
         e.preventDefault();
         submitInfo();                
@@ -22,14 +20,22 @@ function content() {
     });
 
     getUserInfo();
-    $('.datepicker').datepicker();
+}
+
+function showError() {
+    $("#error-unknown").html("<div class=\"alert alert-danger alert-dismissable\">" +
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
+        "aria-hidden=\"true\">&times;</button>" +
+        "<strong>Error:</strong> Something went wrong, but we don't know what." +
+        "Please try again later." + 
+        "</div>");
 }
 
 function getUserInfo() {
     $.getJSON( "/api/user/" + window.location.pathname.split( '/' )[2] + "/profile", 
         function(data) {
             if(!data['valid']) {
-                // Error
+                showError();
             } else {
                 if(data['currentUser']) {
                     g_data = data;
@@ -42,7 +48,7 @@ function getUserInfo() {
 
 function showInfo(user) {
     $("#name").html("<h4>" + user["firstName"] + " " + user["middleName"] + " " + 
-                            user["lastName"] +  "</h4>");
+        user["lastName"] +  "</h4>");
     $("#places-lived").html(user["locations"]);
     $("#dob").html(new Date(user["dob"] * 1000).toLocaleDateString());
     $("#languages").html(user["languages"]);
@@ -90,8 +96,6 @@ function submitInfo() {
     var languages = $("#languages-txt").val();
     var gender = $("#gender-txt").val();
     var about = $("#about-txt").val();
-    console.log(firstName + " " + middleName + " " + lastName + " " + locations + " " + 
-        new Date(dob).getTime() / 1000 + " " + languages + " " + gender + " " + about);
     $("#submit-btn-group").hide();
 
     var values = {};
@@ -109,13 +113,12 @@ function submitInfo() {
         url: "/api/user/" + window.location.pathname.split( '/' )[2] + "/profile",
         data: values,
         success: function(data) {
-            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
             if(valid) {
                 getUserInfo();
             } else {
-                console.log("ERROR");
+                showError();
             }
         }
     }); 
