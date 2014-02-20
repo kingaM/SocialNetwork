@@ -87,9 +87,11 @@ function sendMessage() {
         e.preventDefault();
         var messageText = $("#message-text").val();
         $("#message-text").val("");
-        postMessage(currentReciepient, messageText, false);
-        showMessages(currentReciepient);
-        window.setTimeout(scrollBottom, 300);    
+        if(messageText) {
+            postMessage(currentReciepient, messageText, false);
+            showMessages(currentReciepient);
+            window.setTimeout(scrollBottom, 300);  
+        }
     });
 }
 
