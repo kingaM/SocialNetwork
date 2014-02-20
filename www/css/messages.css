@@ -115,6 +115,28 @@
         border-bottom: 1px solid #ddd;
     }
 
+    .checkbox-custom 
+    {
+        color:#aaa;
+        border:none;
+    }
+
+    .btn-panel .checkbox-custom 
+    {
+        color:#b8b8b8;
+        transition: 0.2s all ease-in-out;
+    }
+
+    .btn-panel .checkbox-custom:hover
+    {
+        color:#666;
+        background: #f8f8f8;
+    }
+    .btn-panel .checkbox-custom:active
+    {
+        box-shadow: 0 0 1px #ddd;
+    }
+
 
     body::-webkit-scrollbar {
         width: 12px;

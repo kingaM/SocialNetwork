@@ -1,7 +1,6 @@
 <?php
     
     require_once('helpers/database/database.php');
-    require_once('libs/FirePHPCore/FirePHP.class.php');
 
     /**
      * A helper class consiting of methods used to get information needed for messaging 
@@ -23,10 +22,12 @@
          * @param integer $timestamp The time the message was created.
          */
         public function addMessage($from, $to_user, $to_circle, $content, $timestamp) {
-            if ($to_user == NULL) {
+            if ($to_user == NULL && $to_circle != NULL) {
                 $type = 'C';
-            } else {
+            } else if ($to_circle == NULL && $to_user != NULL) {
                 $type = 'P';
+            } else {
+                throw new Exception("Assertion error", 1);
             }
             $sql = "INSERT INTO messages(`from`, `to_user`, `to_circle`, `type`, `content`, 
                         `timestamp`)
@@ -47,20 +48,15 @@
          *                       format.  
          */
         public function getMessagesUser($from, $to_user) {
-            $firephp = FirePHP::getInstance(true); 
-            try{
-                $sql = "SELECT `from`, `to_user`, content, `timestamp`,
-                            first_name, middle_name, last_name
-                        FROM messages, users
-                        WHERE (`from` = :from AND `to_user` = :to_user AND `from` = users.id) OR 
-                            (`from` = :to_user AND `to_user` = :from AND `from` = users.id)
-                        ORDER BY timestamp ASC";
-                $array = array(':from' => $from, ':to_user' => $to_user);
-                $result = $this->db->fetch($sql, $array);
-                return $result;
-            } catch(Exception $e) {
-                $firephp->log($e, 'PHP');
-            }
+            $sql = "SELECT `from`, `to_user`, content, `timestamp`,
+                        first_name, middle_name, last_name
+                    FROM messages, users
+                    WHERE (`from` = :from AND `to_user` = :to_user AND `from` = users.id) OR 
+                        (`from` = :to_user AND `to_user` = :from AND `from` = users.id)
+                    ORDER BY timestamp ASC";
+            $array = array(':from' => $from, ':to_user' => $to_user);
+            $result = $this->db->fetch($sql, $array);
+            return $result;
         }
 
         /**
@@ -73,24 +69,19 @@
          *                       format.  
          */
         public function getMessagesCircle($from, $to_circle) {
-            $firephp = FirePHP::getInstance(true); 
-            try{
-                $sql = "SELECT `from`, `to_circle`, content, `timestamp`,
-                            first_name, middle_name, last_name
-                        FROM messages, users
-                        WHERE ((`from` = :from AND `to_circle` = :to_circle AND `from` = users.id) 
-                            OR (`from` IN (
-                                SELECT user
-                                FROM circle_memberships 
-                                WHERE circle = :to_circle) 
-                            AND `to_circle` = :to_circle AND `from` = users.id)) 
-                        ORDER BY timestamp ASC";
-                $array = array(':from' => $from, ':to_circle' => $to_circle);
-                $result = $this->db->fetch($sql, $array);
-                return $result;
-            } catch(Exception $e) {
-                $firephp->log($e, 'PHP');
-            }
+            $sql = "SELECT `from`, `to_circle`, content, `timestamp`,
+                        first_name, middle_name, last_name
+                    FROM messages, users
+                    WHERE ((`from` = :from AND `to_circle` = :to_circle AND `from` = users.id) 
+                        OR (`from` IN (
+                            SELECT user
+                            FROM circle_memberships 
+                            WHERE circle = :to_circle) 
+                        AND `to_circle` = :to_circle AND `from` = users.id)) 
+                    ORDER BY timestamp ASC";
+            $array = array(':from' => $from, ':to_circle' => $to_circle);
+            $result = $this->db->fetch($sql, $array);
+            return $result;
         }
 
         /**

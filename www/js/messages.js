@@ -3,6 +3,13 @@ var prevConversations = null;
 var prevMessages = null;
 
 function content() {
+    $('#message-text').keydown(function (event) {
+        var keypressed = event.keyCode || event.which;
+        if (keypressed == 13 && $('#send-on-enter').prop('checked')) {
+                event.preventDefault();
+                $("#send-message").click();         
+        }
+    });
     sendMessage();
     getReciepients();
     setupDropdown();
@@ -80,7 +87,9 @@ function sendMessage() {
         e.preventDefault();
         var messageText = $("#message-text").val();
         $("#message-text").val("");
-        postMessage(currentReciepient, messageText, false);        
+        postMessage(currentReciepient, messageText, false);
+        showMessages(currentReciepient);
+        window.setTimeout(scrollBottom, 300);    
     });
 }
 
@@ -181,7 +190,7 @@ function addMessages(firstName, middleName, lastName, message, timestamp) {
 
                         "<h5 class=\"media-heading\">" + firstName + " " + middleName + " " + 
                             lastName +  "</h5>" +
-                        "<small class=\"col-lg-10\">" + message + "</small>" +
+                        "<small class=\"col-lg-10\">" + message.replace(/\n/g, "<br/>") + "</small>" +
                     "</div>" +
                 "</div>" +
             "</div>";

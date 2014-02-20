@@ -56,58 +56,57 @@
             $res->send();
         }
 
-        private function addMessageUser($username, $messageText, $res) {
+        private function addMessageUser($username, $messageText) {
             $usersDB = new UsersHelper();
             if(!$usersDB->checkUsernameExists($username)) {
-                $res->add(json_encode(array('valid' => 0, 'friend' => 0)));
-                $res->send();
+                return json_encode(array('valid' => 0, 'friend' => 0));
             }
             $messagesDB = new MessagesHelper();
             $friendsDB = new FriendsHelper();
             $reciepientId = $usersDB->getIdFromUsername($username);
             if(!$friendsDB->isFriend($reciepientId, $_SESSION['id'])) {
-                $res->add(json_encode(array('valid' => 1, 'friend' => 0)));
-                $res->send();
+                return json_encode(array('valid' => 1, 'friend' => 0));
             }
             
             $result = $messagesDB->addMessage($_SESSION['id'], 
                 $reciepientId, NULL, $messageText, time());
-            $res->add(json_encode(array('valid' => 1, 'friend' => 1)));
-            $res->send();
+            return json_encode(array('valid' => 1, 'friend' => 1));
         }
 
-        private function addMessageCircle($circleName, $ownerId, $messageText, $res) {
+        private function addMessageCircle($circleName, $ownerId, $messageText) {
             $messagesDB = new MessagesHelper();
             $friendsDB = new FriendsHelper();
             $circleId = $friendsDB->getCircleId($ownerId, $circleName);
             if($circleId == -1) {
-                $res->add(json_encode(array('valid' => 0)));
-                $res->send();
+                return json_encode(array('valid' => 0));
             }
             
             $result = $messagesDB->addMessage($ownerId, 
                 NULL, $circleId, $messageText, time());
-            $res->add(json_encode(array('valid' => 1)));
-            $res->send();
+                return json_encode(array('valid' => 1));
         }
 
         public function addMessage($req, $res) {
             $username = $req->params['username'];
             $pos = strpos($username,'_');
             if( $pos === false) {
-                $this->addMessageUser($username, $req->data["messageText"], $res);
+                $json = $this->addMessageUser($username, $req->data["messageText"]);
             } else {
                 $circle = explode('_', $username);
                 $owner = $circle[0];
                 $name = $circle[1];
-                $this->addMessageCircle($name, $owner, $req->data["messageText"], $res);
+                $json = $this->addMessageCircle($name, $owner, $req->data["messageText"]);
             }
-            
+            $res->add(json_encode($json));
+            $res->send();
         }
 
         public function addCircleMessage($req, $res) {
             $circleName = $req->params['circleName'];
-            $this->addMessageCircle($circleName, $_SESSION['id'], $req->data["messageText"], $res);
+            $json = $this->addMessageCircle($circleName, $_SESSION['id'], 
+                $req->data["messageText"]);
+            $res->add(json_encode($json));
+            $res->send();
         }
     }
 ?>
