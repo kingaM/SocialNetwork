@@ -259,6 +259,7 @@
             } else {
                 return $result[0]['id'];
             }
+        }
 
         /**
          * Adds a circle for a user

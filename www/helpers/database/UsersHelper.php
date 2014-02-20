@@ -142,12 +142,12 @@
          * @param  integer $id The id of the user
          * 
          * @return array     The array of all the data about the user, array fields:
-         *         id, first_name, middle_name, last_name, gender, dob, about, locations, languages
-         *         or null if the id is not valid. 
+         *         id, first_name, middle_name, last_name, gender, dob, about, locations, languages,
+         *         email or null if the id is not valid. 
          */
         public function getUser($id) {
             $sql = "SELECT id, first_name, middle_name, last_name, gender, dob, about, locations, 
-                languages
+                languages, email
                 FROM users, profile
                 WHERE id = :id AND activated = 1
                 AND id = userId";
@@ -155,7 +155,7 @@
             if(sizeof($result) != 1) {
                 return NULL;
             } else {
-                return $result;
+                return $result[0];
             }
         }
 
