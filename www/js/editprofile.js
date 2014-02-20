@@ -10,9 +10,15 @@ function content() {
                         }
                         
                     });
-        $("#submit-btn-group").click(function(e) {
+    $("#submit-btn").click(function(e) {
         e.preventDefault();
         submitInfo();                
+    });
+
+    $("#cancel-btn").click(function(e) {
+        e.preventDefault();
+        $("#submit-btn-group").hide();
+        getUserInfo();              
     });
 
     getUserInfo();
