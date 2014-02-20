@@ -41,6 +41,15 @@ CREATE TABLE IF NOT EXISTS `friendships` (
     FOREIGN KEY (`user2`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `circles` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `owner` int(11) NOT NULL,
+    `name` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`owner`, `name`),
+    FOREIGN KEY (`owner`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS `messages` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `from` INT NOT NULL,
@@ -54,15 +63,6 @@ CREATE TABLE IF NOT EXISTS `messages` (
     FOREIGN KEY (`to_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`to_circle`) REFERENCES `circles` (`id`) 
         ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS `circles` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `owner` int(11) NOT NULL,
-    `name` VARCHAR(50) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE (`owner`, `name`),
-    FOREIGN KEY (`owner`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `circle_memberships` (
