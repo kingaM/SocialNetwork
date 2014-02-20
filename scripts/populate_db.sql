@@ -20,17 +20,6 @@ VALUES
     (1, 3, 1, 1391362436),
     (2, 3, 1, 1391362436);
 
-
-INSERT INTO messages(`from`, `to_user`, `to_circle`, `type`, `content`, `timestamp`)
-VALUES
-    (1, 2, NULL, 'P', 'Message', 1391362436),
-    (1, 3, NULL, 'P', 'Message', 1391362436),
-    (2, 3, NULL, 'P', 'Message', 1391362436),
-    (3, 1, NULL, 'P', 'Message', 1391362436),
-    (3, 2, NULL, 'P', 'Message', 1391362436),
-    (3, NULL, 1, 'C', 'Message to Circle', 1391362436),
-    (2, NULL, 1, 'C', 'Message to Circle', 1391362436);
-
 INSERT INTO circles(owner, name)
 VALUES
     (3, 'Work'),
@@ -41,3 +30,13 @@ VALUES
     (1, 1),
     (2, 1),
     (2, 2);
+
+INSERT INTO messages(`from`, `to_user`, `to_circle`, `type`, `content`, `timestamp`)
+VALUES
+    (1, 2, NULL, 'P', 'Message', 1391362436),
+    (1, 3, NULL, 'P', 'Message', 1391362436),
+    (2, 3, NULL, 'P', 'Message', 1391362436),
+    (3, 1, NULL, 'P', 'Message', 1391362436),
+    (3, 2, NULL, 'P', 'Message', 1391362436),
+    (3, NULL, 1, 'C', 'Message to Circle', 1391362436),
+    (2, NULL, 1, 'C', 'Message to Circle', 1391362436);
