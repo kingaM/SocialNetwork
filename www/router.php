@@ -30,20 +30,20 @@
     ));
 
     $router->addRoute(array(
-        'path' => '/friends',
+        'path' => '/user/{username}/friends',
         'get' => array('Friends', 'getPage'),
         'file' => 'controllers/friends.php',
     ));
 
     $router->addRoute(array(
-        'path' => '/api/friends',
+        'path' => '/api/user/{username}/friends',
         'get' => array('Friends', 'getFriends'),
         'post' => array('Friends', 'addFriend'),
         'file' => 'controllers/friends.php',
     ));
 
     $router->addRoute(array(
-        'path' => '/api/friends/{login}',
+        'path' => '/api/user/{username}/friends/{login}',
         'delete' => array('Friends', 'removeFriend'),
         'file' => 'controllers/friends.php',
     ));

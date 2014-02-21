@@ -13,21 +13,21 @@
         /**
          * Gets the names of a user's friends
          *
-         * @param int $userID The user to show friends from
+         * @param String $username The user to show friends from
          *
          * @return String[] Array of friend names
          */
-        public function getFriends($userID) {
+        public function getFriends($username) {
             $friends = array();
-            $result = $this->db->fetch("SELECT login, 
-                (CASE WHEN middle_name IS NULL THEN CONCAT(first_name, ' ', last_name) 
-                    ELSE CONCAT(first_name, ' ', middle_name, ' ', last_name) END) as name, 
+            $result = $this->db->fetch("SELECT u2.login, 
+                (CASE WHEN u2.middle_name IS NULL THEN CONCAT(u2.first_name, ' ', u2.last_name) 
+                    ELSE CONCAT(u2.first_name, ' ', u2.middle_name, ' ', u2.last_name) END) as name, 
                 startTimestamp
-                FROM friendships as f, users as u
-                WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID) 
-                    OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
-                AND status = 1",
-                Array(':user' => $userID));
+                FROM friendships as f, users as u1, users as u2
+                WHERE ((f.user1=u1.ID AND NOT u2.ID=u1.ID AND f.user2=u2.ID) 
+                    OR (f.user2=u1.ID AND NOT u2.ID=u1.ID AND f.user1=u2.ID)) 
+                AND u1.login=:user AND status = 1",
+                Array(':user' => $username));
 
             foreach ($result as $r) {
                 $friends[] = ['login' => $r['login'], 
