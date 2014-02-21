@@ -134,6 +134,20 @@
         'file' => 'controllers/profile.php',
     ));
 
+    // Blog
+    
+    $router->addRoute(array(
+        'path' => '/user/{username}/blogs',
+        'get' => array('Blog', 'getBlogs'),
+        'file' => 'controllers/blog.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/blogs',
+        'get' => array('Blog', 'getUserBlogs'),
+        'file' => 'controllers/blog.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {
