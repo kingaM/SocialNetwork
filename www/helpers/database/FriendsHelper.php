@@ -19,7 +19,10 @@
          */
         public function getFriends($userID) {
             $friends = array();
-            $result = $this->db->fetch("SELECT login 
+            $result = $this->db->fetch("SELECT login, 
+                (CASE WHEN middle_name IS NULL THEN CONCAT(first_name, ' ', last_name) 
+                    ELSE CONCAT(first_name, ' ', middle_name, ' ', last_name) END) as name, 
+                startTimestamp
                 FROM friendships as f, users as u
                 WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID) 
                     OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
@@ -27,7 +30,9 @@
                 Array(':user' => $userID));
 
             foreach ($result as $r) {
-                $friends[] = $r['login'];
+                $friends[] = ['login' => $r['login'], 
+                'name' => $r['name'], 
+                'startTimestamp' => $r['startTimestamp']];
             }
             return $friends;
         }
