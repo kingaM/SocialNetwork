@@ -1,5 +1,8 @@
+document.getElementById("content").style.visibility="hidden";
+
 function content() {
     prepare();
+    document.getElementById("content").style.visibility="visible";
     getFriends();
 }
 
