@@ -61,18 +61,23 @@
          * @return String[] Array of friend names
          */
         public function getFriendsOfFriends($userID) {
-            $friends = array();
-            // MySQL doesn't support the WITH syntax ... this is the best we can do
-            // ID's of all friends
-            $subq = "(SELECT u.ID 
+            $friendIDs = array();
+            $result = $this->db->fetch("(SELECT u.ID 
                 FROM friendships as f, users as u
                 WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID) 
                     OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
-                AND status = 1)";
+                AND status = 1)",
+                Array(':user' => $userID));
+            foreach ($result as $r) {
+                $friendIDs[] = $r['ID'];
+            }
+
+            $inSet = implode(",", $friendIDs);
+            
             $result = $this->db->fetch("SELECT login
                 FROM friendships as f, users as u
-                WHERE ((f.user1 IN " . $subq . " AND NOT u.ID IN " . $subq . " AND f.user2=u.ID) 
-                    OR (f.user2 IN " . $subq . " AND NOT u.ID IN " . $subq . " AND f.user1=u.ID))
+                WHERE ((f.user1 IN ($inSet) AND NOT u.ID IN ($inSet) AND f.user2=u.ID) 
+                    OR (f.user2 IN ($inSet) AND NOT u.ID IN ($inSet) AND f.user1=u.ID))
                 AND status = 1 
                 AND NOT u.ID=:user 
                 GROUP BY login",
