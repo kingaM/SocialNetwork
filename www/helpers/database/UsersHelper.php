@@ -101,7 +101,7 @@
                 VALUES (:firstName, :middleName, :lastName, :email, :username, SHA1(:password),
                     SHA1(:hash), :activated);",
                 array(':firstName' => $firstName, ':middleName' => $middleName,
-                    'lastName' => $lastName, ':email' => $email, ':username' => $username, 
+                    ':lastName' => $lastName, ':email' => $email, ':username' => $username, 
                     ':password' => $password, ':activated' => $activated, ':hash' => $hash));
             $id = $this->db->getLastId();
             $this->db->execute('INSERT INTO profile(userId) VALUES (:id)', 
@@ -142,12 +142,12 @@
          * @param  integer $id The id of the user
          * 
          * @return array     The array of all the data about the user, array fields:
-         *         id, first_name, middle_name, last_name, gender, dob, about, locations, languages
-         *         or null if the id is not valid. 
+         *         id, first_name, middle_name, last_name, gender, dob, about, locations, languages,
+         *         email or null if the id is not valid. 
          */
         public function getUser($id) {
             $sql = "SELECT id, first_name, middle_name, last_name, gender, dob, about, locations, 
-                languages
+                languages, email
                 FROM users, profile
                 WHERE id = :id AND activated = 1
                 AND id = userId";
@@ -155,7 +155,7 @@
             if(sizeof($result) != 1) {
                 return NULL;
             } else {
-                return $result;
+                return $result[0];
             }
         }
 
@@ -181,7 +181,7 @@
                 WHERE id = :id AND id = userId";
             $array = array(':firstName' => $firstName, ':middleName' => $middleName, 
                 ':lastName' => $lastName, ':gender' => $gender, ':dob' => $dob, ':about' => $about,
-                ':locations' => $locations, ':languages' => $languages);
+                ':locations' => $locations, ':languages' => $languages, ':id' => $id);
             $this->db->execute($sql, $array);
         }
 
