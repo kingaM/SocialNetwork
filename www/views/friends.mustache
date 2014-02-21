@@ -1,3 +1,6 @@
+<script type="text/javascript" charset="utf-8" src="/libs/datatables/media/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="/libs/datatables/bootstrap.css">
+<script type="text/javascript" charset="utf-8" src="/libs/datatables/bootstrap.js"></script>
 <script src="/js/friends.js"></script>
 
 <ul class="nav nav-tabs">
@@ -18,6 +21,19 @@
 
     <div id="current_friends">
         <h2>Current Friends</h2>
+        <div class="container">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable" id="table_id">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Friends since</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <ul id="friends_list"></ul>
     </div>
 </div>
