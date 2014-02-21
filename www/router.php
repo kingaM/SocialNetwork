@@ -143,8 +143,42 @@
     ));
 
     $router->addRoute(array(
+        'path' => '/user/{username}/blogs/{blogName}/{page}',
+        'handlers' => array(
+            'page' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
+            'blogName' =>Zaphpa_Constants::PATTERN_ALPHA 
+        ),
+        'get' => array('Blog', 'getBlogPosts'),
+        'file' => 'controllers/blog.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/blogs/{blogName}/info',
+        'get' => array('Blog', 'apiBlogInfo'),
+        'file' => 'controllers/blog.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/blogs/{blogName}/postsNum',
+        'get' => array('Blog', 'apiPostsNumber'),
+        'file' => 'controllers/blog.php',
+    ));
+
+    $router->addRoute(array(
         'path' => '/api/user/{username}/blogs',
-        'get' => array('Blog', 'getUserBlogs'),
+        'get' => array('Blog', 'apiUserBlogs'),
+        'file' => 'controllers/blog.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/blogs/{blogName}/{page}',
+        'handlers' => array(
+            'page' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
+            'blogName' =>Zaphpa_Constants::PATTERN_ALPHA  
+        ),
+        'get' => array('Blog', 'apiBlogPosts'),
         'file' => 'controllers/blog.php',
     ));
 

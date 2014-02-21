@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `blogs` (
 
 CREATE TABLE IF NOT EXISTS `posts` (
     `postId` INT NOT NULL AUTO_INCREMENT,
-    `title` INT NOT NULL,
+    `title` VARCHAR(100) NOT NULL,
     `timestamp` VARCHAR(100) NOT NULL,
     `blogId` INT NOT NULL, 
     PRIMARY KEY (`postId`),
