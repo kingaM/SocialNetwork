@@ -12,8 +12,10 @@
         <h2>Add Friend</h2>
 
         <form id="addForm" class="form-inline">
-            <input type="text" name="username" class="form-control" placeholder="Username">
-            <button type="submit" class="btn btn-primary">Add</button>
+            <div id="search1" class="container col-md-4"></div>
+            <script src="/helpers/autocompleter.js"></script>
+            <script>easyIncludeAutoComplete("search1");</script>
+            <button type="submit" class="btn btn-primary ">Add</button>
         </form>
     </div>
 
@@ -36,7 +38,9 @@
     <h2>Add to Circles</h2>
     <form id="addToCircle" class="form-inline">
         <select class="form-control" id="selectCircles"></select>
-        <input type="text" class="form-control" placeholder="Username">
+        <div id="search2" class="container col-md-4"></div>
+        <script src="/helpers/autocompleter.js"></script>
+        <script>easyIncludeAutoComplete("search2");</script>
         <button type="submit" class="btn btn-primary">Add</button>
     </form>
     <h2>Circles</h2>

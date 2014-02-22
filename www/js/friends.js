@@ -41,9 +41,10 @@ function showCircles(circles) {
 }
 
 function deleteFriend(name) {
+    var currUsername = window.location.pathname.split( '/' )[2];
     var username = name.data;
     $.ajax({
-        url: "/api/friends/" + username,
+        url: "/api/user/" + currUsername + "/friends/" + username,
         type: "DELETE",
         success: function(result) {
             getFriends();
@@ -56,8 +57,9 @@ function acceptFriend(name) {
 }
 
 function addFriend(username) {
+    var currUsername = window.location.pathname.split( '/' )[2];
     $.ajax({
-        url: "/api/friends",
+        url: "/api/user/" + currUsername + "/friends",
         type: "POST",
         data: {username: username},
 

@@ -1,20 +1,23 @@
 // Usage:
-// Include <div id="searchBar"></div> where you want the search to appear
-// Include this file after that (<script src="/helpers/autocompleter.js"></script>)
+// Include this line: 
+// <div id="<ID>" class="container col-md-4"></div><script src="/helpers/autocompleter.js"></script><script>easyIncludeAutoComplete("<ID>");</script>
 
-var searchHTML = '<script src="/libs/bootstrap3-typeahead.js"></script>' + 
-'<div class="input-group">' + 
-    '<input type="text" class="form-control" data-provide="typeahead" id="searchUsers">' + 
-    '<span class="input-group-btn">' + 
-        '<button class="btn btn-default" type="button">' + 
-            '<span class="glyphicon glyphicon-search"></span>' + 
-        '</button>' + 
-    '</span>' + 
-'</div>';
+function easyIncludeAutoComplete(id) {
+    var searchHTML = '<script src="/libs/bootstrap3-typeahead.js"></script>' + 
+    '<div class="input-group">' + 
+        '<input type="text" class="form-control" data-provide="typeahead" id="searchUsers_' + id + '" placeholder="Username" autocomplete="off">' + 
+        '<span class="input-group-btn">' + 
+            '<button class="btn btn-default" type="button">' + 
+                '<span class="glyphicon glyphicon-search"></span>' + 
+            '</button>' + 
+        '</span>' + 
+    '</div>';
 
-$("#searchBar").append(searchHTML);
+    $('#' + id).append(searchHTML);
 
-$('#searchUsers').typeahead({source: autocomplete});
+    $('#searchUsers_' + id).typeahead({source: autocomplete});
+}
+
 
 function autocomplete(query, process) {
     $.getJSON( "/api/users/autocomplete/" + query, function(data) {
