@@ -1,8 +1,9 @@
 var username = 'user';
+var blog = 'blog';
 
 function content() {
     username = window.location.pathname.split( '/' )[2];
-
+    blog = window.location.pathname.split( '/' )[4];
     $('#summernote').summernote({ 
         height: 300,   //set editable area's height
         focus: true    //set focus editable area after Initialize summernote
@@ -22,7 +23,7 @@ function content() {
             $.ajax({
                 type: "post",
                 url: "/api/user/" + username + "/blogs/" + 
-                    window.location.pathname.split( '/' )[4] + "/newPost",
+                    blog + "/newPost",
                 data: values,
                 success: function(data) {
                     console.log(data);
@@ -32,7 +33,7 @@ function content() {
                         showError();
                     } else {
                         window.location.replace("/user/" + username + "/blogs/" + 
-                            window.location.pathname.split( '/' )[4] + "/1");
+                            blog + "/1");
                     }
                 }
             });
@@ -42,7 +43,7 @@ function content() {
     $("#cancel-btn").click(function(e) {
         e.preventDefault();
         window.location.replace("/user/" + username + "/blogs/" + 
-            window.location.pathname.split( '/' )[4] + "/1");
+            blog + "/1");
     });
 }
 

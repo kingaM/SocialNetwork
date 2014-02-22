@@ -78,6 +78,24 @@
             $this->db->execute($sql, $array);
         }
 
+        public function addBlog($userId, $name, $url, $about) {
+            $sql = "INSERT INTO blogs(`user`, `name`, `url`, `about`)
+                VALUES (:userId, :name, :url, :about)";
+            $array = array(':userId' => $userId, ':name' => $name, ':url' => $url, 
+                ':about' => $about);
+            return $this->db->execute($sql, $array);
+        }
+
+        public function checkBlogUrlUnique($id, $url) {
+            $sql = "SELECT url FROM blogs WHERE user = :id AND blogs.url = :url";
+            $array = array(':id' => $id, ':url' => $url);
+            $result = $this->db->fetch($sql, $array);
+            if(sizeof($result) == 0) {
+                return true;
+            }
+            return false;
+        }
+
     }
 
 ?>

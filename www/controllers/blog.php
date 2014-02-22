@@ -111,6 +111,41 @@
             }
         }
 
+        public function addNewBlog($req, $res) {
+            $username = $req->params['username'];
+            $blogsDB = new BlogsHelper();
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId !== $_SESSION['id']) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+            $text = $req->data['text'];
+            $name = $req->data['name'];
+            $url = $req->data['url'];
+            if(!ctype_alnum($url)) {
+                $res->add(json_encode(array('valid' => true, 'alphanumeric' => false, 
+                    'unique' => false)));
+                $res->send();
+            }
+            if(!$blogsDB->checkBlogUrlUnique($userId, $url)) {
+                $res->add(json_encode(array('valid' => true, 'alphanumeric' => true, 
+                    'unique' => false)));
+                $res->send();
+            } else {
+                if($blogsDB->addBlog($userId, $name, $url, $text)) {
+                    $res->add(json_encode(array('valid' => true, 'alphanumeric' => true, 
+                        'unique' => true)));
+                    $res->send();
+                } else {
+                    $res->add(json_encode(array('valid' => false, 'alphanumeric' => true, 
+                        'unique' => true)));
+                    $res->send();
+                }
+                
+            }
+        }
+
         public function apiBlogInfo($req, $res) {
             $username = $req->params['username'];
             $blogName = $req->params['blogName'];

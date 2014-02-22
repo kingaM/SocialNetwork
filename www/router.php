@@ -204,6 +204,7 @@
             'username' => Zaphpa_Constants::PATTERN_ALPHA
         ),
         'get' => array('Blog', 'apiUserBlogs'),
+        'post' => array('Blog', 'addNewBlog'),
         'file' => 'controllers/blog.php',
     ));
 
