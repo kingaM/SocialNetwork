@@ -1,14 +1,16 @@
 var username = 'user';
+var blog = 'blog';
 
 function content() {
     username = window.location.pathname.split( '/' )[2];
+    blog = window.location.pathname.split( '/' )[4];
     getPostNumber();
     getBlogInfo();
     getUserBlogs();
     $("#new-post-btn").click(function(e) {
         e.preventDefault();
         window.location.replace("/user/" + username + "/blogs/" + 
-            window.location.pathname.split( '/' )[4] + "/newPost");               
+            blog + "/newPost");               
     });
 }
 
@@ -18,11 +20,11 @@ function setButtons(postNumber) {
         $("#previous").hide();
     } else {
         $('#previous-page').attr('href', "/user/" + username + "/blogs/" + 
-            window.location.pathname.split( '/' )[4] + "/" + (page - 1));
+            blog + "/" + (page - 1));
     }
     if (page < postNumber/2) {
         $("#next-page").prop("href", "/user/" + username + "/blogs/" + 
-            window.location.pathname.split( '/' )[4] + "/" +
+            blog + "/" +
             (page + 1));
     } else {
         $("#next").hide();
@@ -32,7 +34,7 @@ function setButtons(postNumber) {
 
 function getPostNumber() {
     $.getJSON( "/api/user/" + username + "/blogs/" + 
-        window.location.pathname.split( '/' )[4] + 
+        blog + 
         "/postsNum", 
         function(data) {
             if(!data['valid']) {
@@ -45,7 +47,7 @@ function getPostNumber() {
 
 function getUserBlogs() {
     $.getJSON( "/api/user/" + username + "/blogs/" + 
-        window.location.pathname.split( '/' )[4] + "/" + window.location.pathname.split( '/' )[5], 
+        blog + "/" + window.location.pathname.split( '/' )[5], 
         function(data) {
             if(!data['valid']) {
                 showError();
@@ -57,7 +59,7 @@ function getUserBlogs() {
 
 function getBlogInfo() {
     $.getJSON( "/api/user/" + username + "/blogs/" + 
-        window.location.pathname.split( '/' )[4] + "/info", 
+        blog + "/info", 
         function(data) {
             if(!data['valid']) {
                 showError();

@@ -1,5 +1,7 @@
+var username = 'username';
+
 function content() {
-    var pathArray = window.location.pathname.split( '/' );
+    username = window.location.pathname.split( '/' )[2];
     getUserBlogs();
     setupDropdown();
 }
@@ -31,7 +33,7 @@ function postBlog(name, url, text) {
     values["url"] = url;
     $.ajax({
         type: "post",
-        url: "/api/user/" + window.location.pathname.split( '/' )[2] + "/blogs",
+        url: "/api/user/" + username + "/blogs",
         data: values,
         success: function(data) {
             console.log(data);
@@ -76,7 +78,7 @@ function showErrorDropdown(id, msg) {
 }
 
 function getUserBlogs() {
-    $.getJSON( "/api/user/" + window.location.pathname.split( '/' )[2] + "/blogs", 
+    $.getJSON( "/api/user/" + username + "/blogs", 
         function(data) {
             if(!data['valid']) {
                 showError();

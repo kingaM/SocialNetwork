@@ -3,18 +3,29 @@
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/BlogsHelper.php');
 
-    // TODO: Tidy up repeated code into functions
     class Blog {
+
+        private function show404() {
+            header("Content-Type: text/html;", TRUE, 404);
+            $uri = $_SERVER['REQUEST_URI'];
+            require_once('mustache_conf.php');
+            $content = $m->render('404', array('page' => $uri));
+            return $m->render('main', array('title' => '404', 'content' => $content));
+        }
+
+        private function checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB) {
+            $id = $usersDB->getIdFromUsername($username);
+            if($id == -1 || $blogsDB->getBlogId($id, $blogName) == -1) {
+                return -1;
+            }
+            return $id;
+        }
 
         public function getBlogs($req, $res) {
             $usersDB = new UsersHelper();
             $username = $req->params['username'];
             if(!$usersDB->checkUsernameExists($username)) {
-                header("Content-Type: text/html;", TRUE, 404);
-                $uri = $_SERVER['REQUEST_URI'];
-                require_once('mustache_conf.php');
-                $content = $m->render('404', array('page' => $uri));
-                $res->add($m->render('main', array('title' => '404', 'content' => $content)));
+                $res->add($this->show404());
                 $res->send();
             }
             require_once('mustache_conf.php');
@@ -25,16 +36,32 @@
             $res->send();
         }
 
+        public function getNewPostPage($req, $res) {
+            $usersDB = new UsersHelper();
+            $blogsDB = new BlogsHelper();
+            $username = $req->params['username'];
+            $blogName = $req->params['blogName'];
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1) {
+                $res->add($this->show404());
+                $res->send();
+            }
+            require_once('mustache_conf.php');
+            $content = $m->render('newblogpost', NULL);
+            $res->add($m->render('main', array('title' => 'Blog', 'content' => $content)));
+            $res->send();
+        } 
+
         public function apiUserBlogs($req, $res) {
             $username = $req->params['username'];
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
-            if(!$usersDB->checkUsernameExists($username)) {
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId == -1) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
                     'user' => NULL)));
                 $res->send();
             }
-            $userId = $usersDB->getIdFromUsername($username);
             if($userId === $_SESSION['id']) {
                 $currentUser = true;
             } else {
@@ -58,34 +85,11 @@
             $usersDB = new UsersHelper();
             $username = $req->params['username'];
             if(!$usersDB->checkUsernameExists($username)) {
-                header("Content-Type: text/html;", TRUE, 404);
-                $uri = $_SERVER['REQUEST_URI'];
-                require_once('mustache_conf.php');
-                $content = $m->render('404', array('page' => $uri));
-                $res->add($m->render('main', array('title' => '404', 'content' => $content)));
+                $res->add($this->show404());
                 $res->send();
             }
             require_once('mustache_conf.php');
             $content = $m->render('blog', NULL);
-            $res->add($m->render('main', array('title' => 'Blog', 'content' => $content)));
-            $res->send();
-        } 
-
-        public function getNewPostPage($req, $res) {
-            $usersDB = new UsersHelper();
-            $username = $req->params['username'];
-            $blogName = $req->params['blogName'];
-            // TODO: Check if blog name is correct
-            if(!$usersDB->checkUsernameExists($username)) {
-                header("Content-Type: text/html;", TRUE, 404);
-                $uri = $_SERVER['REQUEST_URI'];
-                require_once('mustache_conf.php');
-                $content = $m->render('404', array('page' => $uri));
-                $res->add($m->render('main', array('title' => '404', 'content' => $content)));
-                $res->send();
-            }
-            require_once('mustache_conf.php');
-            $content = $m->render('newblogpost', NULL);
             $res->add($m->render('main', array('title' => 'Blog', 'content' => $content)));
             $res->send();
         } 
@@ -95,7 +99,7 @@
             $blogName = $req->params['blogName'];
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
-            $userId = $usersDB->getIdFromUsername($username);
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
             if($userId !== $_SESSION['id']) {
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
@@ -116,34 +120,34 @@
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $usersDB->getIdFromUsername($username);
+            $json = array('valid' => false, 'alphanumeric' => false, 
+                    'unique' => false);
             if($userId !== $_SESSION['id']) {
-                $res->add(json_encode(array('valid' => false)));
+                $res->add(json_encode($json));
                 $res->send();
             }
             $text = $req->data['text'];
             $name = $req->data['name'];
             $url = $req->data['url'];
+            
             if(!ctype_alnum($url)) {
-                $res->add(json_encode(array('valid' => true, 'alphanumeric' => false, 
-                    'unique' => false)));
-                $res->send();
-            }
-            if(!$blogsDB->checkBlogUrlUnique($userId, $url)) {
-                $res->add(json_encode(array('valid' => true, 'alphanumeric' => true, 
-                    'unique' => false)));
-                $res->send();
+                $json['valid'] = true;
+            } else if(!$blogsDB->checkBlogUrlUnique($userId, $url)) {
+                $json['valid'] = true;
+                $json['alphanumeric'] = true;
             } else {
                 if($blogsDB->addBlog($userId, $name, $url, $text)) {
-                    $res->add(json_encode(array('valid' => true, 'alphanumeric' => true, 
-                        'unique' => true)));
-                    $res->send();
+                    $json['valid'] = true;
+                    $json['alphanumeric'] = true;
+                    $json['unique'] = true;
                 } else {
-                    $res->add(json_encode(array('valid' => false, 'alphanumeric' => true, 
-                        'unique' => true)));
-                    $res->send();
+                    $json['valid'] = false;
+                    $json['alphanumeric'] = true;
+                    $json['unique'] = true;
                 }
-                
             }
+            $res->add(json_encode($json));
+            $res->send();
         }
 
         public function apiBlogInfo($req, $res) {
@@ -151,12 +155,12 @@
             $blogName = $req->params['blogName'];
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
-            if(!$usersDB->checkUsernameExists($username)) {
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
                     'posts' => NULL)));
                 $res->send();
             }
-            $userId = $usersDB->getIdFromUsername($username);
             if($userId === $_SESSION['id']) {
                 $currentUser = true;
             } else {
@@ -180,12 +184,12 @@
             $page = $req->params['page'];
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
-            if(!$usersDB->checkUsernameExists($username)) {
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
                     'posts' => NULL)));
                 $res->send();
             }
-            $userId = $usersDB->getIdFromUsername($username);
             if($userId === $_SESSION['id']) {
                 $currentUser = true;
             } else {
@@ -214,7 +218,8 @@
             $blogName = $req->params['blogName'];
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
-            if(!$usersDB->checkUsernameExists($username)) {
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1) {
                 $res->add(json_encode(array('valid' => false, 'posts' => NULL)));
                 $res->send();
             }

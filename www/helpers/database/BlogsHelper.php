@@ -10,6 +10,12 @@
             $this->db = new DatabaseHelper();
         }
 
+        /**
+         * Gets blogs of the user.
+         * @param  integer $id The id of the user
+         * @return Array       An array containing all blogs of the user. The nested array contains
+         *                     name, about and url of each blog.
+         */
         public function getBlogs($id) {
             $sql = "SELECT name, about, url FROM blogs WHERE user = :id";
             $array = array(':id' => $id);
@@ -17,13 +23,30 @@
             return $result;
         }
 
+        /**
+         * Gets the name, about and url of a given blog.
+         * @param  integer $id  The id of the user
+         * @param  string  $url The url of the blog
+         * @return Array        Containing the name, about and url of the blog. NULL if there is an
+         *                      error.
+         */
         public function getBlogInfo($id, $url) {
             $sql = "SELECT name, about, url FROM blogs WHERE user = :id AND blogs.url = :url";
             $array = array(':id' => $id, ':url' => $url);
             $result = $this->db->fetch($sql, $array);
-            return $result;
+            if(sizeof($result) != 1) {
+                return NULL;
+            }
+            return $result[0];
         }
 
+        /**
+         * Gets 2 blog posts from a blog, depening on which page you are on.
+         * @param  integer $userId The id of the user.
+         * @param  string  $url    The url of the blog.
+         * @param  integer $page   The page you would want to get.
+         * @return Array           An array with all the posts and information about them.
+         */
         public function getBlogPosts($userId, $url, $page) {
             $sql = "SELECT posts.title, timestamp, content 
                     FROM posts, posts_details, blogs
@@ -37,6 +60,12 @@
             return $result;
         }
 
+        /**
+         * Gets the total number of posts of a given blog. 
+         * @param  integer $userId The id of the user.
+         * @param  string  $url    The url of the blog.
+         * @return inteher         The number of posts.
+         */
         public function getBlogPostsNumber($userId, $url) {
             $sql = "SELECT COUNT(*) AS count
                     FROM posts, posts_details, blogs
@@ -47,6 +76,12 @@
             return $result[0]['count'];
         }
 
+        /**
+         * Gets the Id of the blog given the url and userId. 
+         * @param  integer $userId The id of the user.
+         * @param  string  $url    The url of the blog.
+         * @return integer         The id of the blog or -1 id there is an error.
+         */
         public function getBlogId($userId, $url) {
             $sql = "SELECT blogId FROM blogs WHERE url = :url AND user = :userId";
             $array = array(':url' => $url, ':userId' => $userId);
@@ -57,8 +92,16 @@
                 return $result[0]['blogId'];
             }
         }
-
-        // TODO: Wrap it into transaction
+        
+        /**
+         * Adds a post to a given blog.
+         * @param  integer $userId    The id of the user.
+         * @param  string  $url       The url of the blog.
+         * @param  string  $title     The title of the post.
+         * @param  string  $content   The content of the post.
+         * @param  integer $timestamp The unix timestamp of the post.
+         * @return boolean            Indicates if the insert succeeded or not.
+         */
         public function addBlogPost($userId, $url, $title, $content, $timestamp) {
             $sql = "INSERT INTO posts(`blogId`, `title`, `timestamp`)
                 VALUES (:blogId, :title, :timestamp)";
@@ -75,9 +118,17 @@
             $sql = "INSERT INTO posts_details(`postId`, `content`)
                 VALUES (:postId, :content)";
             $array = array(':postId' => $id, ':content' => $content);
-            $this->db->execute($sql, $array);
+            return $this->db->execute($sql, $array);
         }
 
+        /**
+         * Adds a blog.
+         * @param  integer $userId The id of the user.
+         * @param  string  $name   The name of the blog.
+         * @param  string  $url    A unique identifier of the blog.
+         * @param  string  $about  A short description of the blog.
+         * @return boolean         Indicates if the insert succeeded or not.
+         */
         public function addBlog($userId, $name, $url, $about) {
             $sql = "INSERT INTO blogs(`user`, `name`, `url`, `about`)
                 VALUES (:userId, :name, :url, :about)";
@@ -86,6 +137,12 @@
             return $this->db->execute($sql, $array);
         }
 
+        /**
+         * Checks if the url is already in the database.
+         * @param  integer $userId The id of the user.
+         * @param  string  $url    The url of the blog.
+         * @return boolean      True if it doesn't exist, false otherwise.
+         */
         public function checkBlogUrlUnique($id, $url) {
             $sql = "SELECT url FROM blogs WHERE user = :id AND blogs.url = :url";
             $array = array(':id' => $id, ':url' => $url);
