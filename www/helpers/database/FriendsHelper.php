@@ -30,7 +30,9 @@
                 Array(':user' => $username));
 
             foreach ($result as $r) {
-                $friends[] = ['login'=>$r['login'], 'name'=>$r['name'], 'startTimestamp'=>$r['startTimestamp']];
+                $friends[] = array('login'=>$r['login'], 
+                                    'name'=>$r['name'], 
+                                    'startTimestamp'=>$r['startTimestamp']);
             }
             return $friends;
         }
