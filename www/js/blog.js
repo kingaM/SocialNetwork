@@ -5,6 +5,11 @@ function content() {
     getPostNumber();
     getBlogInfo();
     getUserBlogs();
+    $("#new-post-btn").click(function(e) {
+        e.preventDefault();
+        window.location.replace("/user/" + username + "/blogs/" + 
+            window.location.pathname.split( '/' )[4] + "/newPost");               
+    });
 }
 
 function setButtons(postNumber) {
@@ -59,6 +64,9 @@ function getBlogInfo() {
             } else {
                 $("#blog-title").html(data['name']);
                 $("#blog-description").html(data['about']);
+            }
+            if(data['currentUser']) {
+                $("#new-post-btn").show();
             }
     });
 }

@@ -3,6 +3,7 @@
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/BlogsHelper.php');
 
+    // TODO: Tidy up repeated code into functions
     class Blog {
 
         public function getBlogs($req, $res) {
@@ -69,6 +70,46 @@
             $res->add($m->render('main', array('title' => 'Blog', 'content' => $content)));
             $res->send();
         } 
+
+        public function getNewPostPage($req, $res) {
+            $usersDB = new UsersHelper();
+            $username = $req->params['username'];
+            $blogName = $req->params['blogName'];
+            // TODO: Check if blog name is correct
+            if(!$usersDB->checkUsernameExists($username)) {
+                header("Content-Type: text/html;", TRUE, 404);
+                $uri = $_SERVER['REQUEST_URI'];
+                require_once('mustache_conf.php');
+                $content = $m->render('404', array('page' => $uri));
+                $res->add($m->render('main', array('title' => '404', 'content' => $content)));
+                $res->send();
+            }
+            require_once('mustache_conf.php');
+            $content = $m->render('newblogpost', NULL);
+            $res->add($m->render('main', array('title' => 'Blog', 'content' => $content)));
+            $res->send();
+        } 
+
+        public function addNewPost($req, $res) {
+            $username = $req->params['username'];
+            $blogName = $req->params['blogName'];
+            $blogsDB = new BlogsHelper();
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId !== $_SESSION['id']) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+            $title = $req->data['title'];
+            $content = $req->data['content'];
+            if($blogsDB->addBlogPost($userId, $blogName, $title, $content, time()) < 0) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            } else {
+                $res->add(json_encode(array('valid' => true)));
+                $res->send();
+            }
+        }
 
         public function apiBlogInfo($req, $res) {
             $username = $req->params['username'];
