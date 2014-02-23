@@ -167,14 +167,14 @@
                 $currentUser = false;
             }
             $blog = $blogsDB->getBlogInfo($userId, $blogName);
-            if(sizeof($blog) != 1) {
+            if($blog == -1) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
                     'blog' => NULL)));
                 $res->send();
             }
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
-                'name' => $blog[0]['name'],'about' => $blog[0]['about'], 
-                'url' => $blog[0]['url'])));
+                'name' => $blog['name'],'about' => $blog['about'], 
+                'url' => $blog['url'])));
             $res->send();
         }
 
@@ -196,7 +196,7 @@
                 $currentUser = false;
             }
             $posts = $blogsDB->getBlogPosts($userId, $blogName, $page);
-            if(sizeof($posts) <= 0) {
+            if(sizeof($posts) < 0) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
                     'posts' => NULL)));
                 $res->send();
@@ -223,7 +223,6 @@
                 $res->add(json_encode(array('valid' => false, 'posts' => NULL)));
                 $res->send();
             }
-            $userId = $usersDB->getIdFromUsername($username);
             $posts = $blogsDB->getBlogPostsNumber($userId, $blogName);
             $res->add(json_encode(array('valid' => true, 'posts' => $posts)));
             $res->send();

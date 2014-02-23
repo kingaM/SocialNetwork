@@ -103,22 +103,28 @@
          * @return boolean            Indicates if the insert succeeded or not.
          */
         public function addBlogPost($userId, $url, $title, $content, $timestamp) {
-            $sql = "INSERT INTO posts(`blogId`, `title`, `timestamp`)
-                VALUES (:blogId, :title, :timestamp)";
-            $blogId = $this->getBlogId($userId, $url);
-            if($blogId < 0) {
-                return -1;
+            try {
+                $this->db->beginTransaction();
+                $sql = "INSERT INTO posts(`blogId`, `title`, `timestamp`)
+                    VALUES (:blogId, :title, :timestamp)";
+                $blogId = $this->getBlogId($userId, $url);
+                if($blogId < 0) {
+                    return -1;
+                }
+                $array = array(':blogId' => $blogId, ':title' => $title, 
+                    ':timestamp' => $timestamp); 
+                if(!$this->db->execute($sql, $array)) {
+                    return -1;
+                } 
+                $id = $this->db->getLastId();
+                $sql = "INSERT INTO posts_details(`postId`, `content`)
+                    VALUES (:postId, :content)";
+                $array = array(':postId' => $id, ':content' => $content);
+                $this->db->execute($sql, $array);
+                return $this->db->commit();
+            } catch (Exception $e) {
+                return $this->db->rollBack();
             }
-            $array = array(':blogId' => $blogId, ':title' => $title, 
-                ':timestamp' => $timestamp); 
-            if(!$this->db->execute($sql, $array)) {
-                return -1;
-            } 
-            $id = $this->db->getLastId();
-            $sql = "INSERT INTO posts_details(`postId`, `content`)
-                VALUES (:postId, :content)";
-            $array = array(':postId' => $id, ':content' => $content);
-            return $this->db->execute($sql, $array);
         }
 
         /**

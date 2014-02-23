@@ -28,6 +28,8 @@ require_once('libs/FirePHPCore/FirePHP.class.php');
         private $password = 'root';
         private $pdo = NULL;
 
+        private $transactionCounter = 0;
+
         public function __construct() {
             $this->connect();
         }
@@ -131,6 +133,44 @@ require_once('libs/FirePHPCore/FirePHP.class.php');
                 throw new DatabaseException($e->getMessage(), $e->getCode());
             }
         }
+
+        /**
+         * Begins transaction.
+         * 
+         * @return boolean True if begin succeeded, false otherwise. 
+         */
+        public function beginTransaction() { 
+            if(!$this->transactionCounter++) {
+                return $this->pdo->beginTransaction(); 
+            }
+            return $this->transactionCounter >= 0; 
+        } 
+
+        /**
+         * Rollback transaction.
+         * 
+         * @return boolean True if the rollback succeded, false otherwise.
+         */
+        public function rollBack() { 
+            if($this->transactionCounter >= 0) { 
+                $this->transactionCounter = 0; 
+                return $this->pdo->rollBack(); 
+            } 
+            $this->transactionCounter = 0; 
+            return false; 
+        }
+
+        /**
+         * Commits a tansaction.
+         * 
+         * @return boolean True if the commit succeded, false otherwise.
+         */
+        public function commit() { 
+            if(!--$this->transactionCounter) {
+                return $this->pdo->commit();
+            }
+            return $this->transactionCounter >= 0; 
+        } 
 
         /**
          * Disconnects from the database.
