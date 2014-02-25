@@ -15,21 +15,29 @@ function content() {
 }
 
 function setButtons(postNumber) {
+    $("#pages").empty();
     var page = parseInt(window.location.pathname.split( '/' )[5]);
+    var url = "/user/" + username + "/blogs/" + 
+            blog + "/"
     if(page == 1) {
-        $("#previous").hide();
+        $("#pages").append('<li class="disabled"><a href="#">&laquo;</a></li>')
     } else {
-        $('#previous-page').attr('href', "/user/" + username + "/blogs/" + 
-            blog + "/" + (page - 1));
+        $("#pages").append('<li><a href="'+ url + (page - 1) + '">&laquo;</a></li>')
     }
-    if (page < postNumber/2) {
-        $("#next-page").prop("href", "/user/" + username + "/blogs/" + 
-            blog + "/" +
-            (page + 1));
+    for(var i = 1; i <= postNumber/2; i++) {
+        if (page == i) {
+            $('#pages').append('<li class="active"><a href="' + url + i + '">' + i +
+                '<span class="sr-only">(current)</span></a></li>')
+        } else {
+            $('#pages').append('<li><a href="' + url + i  + '">' + i +
+                '<span class="sr-only">(current)</span></a></li>')
+        }
+    }
+    if (page == postNumber/2) {
+        $("#pages").append('<li class="disabled"><a href="#">&raquo;</a></li>')
     } else {
-        $("#next").hide();
+        $("#pages").append('<li><a href="'+ url + (page + 1) + '">&raquo;</a></li>')
     }
-
 }
 
 function getPostNumber() {
