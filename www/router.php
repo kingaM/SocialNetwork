@@ -24,6 +24,12 @@
     ));
 
     $router->addRoute(array(
+        'path' => '/api/currentUser',
+        'get' => array('Users', 'getCurrentUser'),
+        'file' => 'controllers/users.php',
+    ));
+
+    $router->addRoute(array(
         'path' => '/api/users/autocomplete/{name}',
         'get' => array('Users', 'autoComplete'),
         'file' => 'controllers/users.php',
@@ -32,6 +38,13 @@
     $router->addRoute(array(
         'path' => '/user/{username}/friends',
         'get' => array('Friends', 'getPage'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/friends',
+        'get' => array('Friends', 'getFriends'),
+        'post' => array('Friends', 'addFriend'),
         'file' => 'controllers/friends.php',
     ));
 

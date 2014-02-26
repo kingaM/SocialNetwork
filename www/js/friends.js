@@ -40,56 +40,8 @@ function showCircles(circles) {
     };
 }
 
-function deleteFriend(name) {
-    var currUsername = window.location.pathname.split( '/' )[2];
-    var username = name.data;
-    $.ajax({
-        url: "/api/user/" + currUsername + "/friends/" + username,
-        type: "DELETE",
-        success: function(result) {
-            getFriends();
-        }
-    });
-}
-
 function acceptFriend(name) {
     addFriend(name.data);
-}
-
-function addFriend(username) {
-    var currUsername = window.location.pathname.split( '/' )[2];
-    $.ajax({
-        url: "/api/user/" + currUsername + "/friends",
-        type: "POST",
-        data: {username: username},
-
-        success: function(response) {
-            var data = $.parseJSON(response);
-            $.each( data, function(key, val) {
-                if(key == "error")
-                    addFriendAlert(val, false);
-                else if(key == "result" && val == "requested") {
-                    addFriendAlert("", true);
-                    $("#addForm")[0].reset();
-                }
-            });
-            getFriends();
-        }
-    });
-}
-
-function addFriendAlert(val, success) {
-    if(success) {
-        $("#friendAlert").remove();
-        $("#add_friends").append('<div class="alert alert-success fade in" id="friendAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            'Friend request sent</div>');
-    } else {
-        $("#friendAlert").remove();
-        $("#add_friends").append('<div class="alert alert-danger fade in" id="friendAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            val + '</div>');
-    }
 }
 
 function addCircle(circleName) {
@@ -102,29 +54,15 @@ function addCircle(circleName) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
                 if(key == "error")
-                    addCircleAlert(val, false);
+                    displayModal(val);
                 else if(key == "result") {
-                    addCircleAlert("", true);
+                    displayModal("Circle added");
                     $("#newCircle")[0].reset();
                 }
             });
             getFriends();
         }
     });
-}
-
-function addCircleAlert(val, success) {
-    if(success) {
-        $("#circleAlert").remove();
-        $("#newCircle").append('<div class="alert alert-success fade in" id="circleAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            'Circle added</div>');
-    } else {
-        $("#circleAlert").remove();
-        $("#newCircle").append('<div class="alert alert-danger fade in" id="circleAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            val + '</div>');
-    }
 }
 
 function addToCircle(circleName, username) {
@@ -137,29 +75,15 @@ function addToCircle(circleName, username) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
                 if(key == "error")
-                    addToCircleAlert(val, false);
+                    displayModal(val);
                 else if(key == "result") {
-                    addToCircleAlert("", true);
+                    displayModal("Added");
                     $("#addToCircle")[0].reset();
                 }
             });
             getFriends();
         }
     });
-}
-
-function addToCircleAlert(val, success) {
-    if(success) {
-        $("#addToCircleAlert").remove();
-        $("#addToCircle").append('<div class="alert alert-success fade in" id="addToCircleAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            'Added</div>');
-    } else {
-        $("#addToCircleAlert").remove();
-        $("#addToCircle").append('<div class="alert alert-danger fade in" id="addToCircleAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            val + '</div>');
-    }
 }
 
 function deleteCircle(name) {

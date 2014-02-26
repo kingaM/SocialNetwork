@@ -35,5 +35,10 @@
             $res->send();
         }
 
+        public function getCurrentUser($req, $res) {
+            $res->add(json_encode(array("username" => $_SESSION['username'])));
+            $res->send();
+        }
+
     }
 ?>
