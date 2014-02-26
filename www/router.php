@@ -240,6 +240,28 @@
         'file' => 'controllers/blog.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/user/{username}/blogs/{blogName}/posts/{post}',
+        'handlers' => array(
+            'post' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
+            'blogName' =>Zaphpa_Constants::PATTERN_ALPHA 
+        ),
+        'get' => array('Blog', 'getBlogPost'),
+        'file' => 'controllers/blog.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/blogs/{blogName}/posts/{post}',
+        'handlers' => array(
+            'post' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
+            'blogName' =>Zaphpa_Constants::PATTERN_ALPHA 
+        ),
+        'get' => array('Blog', 'apiBlogPost'),
+        'file' => 'controllers/blog.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {

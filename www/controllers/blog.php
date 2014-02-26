@@ -94,6 +94,22 @@
             $res->send();
         } 
 
+        public function getBlogPost($req, $res) {
+            $username = $req->params['username'];
+            $blogName = $req->params['blogName'];
+            $blogsDB = new BlogsHelper();
+            $usersDB = new UsersHelper();
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1) {
+                $res->add($this->show404());
+                $res->send();
+            }
+            require_once('mustache_conf.php');
+            $content = $m->render('post', NULL);
+            $res->add($m->render('main', array('title' => 'Blog', 'content' => $content)));
+            $res->send();
+        }
+
         public function addNewPost($req, $res) {
             $username = $req->params['username'];
             $blogName = $req->params['blogName'];
@@ -204,12 +220,45 @@
             $jsonPosts = array();
             foreach ($posts as $post) {
                 $jsonPosts[] = array(
+                    'id' => $post['postId'],
                     'title' => $post['title'],
                     'timestamp' => $post['timestamp'],
                     'content' => $post['content']);
             }
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
                 'posts' => $jsonPosts)));
+            $res->send();
+        }
+
+        public function apiBlogPost($req, $res) {
+            $username = $req->params['username'];
+            $blogName = $req->params['blogName'];
+            $post = $req->params['post'];
+            $blogsDB = new BlogsHelper();
+            $usersDB = new UsersHelper();
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1) {
+                $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
+                    'posts' => NULL)));
+                $res->send();
+            }
+            if($userId === $_SESSION['id']) {
+                $currentUser = true;
+            } else {
+                $currentUser = false;
+            }
+            $post = $blogsDB->getBlogPost($userId, $blogName, $post);
+            if($post == -1) {
+                $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
+                    'posts' => NULL)));
+                $res->send();
+            }
+            $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
+                'posts' => array(
+                    'id' => $post['postId'],
+                    'title' => $post['title'],
+                    'timestamp' => $post['timestamp'],
+                    'content' => $post['content']))));
             $res->send();
         }
 
@@ -254,6 +303,7 @@
             $jsonPosts = array();
             foreach ($posts as $post) {
                 $jsonPosts[] = array(
+                    'id' => $post['postId'],
                     'title' => $post['title'],
                     'timestamp' => $post['timestamp'],
                     'content' => $post['content']);

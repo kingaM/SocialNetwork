@@ -123,7 +123,9 @@ function showPosts(posts) {
 
 function showPost(post) {
    var html =  '<div class="blog-post">' +
-          '<h2 class="blog-post-title">' + post['title'] + '</h2>' +
+          '<h2 class="blog-post-title">' +
+        '<a href="/user/' + username + "/blogs/" + blog + "/posts/" + post['id'] + '">' 
+        + post['title'] + '</a></h2>' +
           '<p class="blog-post-meta">' + showDate(post['timestamp']) + '</p>' +
           post['content'] +
         '</div>';

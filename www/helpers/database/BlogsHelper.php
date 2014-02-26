@@ -49,7 +49,7 @@
          * @return Array           An array with all the posts and information about them.
          */
         public function getBlogPosts($userId, $url, $page) {
-            $sql = "SELECT posts.title, timestamp, content 
+            $sql = "SELECT posts.postId, posts.title, timestamp, content 
                     FROM posts, posts_details, blogs
                     WHERE blogs.url = :url AND blogs.blogId = posts.blogId AND 
                         posts.postId = posts_details.postId AND blogs.user = :userId
@@ -72,7 +72,7 @@
          * @return Array           An array with all the posts and information about them.
          */
         public function searchBlogPosts($userId, $url, $page, $searchText) {
-            $sql = "SELECT posts.title, timestamp, content 
+            $sql = "SELECT posts.postId, posts.title, timestamp, content 
                     FROM posts, posts_details, blogs
                     WHERE blogs.url = :url AND blogs.blogId = posts.blogId AND 
                         posts.postId = posts_details.postId AND blogs.user = :userId
@@ -89,6 +89,30 @@
         }
 
         /**
+         * Gets blog posts from a blog depending on the post id.
+         * @param  integer $userId The id of the user.
+         * @param  string  $url    The url of the blog.
+         * @param  integer $postId The id of the post.
+         * @return Array           An array with the information about the post. 
+         */
+        public function getBlogPost($userId, $url, $postId) {
+            $sql = "SELECT posts.postId, posts.title, timestamp, content 
+                    FROM posts, posts_details, blogs
+                    WHERE blogs.url = :url AND blogs.blogId = posts.blogId AND 
+                        posts.postId = posts_details.postId AND blogs.user = :userId
+                        AND posts.postId = :postId
+                    ORDER BY timestamp DESC";
+            $array = array(':url' => $url, ':postId' => $postId, 
+                ':userId' => $userId);
+            $result = $this->db->fetch($sql, $array);
+            if(sizeof($result) != 1) {
+                return -1;
+            } else {
+                return $result[0];
+            }
+        }
+
+        /**
          * Gets the total number of posts of a given blog. 
          * @param  integer $userId The id of the user.
          * @param  string  $url    The url of the blog.
@@ -96,7 +120,7 @@
          */
         public function getBlogPostsNumber($userId, $url) {
             $sql = "SELECT COUNT(*) AS count
-                    FROM posts, posts_details, blogs
+                    FROM posts.postId, posts, posts_details, blogs
                     WHERE blogs.url = :url AND blogs.blogId = posts.blogId AND 
                         posts.postId = posts_details.postId AND blogs.user = :userId";
             $array = array(':url' => $url, ':userId' => $userId);
