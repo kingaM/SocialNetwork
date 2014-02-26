@@ -141,10 +141,11 @@
             if(sizeof($result) != 0) {
                 // Accept the friend request if there is an existing one
                 $result = $this->db->execute("UPDATE friendships
-                    SET status=1
+                    SET status=1, startTimestamp=:time
                     WHERE user2=:requester AND user1 IN
                     (SELECT ID FROM users WHERE login=:addFriend)",
-                    Array(':requester' => $requester, ':addFriend' => $addFriend));
+                    Array(':requester' => $requester, ':addFriend' => $addFriend, 
+                        ':time' => time()));
                 return True;
             }
 
@@ -196,13 +197,18 @@
         public function getFriendRequests($userID) {
 
             $friends = array();
-            $result = $this->db->fetch("SELECT login 
+            $result = $this->db->fetch("SELECT login, 
+                (CASE WHEN u.middle_name IS NULL THEN CONCAT(u.first_name, ' ', u.last_name) 
+                    ELSE CONCAT(u.first_name, ' ', u.middle_name, ' ', u.last_name) END) as name, 
+                startTimestamp 
                 FROM friendships as f, users as u
                 WHERE f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID AND status = 0",
                 Array(':user' => $userID));
 
             foreach ($result as $r) {
-                $friends[] = $r['login'];
+                $friends[] = array('login'=>$r['login'], 
+                                    'name'=>$r['name'], 
+                                    'startTimestamp'=>$r['startTimestamp']);
             }
             return $friends;
         }

@@ -45,9 +45,13 @@ function createFriendsTable() {
         "sPaginationType": "bootstrap",
         "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
         "iDisplayLength": 5,
+        "aaSorting": [[1, "asc"]],
         "oLanguage": {
             "sLengthMenu": "_MENU_ records per page"
         },
+        "aoColumnDefs": [
+            {"bSortable": false, "aTargets": [0, 3]},
+        ],
     });
 }
 
