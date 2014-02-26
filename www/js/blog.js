@@ -7,6 +7,17 @@ function content() {
     getPostNumber();
     getBlogInfo();
     getUserBlogs();
+    $("#search").click(function(e) {
+        e.preventDefault();
+        postSearch($("#search-txt").val());
+    });
+    $('#search-txt').keydown(function(e) {
+        var keypressed = e.keyCode || e.which;
+        if (keypressed == 13) {
+                e.preventDefault();
+                postSearch($("#search-txt").val());         
+        }
+    });
     $("#new-post-btn").click(function(e) {
         e.preventDefault();
         window.location.replace("/user/" + username + "/blogs/" + 
@@ -14,11 +25,31 @@ function content() {
     });
 }
 
+function postSearch(text) {
+    var values = {};
+    values["text"] = text;
+    $.ajax({
+        type: "post",
+        url: "/api/user/" + username + "/blogs/" + blog + "/search/pages/1",
+        data: values,
+        success: function(data) {
+            console.log(data);
+            var json = $.parseJSON(data);
+            var valid = json['valid'];
+            if (!valid) {
+                showError();
+            } else {
+                showPosts(json['posts']);
+            }
+        }
+    });
+}
+
 function setButtons(postNumber) {
     $("#pages").empty();
-    var page = parseInt(window.location.pathname.split( '/' )[5]);
+    var page = parseInt(window.location.pathname.split( '/' )[6]);
     var url = "/user/" + username + "/blogs/" + 
-            blog + "/"
+            blog + "/pages/";
     if(page == 1) {
         $("#pages").append('<li class="disabled"><a href="#">&laquo;</a></li>')
     } else {
@@ -27,16 +58,16 @@ function setButtons(postNumber) {
     for(var i = 1; i <= postNumber/2; i++) {
         if (page == i) {
             $('#pages').append('<li class="active"><a href="' + url + i + '">' + i +
-                '<span class="sr-only">(current)</span></a></li>')
+                '<span class="sr-only">(current)</span></a></li>');
         } else {
             $('#pages').append('<li><a href="' + url + i  + '">' + i +
-                '<span class="sr-only">(current)</span></a></li>')
+                '<span class="sr-only">(current)</span></a></li>');
         }
     }
     if (page == postNumber/2) {
-        $("#pages").append('<li class="disabled"><a href="#">&raquo;</a></li>')
+        $("#pages").append('<li class="disabled"><a href="#">&raquo;</a></li>');
     } else {
-        $("#pages").append('<li><a href="'+ url + (page + 1) + '">&raquo;</a></li>')
+        $("#pages").append('<li><a href="'+ url + (page + 1) + '">&raquo;</a></li>');
     }
 }
 
@@ -55,7 +86,7 @@ function getPostNumber() {
 
 function getUserBlogs() {
     $.getJSON( "/api/user/" + username + "/blogs/" + 
-        blog + "/" + window.location.pathname.split( '/' )[5], 
+        blog + "/pages/" + window.location.pathname.split( '/' )[6], 
         function(data) {
             if(!data['valid']) {
                 showError();

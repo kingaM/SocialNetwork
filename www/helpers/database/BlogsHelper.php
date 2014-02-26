@@ -1,6 +1,7 @@
 <?php
     
     require_once('helpers/database/database.php');
+    require_once('libs/FirePHPCore/FirePHP.class.php');
 
     class BlogsHelper {
 
@@ -61,10 +62,37 @@
         }
 
         /**
+         * Searches through blog posts and returns 2 blog posts from a blog, 
+         * depening on which page you are on.
+         * 
+         * @param  integer $userId The id of the user.
+         * @param  string  $url    The url of the blog.
+         * @param  integer $page   The page you would want to get.
+         * @param  string  $url    The url of the blog.
+         * @return Array           An array with all the posts and information about them.
+         */
+        public function searchBlogPosts($userId, $url, $page, $searchText) {
+            $sql = "SELECT posts.title, timestamp, content 
+                    FROM posts, posts_details, blogs
+                    WHERE blogs.url = :url AND blogs.blogId = posts.blogId AND 
+                        posts.postId = posts_details.postId AND blogs.user = :userId
+                        AND (content LIKE :searchText)
+                    ORDER BY timestamp DESC
+                    LIMIT :page, 2";
+            $searchText = '%' . $searchText . '%';
+            $array = array(':url' => $url, ':page' => (int) (($page - 1) * 2), 
+                ':userId' => $userId, ':searchText' => $searchText);
+            $result = $this->db->fetch($sql, $array);
+            $firephp = FirePHP::getInstance(true);
+            $firephp->log($array);
+            return $result;
+        }
+
+        /**
          * Gets the total number of posts of a given blog. 
          * @param  integer $userId The id of the user.
          * @param  string  $url    The url of the blog.
-         * @return inteher         The number of posts.
+         * @return integer         The number of posts.
          */
         public function getBlogPostsNumber($userId, $url) {
             $sql = "SELECT COUNT(*) AS count

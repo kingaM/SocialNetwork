@@ -108,7 +108,7 @@ function showBlog(blog) {
                     "<div class=\"col-xs-9 col-md-9 section-box\">" +
                         "<h2>"
                              + blog['name']  + 
-                            "<a href=\"./blogs/"+ blog['url'] + "/1\" target=\"_blank\">" +
+                            "<a href=\"./blogs/"+ blog['url'] + "/pages/1\" target=\"_blank\">" +
                             "<span class=\"glyphicon glyphicon-new-window\">" +
                             "</span></a>" +
                         "</h2>" +

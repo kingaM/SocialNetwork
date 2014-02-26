@@ -158,7 +158,7 @@
     ));
 
     $router->addRoute(array(
-        'path' => '/user/{username}/blogs/{blogName}/{page}',
+        'path' => '/user/{username}/blogs/{blogName}/pages/{page}',
         'handlers' => array(
             'page' => Zaphpa_Constants::PATTERN_DIGIT,
             'username' => Zaphpa_Constants::PATTERN_ALPHA,
@@ -209,7 +209,7 @@
     ));
 
     $router->addRoute(array(
-        'path' => '/api/user/{username}/blogs/{blogName}/{page}',
+        'path' => '/api/user/{username}/blogs/{blogName}/pages/{page}',
         'handlers' => array(
             'page' => Zaphpa_Constants::PATTERN_DIGIT,
             'username' => Zaphpa_Constants::PATTERN_ALPHA,
@@ -226,6 +226,17 @@
             'blogName' =>Zaphpa_Constants::PATTERN_ALPHA 
         ),
         'post' => array('Blog', 'addNewPost'),
+        'file' => 'controllers/blog.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/blogs/{blogName}/search/pages/{page}',
+        'handlers' => array(
+            'page' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
+            'blogName' =>Zaphpa_Constants::PATTERN_ALPHA 
+        ),
+        'post' => array('Blog', 'searchPosts'),
         'file' => 'controllers/blog.php',
     ));
 

@@ -227,5 +227,40 @@
             $res->add(json_encode(array('valid' => true, 'posts' => $posts)));
             $res->send();
         }
+
+        public function searchPosts($req, $res) {
+            $username = $req->params['username'];
+            $blogName = $req->params['blogName'];
+            $page = $req->params['page'];
+            $blogsDB = new BlogsHelper();
+            $usersDB = new UsersHelper();
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1) {
+                $res->add(json_encode(array('valid' => false, 'posts' => NULL)));
+                $res->send();
+            }
+            $text = trim($req->data['text']);
+            if($userId === $_SESSION['id']) {
+                $currentUser = true;
+            } else {
+                $currentUser = false;
+            }
+            $posts = $blogsDB->searchBlogPosts($userId, $blogName, $page, $text);
+            if(sizeof($posts) < 0) {
+                $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
+                    'posts' => NULL)));
+                $res->send();
+            }
+            $jsonPosts = array();
+            foreach ($posts as $post) {
+                $jsonPosts[] = array(
+                    'title' => $post['title'],
+                    'timestamp' => $post['timestamp'],
+                    'content' => $post['content']);
+            }
+            $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
+                'posts' => $jsonPosts)));
+            $res->send();
+        }
     }
 ?>
