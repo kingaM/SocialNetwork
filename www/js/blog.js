@@ -26,23 +26,25 @@ function content() {
 }
 
 function postSearch(text) {
-    var values = {};
-    values["text"] = text;
-    $.ajax({
-        type: "post",
-        url: "/api/user/" + username + "/blogs/" + blog + "/search/pages/1",
-        data: values,
-        success: function(data) {
-            console.log(data);
-            var json = $.parseJSON(data);
-            var valid = json['valid'];
-            if (!valid) {
-                showError();
-            } else {
-                showPosts(json['posts']);
-            }
-        }
-    });
+    window.location.replace("/user/" + username + "/blogs/" + blog + "/search/" + 
+        encodeURIComponent(text));
+    // var values = {};
+    // values["text"] = text;
+    // $.ajax({
+    //     type: "post",
+    //     url: ,
+    //     data: values,
+    //     success: function(data) {
+    //         console.log(data);
+    //         var json = $.parseJSON(data);
+    //         var valid = json['valid'];
+    //         if (!valid) {
+    //             showError();
+    //         } else {
+    //             showPosts(json['posts']);
+    //         }
+    //     }
+    // });
 }
 
 function setButtons(postNumber) {

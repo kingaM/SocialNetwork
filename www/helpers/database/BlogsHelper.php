@@ -67,20 +67,18 @@
          * 
          * @param  integer $userId The id of the user.
          * @param  string  $url    The url of the blog.
-         * @param  integer $page   The page you would want to get.
          * @param  string  $url    The url of the blog.
          * @return Array           An array with all the posts and information about them.
          */
-        public function searchBlogPosts($userId, $url, $page, $searchText) {
+        public function searchBlogPosts($userId, $url, $searchText) {
             $sql = "SELECT posts.postId, posts.title, timestamp, content 
                     FROM posts, posts_details, blogs
                     WHERE blogs.url = :url AND blogs.blogId = posts.blogId AND 
                         posts.postId = posts_details.postId AND blogs.user = :userId
                         AND (content LIKE :searchText)
-                    ORDER BY timestamp DESC
-                    LIMIT :page, 2";
+                    ORDER BY timestamp DESC";
             $searchText = '%' . $searchText . '%';
-            $array = array(':url' => $url, ':page' => (int) (($page - 1) * 2), 
+            $array = array(':url' => $url, 
                 ':userId' => $userId, ':searchText' => $searchText);
             $result = $this->db->fetch($sql, $array);
             $firephp = FirePHP::getInstance(true);

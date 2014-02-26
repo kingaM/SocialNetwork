@@ -110,6 +110,22 @@
             $res->send();
         }
 
+        public function getSearchPosts($req, $res) {
+            $username = $req->params['username'];
+            $blogName = $req->params['blogName'];
+            $blogsDB = new BlogsHelper();
+            $usersDB = new UsersHelper();
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1) {
+                $res->add($this->show404());
+                $res->send();
+            }
+            require_once('mustache_conf.php');
+            $content = $m->render('blogsearch', NULL);
+            $res->add($m->render('main', array('title' => 'Blog', 'content' => $content)));
+            $res->send();
+        }
+
         public function addNewPost($req, $res) {
             $username = $req->params['username'];
             $blogName = $req->params['blogName'];
@@ -280,7 +296,7 @@
         public function searchPosts($req, $res) {
             $username = $req->params['username'];
             $blogName = $req->params['blogName'];
-            $page = $req->params['page'];
+            $text = rawurldecode($req->params['searchText']);
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
@@ -288,13 +304,12 @@
                 $res->add(json_encode(array('valid' => false, 'posts' => NULL)));
                 $res->send();
             }
-            $text = trim($req->data['text']);
             if($userId === $_SESSION['id']) {
                 $currentUser = true;
             } else {
                 $currentUser = false;
             }
-            $posts = $blogsDB->searchBlogPosts($userId, $blogName, $page, $text);
+            $posts = $blogsDB->searchBlogPosts($userId, $blogName, $text);
             if(sizeof($posts) < 0) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
                     'posts' => NULL)));
@@ -302,11 +317,15 @@
             }
             $jsonPosts = array();
             foreach ($posts as $post) {
+                $n=10;
+                $query=$text;
+                preg_match_all('/(?:[^ ]+ ){0,'.$n.'}'.$query.'(?: [^ ]+){0,'.$n.'}/i',
+                    strip_tags($post['content']), $matches);
                 $jsonPosts[] = array(
                     'id' => $post['postId'],
                     'title' => $post['title'],
                     'timestamp' => $post['timestamp'],
-                    'content' => $post['content']);
+                    'content' => $matches);
             }
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
                 'posts' => $jsonPosts)));
