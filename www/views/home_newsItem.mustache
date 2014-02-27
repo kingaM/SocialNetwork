@@ -1,4 +1,4 @@
-<section class="col-xs-12 col-sm-6 col-md-12">
+<section class="container-fluid">
     <article class="search-result row">
         <div class="col-xs-12 col-sm-12 col-md-3">
             <a href="#" class="thumbnail"><img src="{{imgURL}}" style="max-height:120px;"/></a>
@@ -7,13 +7,24 @@
             <ul class="meta-search">
                 <li><i class="glyphicon glyphicon-calendar"></i><span>{{date}}</span></li>
                 <li><i class="glyphicon glyphicon-time"></i><span>{{time}}</span></li>
-                <li><i class="glyphicon glyphicon-tags"></i><span>{{tag}}</span></li>
+                <!-- <li><i class="glyphicon glyphicon-tags"></i><span>{{tag}}</span></li> -->
             </ul>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 excerpet">
             <h3><a href="{{titleLink}}" title="">{{title}}</a></h3>
             <p>{{text}}</p>                        
-            <!--<span class="plus"><a href="#"><i class="glyphicon glyphicon-plus"></i></a></span>-->
+                <div class="container-fluid">
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="panel-body">                
+                            <form accept-charset="UTF-8" action="" method="POST">
+                                <textarea class="form-control" name="message" placeholder="Type in your message" rows="2" style="margin-bottom:10px;"></textarea>
+                                <button class="btn btn-primary pull-right" type="submit">Reply</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <span class="clearfix borda"></span>
     </article>

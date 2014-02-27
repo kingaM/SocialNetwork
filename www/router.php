@@ -147,6 +147,19 @@
         'file' => 'controllers/profile.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/user/{username}/',
+        'get' => array('Timeline', 'getPage'),
+        'file' => 'controllers/timeline.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/',
+        'get' => array('Timeline', 'getPosts'),
+        'post' => array('Timeline', 'addPost'),
+        'file' => 'controllers/timeline.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {
