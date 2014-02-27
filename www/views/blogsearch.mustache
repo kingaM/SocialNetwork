@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="/css/blog.css">
+<script src="/js/blog_helper.js"></script>
 <script src="/js/blogsearch.js"></script>
 
 <div class="container">
@@ -8,8 +9,21 @@
 
     </div>
     <div class="col-md-6 blog-header">
-      <h1 class="blog-title" id="blog-title"></h1>
+      <h1 class="blog-title" id="blog-title">
+        <a id="blog-title-link">
+        </a>
+      </h1>
       <p class="lead blog-description" id="blog-description"></p>
+    </div>
+    <div class="col-md-4 blog-header">
+      <h1 class="blog-title">
+      <div class="input-group">
+        <input type="text" placeholder="Search Blog" class="form-control" id="search-txt">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" id="search">Go!</button>
+        </span>
+      </div>
+      </h1>
     </div>
   </div>
 

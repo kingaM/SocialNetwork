@@ -1,7 +1,6 @@
 <?php
     
     require_once('helpers/database/database.php');
-    require_once('libs/FirePHPCore/FirePHP.class.php');
 
     class BlogsHelper {
 
@@ -81,8 +80,6 @@
             $array = array(':url' => $url, 
                 ':userId' => $userId, ':searchText' => $searchText);
             $result = $this->db->fetch($sql, $array);
-            $firephp = FirePHP::getInstance(true);
-            $firephp->log($array);
             return $result;
         }
 
@@ -103,6 +100,7 @@
             $array = array(':url' => $url, ':postId' => $postId, 
                 ':userId' => $userId);
             $result = $this->db->fetch($sql, $array);
+
             if(sizeof($result) != 1) {
                 return -1;
             } else {
@@ -118,7 +116,7 @@
          */
         public function getBlogPostsNumber($userId, $url) {
             $sql = "SELECT COUNT(*) AS count
-                    FROM posts.postId, posts, posts_details, blogs
+                    FROM posts, posts_details, blogs
                     WHERE blogs.url = :url AND blogs.blogId = posts.blogId AND 
                         posts.postId = posts_details.postId AND blogs.user = :userId";
             $array = array(':url' => $url, ':userId' => $userId);
