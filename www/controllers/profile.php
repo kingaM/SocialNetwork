@@ -17,7 +17,7 @@
             require_once('mustache_conf.php');
             $content = $m->render('editprofile', NULL);
             $content = $m->render('user', array('content' => $content, 'username' => $username,
-                'timeline' => '', 'profile' => 'active', 'friends' => ''));
+                'profile' => 'active'));
             $res->add($m->render('main', array('title' => 'Profile', 'content' => $content)));
             $res->send();
         }
