@@ -2,6 +2,12 @@ var username = '';
 var email = '';
 
 function content() {
+    getUserInfo();
+    setSubmitBtns();
+    setEditBtns();
+}
+
+function setEditBtns() {
     $("#username-edit-btn").click(function(e) {
         e.preventDefault();
         hideAndClearAll();
@@ -28,8 +34,6 @@ function content() {
         $("#email-submit-btn").show();
         $("#email-edit-btn").hide();
     });
-    getUserInfo();
-    setSubmitBtns();
 }
 
 function setSubmitBtns() {
@@ -46,12 +50,34 @@ function setSubmitBtns() {
                 console.log(data);
                 var json = $.parseJSON(data);
                 var valid = json['valid'];
-                var validPassword = json['password'];
-                if(valid && validPassword) {
+                if(valid && json['succeded']) {
                     hideAndClearAll();
                     getUserInfo();
-                } else {
+                } else if (valid && !json['succeded']) {
                     showError();
+                } else {
+                    if (!json['password']) {
+                        $("#password-username-error").show();
+                        $("#password-username-error").html("The password you have entered is " +
+                            "inccorect.");
+                        $("#form-group-username-password").addClass("has-error");
+                    }
+                    // Should not happen
+                    if (!json['unique'] && !json['alphaNum']) {
+                        showError();
+                    }
+                    if (!json['unique']) {
+                        $("#new-username-error").show();
+                        $("#new-username-error").html("The username you have entered is " +
+                            "already taken.");
+                        $("#form-group-username-username").addClass("has-error");
+                    }
+                    if (!json['alphaNum']) {
+                        $("#new-username-error").show();
+                        $("#new-username-error").html("The username you have entered is " +
+                            "not alphanumeric.");
+                        $("#form-group-username-username").addClass("has-error");
+                    }
                 }
             }
         }); 
@@ -59,7 +85,10 @@ function setSubmitBtns() {
     $("#password-submit-btn").click(function(e) {
         e.preventDefault();
         if ($("#new-password").val() !== $("#new-password-retype").val()) {
-            showError();
+            $("#new-password-retype-error").show();
+            $("#new-password-retype-error").html("The passwords you have entered " +
+                "do not match.");
+            $("#form-group-password-retype").addClass("has-error");
             return;
         }
         var values = {};
@@ -76,6 +105,10 @@ function setSubmitBtns() {
                 if(valid) {
                     hideAndClearAll();
                     getUserInfo();
+                } else if (!valid && !json['password']) {
+                    $("#password-password-error").show();
+                    $("#password-password-error").html("The password is incorrect.");
+                    $("#form-group-password-current").addClass("has-error");
                 } else {
                     showError();
                 }
@@ -85,7 +118,10 @@ function setSubmitBtns() {
     $("#email-submit-btn").click(function(e) {
         e.preventDefault();
         if ($("#new-email").val() !== $("#new-email-retype").val()) {
-            showError();
+            $("#new-email-retype-error").show();
+            $("#new-email-retype-error").html("The e-mails you have entered " +
+                "do not match.");
+            $("#form-group-email-retype").addClass("has-error");
             return;
         }
         var values = {};
@@ -99,11 +135,35 @@ function setSubmitBtns() {
                 console.log(data);
                 var json = $.parseJSON(data);
                 var valid = json['valid'];
-                if(valid) {
+                var validPassword = json['password'];
+                if(valid && json['succeded']) {
                     hideAndClearAll();
                     getUserInfo();
-                } else {
+                } else if (valid && !json['succeded']) {
                     showError();
+                } else {
+                    if (!json['password']) {
+                        $("#password-email-error").show();
+                        $("#password-email-error").html("The password you have entered is " +
+                            "incorrect.");
+                        $("#form-group-email-password").addClass("has-error");
+                    }
+                    // Should not happen
+                    if (!json['unique'] && !json['validEmail']) {
+                        showError();
+                    }
+                    if (!json['unique']) {
+                        $("#new-email-error").show();
+                        $("#new-email-error").html("The e-mail you have entered is " +
+                            "already taken.");
+                        $("#form-group-new-email").addClass("has-error");
+                    }
+                    if (!json['validEmail']) {
+                        $("#new-email-error").show();
+                        $("#new-email-error").html("The e-mail you have entered is " +
+                            "not valid.");
+                        $("#form-group-new-email").addClass("has-error");
+                    }
                 }
             }
         }); 

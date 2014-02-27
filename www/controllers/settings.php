@@ -14,18 +14,25 @@
             $username = $req->data['username'];
             $password = $req->data['password'];
             $userDB = new UsersHelper();
-            $valid = $userDB->verifyUser($_SESSION['username'], $password);
-            if(!$valid) {
-                $res->add(json_encode(array('valid' => true, 'password' => false)));
+            $valid = $userDB->verifyUser($_SESSION['username'], $password) >= 0;
+            $alphaNum = ctype_alnum($username);
+            if ($username == $_SESSION['username']) {
+                $unique = true;
+            } else {
+                $unique = !$userDB->checkUsernameExists($username); 
+            }
+            if(!$valid || !$alphaNum || !$unique) {
+                $res->add(json_encode(array('valid' => false, 'password' => $valid, 
+                    'alphaNum' => $alphaNum, 'unique' => $unique, 'succeded' => false)));
                 $res->send();
             }
             $valid = $userDB->updateUsername($_SESSION['id'], $username);
             if(!$valid) {
-                $res->add(json_encode(array('valid' => false, 'password' => true)));
+                $res->add(json_encode(array('valid' => true, 'succeded' => false)));
                 $res->send();
             } else {
                 $_SESSION['username'] = $username;
-                $res->add(json_encode(array('valid' => true, 'password' => true)));
+                $res->add(json_encode(array('valid' => true, 'succeded' => false)));
                 $res->send();
             }
         }
@@ -34,17 +41,17 @@
             $newPassword = $req->data['newPassword'];
             $password = $req->data['password'];
             $userDB = new UsersHelper();
-            $valid = $userDB->verifyUser($_SESSION['username'], $password);
+            $valid = $userDB->verifyUser($_SESSION['username'], $password) >= 0;
             if(!$valid) {
-                $res->add(json_encode(array('valid' => true, 'password' => false)));
+                $res->add(json_encode(array('valid' => false, 'password' => false)));
                 $res->send();
             }
             $valid = $userDB->updatePassword($_SESSION['id'], $newPassword);
             if(!$valid) {
-                $res->add(json_encode(array('valid' => false, 'password' => true)));
+                $res->add(json_encode(array('valid' => true, 'succeded' => false)));
                 $res->send();
             } else {
-                $res->add(json_encode(array('valid' => true, 'password' => true)));
+                $res->add(json_encode(array('valid' => true, 'succeded' => true)));
                 $res->send();
             }
         }
@@ -53,17 +60,25 @@
             $email = $req->data['email'];
             $password = $req->data['password'];
             $userDB = new UsersHelper();
-            $valid = $userDB->verifyUser($_SESSION['username'], $password);
+            $validEmail = filter_var($email, FILTER_VALIDATE_EMAIL);
+            $unique = !$userDB->checkEmailExists($email); 
+            $valid = $userDB->verifyUser($_SESSION['username'], $password) >= 0;
+            if(!$valid || !$validEmail || !$unique) {
+                $res->add(json_encode(array('valid' => false, 'password' => $valid, 
+                    'validEmail' => $validEmail, 'unique' => $unique, 'succeded' => false)));
+                $res->send();
+            }
+            $valid = $userDB->updateUsername($_SESSION['id'], $username);
             if(!$valid) {
-                $res->add(json_encode(array('valid' => true, 'password' => false)));
+                $res->add(json_encode(array('valid' => true, 'succeded' => false)));
                 $res->send();
             }
             $valid = $userDB->updateEmail($_SESSION['id'], $email);
             if(!$valid) {
-                $res->add(json_encode(array('valid' => false, 'password' => true)));
+                $res->add(json_encode(array('valid' => false, 'succeded' => false)));
                 $res->send();
             } else {
-                $res->add(json_encode(array('valid' => true, 'password' => true)));
+                $res->add(json_encode(array('valid' => true, 'succeded' => true)));
                 $res->send();
             }
         }
