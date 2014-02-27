@@ -17,11 +17,15 @@
 
     $router = new Zaphpa_Router();
 
+    // Home
+
     $router->addRoute(array(
         'path' => '/',
         'get' => array('Index', 'getPage'),
         'file' => 'controllers/index.php',
     ));
+
+    // Helper methods
 
     $router->addRoute(array(
         'path' => '/api/currentUser',
@@ -34,6 +38,8 @@
         'get' => array('Users', 'autoComplete'),
         'file' => 'controllers/users.php',
     ));
+
+    // Friends
 
     $router->addRoute(array(
         'path' => '/user/{username}/friends',
@@ -73,6 +79,8 @@
         'delete' => array('Friends', 'deleteCircle'),
         'file' => 'controllers/friends.php',
     ));
+
+    // Login, logout and register
 
     $router->addRoute(array(
         'path' => '/login',

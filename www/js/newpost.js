@@ -33,7 +33,7 @@ function content() {
                         showError();
                     } else {
                         window.location.replace("/user/" + username + "/blogs/" + 
-                            blog + "/1");
+                            blog + "/pages/1"); 
                     }
                 }
             });
@@ -43,7 +43,7 @@ function content() {
     $("#cancel-btn").click(function(e) {
         e.preventDefault();
         window.location.replace("/user/" + username + "/blogs/" + 
-            blog + "/1");
+            blog + "/pages/1");
     });
 }
 
