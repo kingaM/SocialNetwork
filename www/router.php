@@ -24,26 +24,39 @@
     ));
 
     $router->addRoute(array(
+        'path' => '/api/currentUser',
+        'get' => array('Users', 'getCurrentUser'),
+        'file' => 'controllers/users.php',
+    ));
+
+    $router->addRoute(array(
         'path' => '/api/users/autocomplete/{name}',
         'get' => array('Users', 'autoComplete'),
         'file' => 'controllers/users.php',
     ));
 
     $router->addRoute(array(
-        'path' => '/friends',
+        'path' => '/user/{username}/friends',
         'get' => array('Friends', 'getPage'),
         'file' => 'controllers/friends.php',
     ));
 
     $router->addRoute(array(
-        'path' => '/api/friends',
+        'path' => '/api/user/{username}/friends',
         'get' => array('Friends', 'getFriends'),
         'post' => array('Friends', 'addFriend'),
         'file' => 'controllers/friends.php',
     ));
 
     $router->addRoute(array(
-        'path' => '/api/friends/{login}',
+        'path' => '/api/user/{username}/friends',
+        'get' => array('Friends', 'getFriends'),
+        'post' => array('Friends', 'addFriend'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/friends/{login}',
         'delete' => array('Friends', 'removeFriend'),
         'file' => 'controllers/friends.php',
     ));
@@ -92,6 +105,8 @@
         'file' => 'controllers/register.php',
     ));
 
+    // Messages
+
     $router->addRoute(array(
         'path' => '/messages',
         'get' => array('Messages', 'getPage'),
@@ -115,6 +130,21 @@
         'path' => '/api/messages/circle/{circleName}',
         'post' => array('Messages', 'addCircleMessage'),
         'file' => 'controllers/messages.php',
+    ));
+
+    // Profile
+
+    $router->addRoute(array(
+        'path' => '/user/{username}/profile',
+        'get' => array('Profile', 'getProfile'),
+        'file' => 'controllers/profile.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => 'api/user/{username}/profile',
+        'get' => array('Profile', 'getProfileInfo'),
+        'post' => array('Profile', 'editProfileInfo'),
+        'file' => 'controllers/profile.php',
     ));
 
     try {

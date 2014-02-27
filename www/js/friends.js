@@ -1,120 +1,117 @@
+document.getElementById("content").style.visibility="hidden";
+
 function content() {
     prepare();
+    document.getElementById("content").style.visibility="visible";
     getFriends();
 }
 
-function getFriends() {
-    $.getJSON( "/api/friends", function(data) {
-        var friends;
-        var requests;
-        var circles;
-        $.each( data, function(key, val) {
-            if(key == "friends")
-                friends = val;
-            if(key == "friendRequests")
-                requests = val;
-            if(key == "circles")
-                circles = val;
-        });
-        showFriends(friends);
-        showRequests(requests);
-        showCircles(circles);
-    });
-}
-
-function showFriends (friends, requests) {
-    $("#friends_list").empty();
-    for (var i = 0; i < friends.length; i++) {
-        var listItem = "<li>" + friends[i] + 
-        " <button type='button' class='btn btn-danger btn-xs' id='" + friends[i] + "_del'>" + 
-        "<span class='glyphicon glyphicon-remove'></span></button></li>";
-        $("#friends_list").append(listItem);
-        $("#" + friends[i] + "_del").click(friends[i], deleteFriend);
-    };
-}
-
 function showRequests(requests) {
-    $("#requests_list").empty();
-    $("#numOfFriendReqs").text(requests.length);
+
+    var requestsList = new Array();
+
+    var monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+
     for (var i = 0; i < requests.length; i++) {
-        var listItem = "<li>" + requests[i] + 
-        " <button type='button' class='btn btn-success btn-xs' " + 
-        "id='" + requests[i] + "_add'><span class='glyphicon glyphicon-ok'></span></button> " +
-        " <button type='button' class='btn btn-danger btn-xs' " + 
-        "id='" + requests[i] + "_del'><span class='glyphicon glyphicon-remove'></span></button></li>";
-        $("#requests_list").append(listItem);
-        $("#" + requests[i] + "_add").click(requests[i], acceptFriend);
-        $("#" + requests[i] + "_del").click(requests[i], deleteFriend);
-    };
+        var login = requests[i]['login'];
+        var date = new Date(requests[i]['startTimestamp']*1000);
+        date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
+        var image = "<img src='" + "http://i.imgur.com/r8R1C6B.png" + "' style='max-height:100px;'></img>";
+        var name = "<a href='/user/" + login + "/profile'>" + requests[i]['name'] + "</a>";
+        var action =    "<button type='button' class='btn btn-success btn' " + 
+                        "id='" + requests[i]['login'] + "_add'>" + 
+                            "<span class='glyphicon glyphicon-ok'></span>" + 
+                        "</button> <br><br>" +
+                        "<button type='button' class='btn btn-danger btn' " + 
+                        "id='" + requests[i]['login'] + "_del'>" + 
+                            "<span class='glyphicon glyphicon-remove'></span>" + 
+                        "</button>";
+        var friend = [image, name, date, action];
+        requestsList.push(friend);
+    }
+
+    $('#requestsTable').dataTable().fnClearTable();
+    $('#requestsTable').dataTable().fnAddData(requestsList);
+
+    for (var i = 0; i < requests.length; i++) {
+        $("#" + requests[i]['login'] + "_del").click(requests[i]['login'], deleteFriend);
+        $("#" + requests[i]['login'] + "_add").click(requests[i]['login'], function(name){
+            addFriend(name.data);
+        });
+    }
 }
 
 function showCircles(circles) {
-    $("#circles_list").empty();
+
+    $("#circlesList").empty();
     $("#selectCircles").empty();
+
     for (var i = 0; i < circles.length; i++) {
         var cName = circles[i]['name'];
-        var listItem = "<li>" + cName + " <button type='button' class='btn btn-danger btn-xs' " + 
-        "id='" + cName + "_del'><span class='glyphicon glyphicon-remove'></span></button>" + 
-        "<ul id='circle_" + i + "'></ul></li>";
-        $("#selectCircles").append("<option>" + circles[i]['name'] + "</option>");
-        $("#circles_list").append(listItem);
-        for (var j = 0; j < circles[i]['users'].length; j++) {
-            var user = circles[i]['users'][j];
-            var circleListItem = "<li>" + user + "</li>";
-            $("#circle_" + i).append(circleListItem);
-        };
-        $("#" + cName + "_del").click(cName, deleteCircle);
-    };
-}
 
-function deleteFriend(name) {
-    var username = name.data;
-    $.ajax({
-        url: "/api/friends/" + username,
-        type: "DELETE",
-        success: function(result) {
-            getFriends();
-        }
-    });
+        var tableHTML = '<div class="table-responsive container-fluid">' + 
+                            '<table cellpadding="0" cellspacing="0" border="0" class="table ' + 
+                            'table-striped table-bordered datatable text-center" ' + 
+                            'id="circleTable_' + cName + '">' + 
+                                '<thead>' + 
+                                    '<tr>' + 
+                                        '<th class="text-center">Photo</th>' + 
+                                        '<th class="text-center">Name</th>' + 
+                                        '<th class="text-center">Friends since</th>' + 
+                                        '<th></th>' + 
+                                    '</tr>' + 
+                                '</thead>' + 
+                                '<tbody></tbody>' + 
+                            '</table>' + 
+                        '</div>';
+
+        var buttonHTML = "<button type='button' class='btn btn-danger btn-xs' " + 
+            "id='" + cName + "_del'>Delete Circle</button>"
+ 
+        var listItem =  '<div class="panel panel-default">' + 
+                            '<div class="panel-heading">' + 
+                                '<h4 class="panel-title">' + 
+                                    '<a data-toggle="collapse" data-parent="#circlesList"' + 
+                                    ' href="#collapse_' + cName + '">' + cName + '</a>' + 
+                                '</h4>' + 
+                            '</div>' + 
+                            '<div id="collapse_' + cName + '" class="panel-collapse collapse">' + 
+                                '<div class="panel-body">' + buttonHTML + "<br><br>" + tableHTML + 
+                                '</div>' + 
+                            '</div>' + 
+                        '</div>';
+
+        $("#circlesList").append(listItem);
+
+        $('#circleTable_' + cName).dataTable( {
+            "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+            "iDisplayLength": 5,
+            "aaSorting": [[1, "asc"]],
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ records per page"
+            },
+            "aoColumnDefs": [
+                {"bSortable": false, "aTargets": [0, 3]},
+            ],
+        });
+
+        // for (var j = 0; j < circles[i]['users'].length; j++) {
+        //     var user = circles[i]['users'][j];
+        //     var circleListItem = "<li>" + user + "</li>";
+        //     $("#circle_" + i).append(circleListItem);
+        // };
+        $("#" + cName + "_del").click(cName, deleteCircle);
+        $("#selectCircles").append("<option>" + circles[i]['name'] + "</option>");
+    };
+
+    fixTables();
 }
 
 function acceptFriend(name) {
     addFriend(name.data);
-}
-
-function addFriend(username) {
-    $.ajax({
-        url: "/api/friends",
-        type: "POST",
-        data: {username: username},
-
-        success: function(response) {
-            var data = $.parseJSON(response);
-            $.each( data, function(key, val) {
-                if(key == "error")
-                    addFriendAlert(val, false);
-                else if(key == "result" && val == "requested") {
-                    addFriendAlert("", true);
-                    $("#addForm")[0].reset();
-                }
-            });
-            getFriends();
-        }
-    });
-}
-
-function addFriendAlert(val, success) {
-    if(success) {
-        $("#friendAlert").remove();
-        $("#add_friends").append('<div class="alert alert-success fade in" id="friendAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            'Friend request sent</div>');
-    } else {
-        $("#friendAlert").remove();
-        $("#add_friends").append('<div class="alert alert-danger fade in" id="friendAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            val + '</div>');
-    }
 }
 
 function addCircle(circleName) {
@@ -127,29 +124,15 @@ function addCircle(circleName) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
                 if(key == "error")
-                    addCircleAlert(val, false);
+                    displayModal(val);
                 else if(key == "result") {
-                    addCircleAlert("", true);
+                    displayModal("Circle added");
                     $("#newCircle")[0].reset();
                 }
             });
             getFriends();
         }
     });
-}
-
-function addCircleAlert(val, success) {
-    if(success) {
-        $("#circleAlert").remove();
-        $("#newCircle").append('<div class="alert alert-success fade in" id="circleAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            'Circle added</div>');
-    } else {
-        $("#circleAlert").remove();
-        $("#newCircle").append('<div class="alert alert-danger fade in" id="circleAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            val + '</div>');
-    }
 }
 
 function addToCircle(circleName, username) {
@@ -162,29 +145,15 @@ function addToCircle(circleName, username) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
                 if(key == "error")
-                    addToCircleAlert(val, false);
+                    displayModal(val);
                 else if(key == "result") {
-                    addToCircleAlert("", true);
+                    displayModal("Added");
                     $("#addToCircle")[0].reset();
                 }
             });
             getFriends();
         }
     });
-}
-
-function addToCircleAlert(val, success) {
-    if(success) {
-        $("#addToCircleAlert").remove();
-        $("#addToCircle").append('<div class="alert alert-success fade in" id="addToCircleAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            'Added</div>');
-    } else {
-        $("#addToCircleAlert").remove();
-        $("#addToCircle").append('<div class="alert alert-danger fade in" id="addToCircleAlert">' + 
-            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + 
-            val + '</div>');
-    }
 }
 
 function deleteCircle(name) {
@@ -198,7 +167,27 @@ function deleteCircle(name) {
     });
 }
 
+function createRequestsTable() {
+    $('#requestsTable').dataTable( {
+        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sPaginationType": "bootstrap",
+        "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+        "iDisplayLength": 5,
+        "aaSorting": [[1, "asc"]],
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records per page"
+        },
+        "aoColumnDefs": [
+            {"bSortable": false, "aTargets": [0, 3]},
+        ],
+    });
+}
+
 function prepare() {
+
+    createFriendsTable();
+    createRequestsTable();
+
     $("#addForm").submit(function(e){
         e.preventDefault();
         addFriend($("#addForm :input").val());

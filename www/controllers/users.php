@@ -11,10 +11,14 @@
             if(strlen($current) < 5) {
                 $db = new FriendsHelper();
 
-                $friends = $db->getFriends($_SESSION['id']);
+                $friends = $db->getFriends($_SESSION['username']);
+                $friendLogins = array();
+                foreach ($friends as $friend) {
+                    $friendLogins[] = $friend['login'];
+                }
                 $friendsOfFriends = $db->getFriendsOfFriends($_SESSION['id']);
 
-                $related = array_merge($friends, $friendsOfFriends);
+                $related = array_merge($friendLogins, $friendsOfFriends);
                 $suggestions = array();
 
                 foreach ($related as $r) {
@@ -28,6 +32,11 @@
             }
 
             $res->add(json_encode(array("suggestions" => $suggestions)));
+            $res->send();
+        }
+
+        public function getCurrentUser($req, $res) {
+            $res->add(json_encode(array("username" => $_SESSION['username'])));
             $res->send();
         }
 

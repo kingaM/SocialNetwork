@@ -13,21 +13,26 @@
         /**
          * Gets the names of a user's friends
          *
-         * @param int $userID The user to show friends from
+         * @param String $username The user to show friends from
          *
          * @return String[] Array of friend names
          */
-        public function getFriends($userID) {
+        public function getFriends($username) {
             $friends = array();
-            $result = $this->db->fetch("SELECT login 
-                FROM friendships as f, users as u
-                WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID) 
-                    OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
-                AND status = 1",
-                Array(':user' => $userID));
+            $result = $this->db->fetch("SELECT u2.login, 
+                (CASE WHEN u2.middle_name IS NULL THEN CONCAT(u2.first_name, ' ', u2.last_name) 
+                    ELSE CONCAT(u2.first_name, ' ', u2.middle_name, ' ', u2.last_name) END) as name, 
+                startTimestamp
+                FROM friendships as f, users as u1, users as u2
+                WHERE ((f.user1=u1.ID AND NOT u2.ID=u1.ID AND f.user2=u2.ID) 
+                    OR (f.user2=u1.ID AND NOT u2.ID=u1.ID AND f.user1=u2.ID)) 
+                AND u1.login=:user AND status = 1",
+                Array(':user' => $username));
 
             foreach ($result as $r) {
-                $friends[] = $r['login'];
+                $friends[] = array('login'=>$r['login'], 
+                                    'name'=>$r['name'], 
+                                    'startTimestamp'=>$r['startTimestamp']);
             }
             return $friends;
         }
@@ -61,18 +66,23 @@
          * @return String[] Array of friend names
          */
         public function getFriendsOfFriends($userID) {
-            $friends = array();
-            // MySQL doesn't support the WITH syntax ... this is the best we can do
-            // ID's of all friends
-            $subq = "(SELECT u.ID 
+            $friendIDs = array();
+            $result = $this->db->fetch("(SELECT u.ID 
                 FROM friendships as f, users as u
                 WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID) 
                     OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
-                AND status = 1)";
+                AND status = 1)",
+                Array(':user' => $userID));
+            foreach ($result as $r) {
+                $friendIDs[] = $r['ID'];
+            }
+
+            $inSet = implode(",", $friendIDs);
+            
             $result = $this->db->fetch("SELECT login
                 FROM friendships as f, users as u
-                WHERE ((f.user1 IN " . $subq . " AND NOT u.ID IN " . $subq . " AND f.user2=u.ID) 
-                    OR (f.user2 IN " . $subq . " AND NOT u.ID IN " . $subq . " AND f.user1=u.ID))
+                WHERE ((f.user1 IN ($inSet) AND NOT u.ID IN ($inSet) AND f.user2=u.ID) 
+                    OR (f.user2 IN ($inSet) AND NOT u.ID IN ($inSet) AND f.user1=u.ID))
                 AND status = 1 
                 AND NOT u.ID=:user 
                 GROUP BY login",
@@ -131,10 +141,11 @@
             if(sizeof($result) != 0) {
                 // Accept the friend request if there is an existing one
                 $result = $this->db->execute("UPDATE friendships
-                    SET status=1
+                    SET status=1, startTimestamp=:time
                     WHERE user2=:requester AND user1 IN
                     (SELECT ID FROM users WHERE login=:addFriend)",
-                    Array(':requester' => $requester, ':addFriend' => $addFriend));
+                    Array(':requester' => $requester, ':addFriend' => $addFriend, 
+                        ':time' => time()));
                 return True;
             }
 
@@ -186,13 +197,18 @@
         public function getFriendRequests($userID) {
 
             $friends = array();
-            $result = $this->db->fetch("SELECT login 
+            $result = $this->db->fetch("SELECT login, 
+                (CASE WHEN u.middle_name IS NULL THEN CONCAT(u.first_name, ' ', u.last_name) 
+                    ELSE CONCAT(u.first_name, ' ', u.middle_name, ' ', u.last_name) END) as name, 
+                startTimestamp 
                 FROM friendships as f, users as u
                 WHERE f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID AND status = 0",
                 Array(':user' => $userID));
 
             foreach ($result as $r) {
-                $friends[] = $r['login'];
+                $friends[] = array('login'=>$r['login'], 
+                                    'name'=>$r['name'], 
+                                    'startTimestamp'=>$r['startTimestamp']);
             }
             return $friends;
         }
