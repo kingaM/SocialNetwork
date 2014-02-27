@@ -5,6 +5,7 @@ function content() {
     getUserInfo();
     setSubmitBtns();
     setEditBtns();
+    setCancelBtns();
 }
 
 function setEditBtns() {
@@ -37,7 +38,7 @@ function setEditBtns() {
 }
 
 function setSubmitBtns() {
-    $("#username-submit-btn").click(function(e) {
+    $("#username-submit-btn .custom-submit-btn").click(function(e) {
         e.preventDefault();
         var values = {};
         values['username'] = $("#new-username").val();
@@ -82,7 +83,7 @@ function setSubmitBtns() {
             }
         }); 
     });
-    $("#password-submit-btn").click(function(e) {
+    $("#password-submit-btn .custom-submit-btn").click(function(e) {
         e.preventDefault();
         if ($("#new-password").val() !== $("#new-password-retype").val()) {
             $("#new-password-retype-error").show();
@@ -115,7 +116,7 @@ function setSubmitBtns() {
             }
         }); 
     });
-    $("#email-submit-btn").click(function(e) {
+    $("#email-submit-btn .custom-submit-btn").click(function(e) {
         e.preventDefault();
         if ($("#new-email").val() !== $("#new-email-retype").val()) {
             $("#new-email-retype-error").show();
@@ -170,6 +171,13 @@ function setSubmitBtns() {
     });
 }
 
+function setCancelBtns() {
+    $(".custom-cancel-btn").click(function(e) {
+        e.preventDefault();
+        hideAndClearAll();
+    });
+}
+
 function getUserInfo() {
     $.getJSON( "/api/user/" + "-1" + "/profile", 
         function(data) {
@@ -214,6 +222,21 @@ function hideAndClearAll() {
     $("#email-edit-btn").show();
     $("#password-submit-btn").hide();
     $("#password-edit-btn").show();
+    // Clear all the error messages
+    $("#new-username-error").hide();
+    $("#password-username-error").hide();
+    $("#password-password-error").hide();
+    $("#new-password-retype-error").hide();
+    $("#new-email-error").hide();
+    $("#new-email-retype-error").hide();
+    $("#password-email-error").hide();
+    // Remove all error classes
+    $("#form-group-username-username").removeClass("has-error");
+    $("#form-group-username-password").removeClass("has-error");
+    $("#form-group-password-current").removeClass("has-error");
+    $("#form-group-password-retype").removeClass("has-error");
+    $("#form-group-new-email").removeClass("has-error");
+    $("#form-group-email-password").removeClass("has-error");
 }
 
 function showError() {
