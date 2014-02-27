@@ -147,7 +147,7 @@
          */
         public function getUser($id) {
             $sql = "SELECT id, first_name, middle_name, last_name, gender, dob, about, locations, 
-                languages, email
+                languages, email, login
                 FROM users, profile
                 WHERE id = :id AND activated = 1
                 AND id = userId";
@@ -183,6 +183,54 @@
                 ':lastName' => $lastName, ':gender' => $gender, ':dob' => $dob, ':about' => $about,
                 ':locations' => $locations, ':languages' => $languages, ':id' => $id);
             $this->db->execute($sql, $array);
+        }
+
+        /**
+         * Updates user's username.
+         *     
+         * @param  integer $id        The unique id of the user. Cannot be null.
+         * @param  string  $username  The new username of the user.
+         *
+         * @return boolean True if the update succeeded, false otherwise.
+         */
+        public function updateUsername($id, $username) {
+            $sql = "UPDATE users
+                SET login = :username
+                WHERE id = :id";
+            $array = array(':id' => $id, ':username' => $username);
+            return $this->db->execute($sql, $array);
+        }
+
+        /**
+         * Updates user's password.
+         *     
+         * @param  integer $id        The unique id of the user. Cannot be null.
+         * @param  string  $password  The new password of the user.
+         *
+         * @return boolean True if the update succeeded, false otherwise.
+         */
+        public function updatePassword($id, $password) {
+            $sql = "UPDATE users
+                SET password = :password
+                WHERE id = :id";
+            $array = array(':id' => $id, ':password' => $password);
+            return $this->db->execute($sql, $array);
+        }
+
+        /**
+         * Updates user's email.
+         *     
+         * @param  integer $id     The unique id of the user. Cannot be null.
+         * @param  string  $email  The new email of the user.
+         *
+         * @return boolean True if the update succeeded, false otherwise.
+         */
+        public function updateEmail($id, $email) {
+            $sql = "UPDATE users
+                SET email = :email
+                WHERE id = :id";
+            $array = array(':id' => $id, ':email' => $email);
+            return $this->db->execute($sql, $array);
         }
 
         /**

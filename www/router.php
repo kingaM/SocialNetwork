@@ -159,6 +159,32 @@
         'file' => 'controllers/profile.php',
     ));
 
+    // Settings
+    
+    $router->addRoute(array(
+        'path' => '/settings',
+        'get' => array('Settings', 'getSettings'),
+        'file' => 'controllers/settings.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => 'api/settings/username',
+        'post' => array('Settings', 'updateUsername'),
+        'file' => 'controllers/settings.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => 'api/settings/password',
+        'post' => array('Settings', 'updatePassword'),
+        'file' => 'controllers/settings.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => 'api/settings/email',
+        'post' => array('Settings', 'updateEmail'),
+        'file' => 'controllers/settings.php',
+    ));
+
     // Blog
     
     $router->addRoute(array(

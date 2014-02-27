@@ -24,6 +24,9 @@
 
         public function getProfileInfo($req, $res) {
             $username = $req->params['username'];
+            if ($username == "-1") {
+                $username = $_SESSION['username'];
+            }
             $usersDB = new UsersHelper();
             if(!$usersDB->checkUsernameExists($username)) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
@@ -46,7 +49,8 @@
                     'locations' => $userInfo['locations'],
                     'languages' => $userInfo['languages'],
                     'about' => $userInfo['about'],
-                    'email' => $userInfo['email']
+                    'email' => $userInfo['email'],
+                    'username' => $userInfo['login']
                     )
                 )));
                 $res->send();
