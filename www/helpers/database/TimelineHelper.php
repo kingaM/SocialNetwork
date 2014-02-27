@@ -20,6 +20,8 @@
          */
         public function addPost($to, $from, $content) {
 
+            if(strlen($content) < 1)
+                throw new Exception("Can't make an empty post");
             if(strlen($content) > 10000)
                 throw new Exception("Content too long - 10,000 character limit");
 
