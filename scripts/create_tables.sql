@@ -72,3 +72,32 @@ CREATE TABLE IF NOT EXISTS `circle_memberships` (
     FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`circle`) REFERENCES `circles` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS `blogs` (
+    `blogId` INT NOT NULL AUTO_INCREMENT,
+    `about` VARCHAR(10000) NOT NULL,
+    `user` INT NOT NULL,
+    `name` VARCHAR(100) NOT NULL, 
+    `url` VARCHAR(100) NOT NULL, 
+    UNIQUE(`user`, `url`),
+    PRIMARY KEY (`blogId`),
+    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `posts` (
+    `postId` INT NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(100) NOT NULL,
+    `timestamp` VARCHAR(100) NOT NULL,
+    `blogId` INT NOT NULL, 
+    PRIMARY KEY (`postId`),
+    FOREIGN KEY (`blogId`) REFERENCES `blogs` (`blogId`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Seperate table in case a blog post is longer than the value of text, unlikely.
+CREATE TABLE IF NOT EXISTS `posts_details` (
+    `postDetailId` INT NOT NULL AUTO_INCREMENT,
+    `postId` INT NOT NULL, 
+    `content` TEXT NOT NULL, 
+    PRIMARY KEY (`postDetailId`),
+    FOREIGN KEY (`postId`) REFERENCES `posts` (`postId`) ON DELETE CASCADE ON UPDATE CASCADE
+);

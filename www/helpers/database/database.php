@@ -1,4 +1,6 @@
 <?php
+
+require_once('libs/FirePHPCore/FirePHP.class.php');
     /**
      * Exception thrown if there is a problem with the conncection or sql.
      *
@@ -25,6 +27,8 @@
         private $username = 'root';
         private $password = 'root';
         private $pdo = NULL;
+
+        private $transactionCounter = 0;
 
         public function __construct() {
             $this->connect();
@@ -100,8 +104,17 @@
          */
         public function fetch($sql, $array = NULL) {
             try {
+                $firephp = FirePHP::getInstance(true);
                 $q = $this->pdo->prepare($sql);
-                $q->execute($array);
+                // Otherwise ints are treated as strings, should be done for other types too.
+                foreach ($array as $key => $value) {
+                    if(is_int($value)) {
+                        $q->bindValue($key, $value, PDO::PARAM_INT);
+                    } else {
+                        $q->bindValue($key, $value, PDO::PARAM_STR);
+                    } 
+                }
+                $q->execute();
                 return $q->fetchAll();
             } catch (PDOException $e) {
                 throw new DatabaseException($e->getMessage(), $e->getCode());
@@ -120,6 +133,44 @@
                 throw new DatabaseException($e->getMessage(), $e->getCode());
             }
         }
+
+        /**
+         * Begins transaction.
+         * 
+         * @return boolean True if begin succeeded, false otherwise. 
+         */
+        public function beginTransaction() { 
+            if(!$this->transactionCounter++) {
+                return $this->pdo->beginTransaction(); 
+            }
+            return $this->transactionCounter >= 0; 
+        } 
+
+        /**
+         * Rollback transaction.
+         * 
+         * @return boolean True if the rollback succeded, false otherwise.
+         */
+        public function rollBack() { 
+            if($this->transactionCounter >= 0) { 
+                $this->transactionCounter = 0; 
+                return $this->pdo->rollBack(); 
+            } 
+            $this->transactionCounter = 0; 
+            return false; 
+        }
+
+        /**
+         * Commits a tansaction.
+         * 
+         * @return boolean True if the commit succeded, false otherwise.
+         */
+        public function commit() { 
+            if(!--$this->transactionCounter) {
+                return $this->pdo->commit();
+            }
+            return $this->transactionCounter >= 0; 
+        } 
 
         /**
          * Disconnects from the database.
