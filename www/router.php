@@ -160,6 +160,12 @@
         'file' => 'controllers/timeline.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/posts/{postID}',
+        'post' => array('Timeline', 'addComment'),
+        'file' => 'controllers/timeline.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {

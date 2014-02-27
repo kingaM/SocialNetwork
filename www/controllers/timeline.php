@@ -36,5 +36,20 @@
             $res->add(json_encode($posts));
             $res->send();
         }
+
+        public function addComment($req, $res) {
+            $from = $_SESSION['id'];
+            $postID = $req->params['postID'];
+            $content = $req->data['content'];
+            $db = new TimelineHelper();
+            try {
+                $db->addComment($postID, $from, $content);
+                $res->add(json_encode(array('result' => 'added')));
+                $res->send();
+            } catch (Exception $e) {
+                $res->add(json_encode(array('error' => $e->getMessage())));
+                $res->send();
+            }
+        }
     }
 ?>
