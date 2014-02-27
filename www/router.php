@@ -183,6 +183,7 @@
         'path' => 'api/settings/email',
         'post' => array('Settings', 'updateEmail'),
         'file' => 'controllers/settings.php',
+    ));
 
     // Timeline
 
