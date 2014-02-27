@@ -183,6 +183,26 @@
         'path' => 'api/settings/email',
         'post' => array('Settings', 'updateEmail'),
         'file' => 'controllers/settings.php',
+
+    // Timeline
+
+    $router->addRoute(array(
+        'path' => '/user/{username}/',
+        'get' => array('Timeline', 'getPage'),
+        'file' => 'controllers/timeline.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/',
+        'get' => array('Timeline', 'getPosts'),
+        'post' => array('Timeline', 'addPost'),
+        'file' => 'controllers/timeline.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/posts/{postID}',
+        'post' => array('Timeline', 'addComment'),
+        'file' => 'controllers/timeline.php',
     ));
 
     // Blog

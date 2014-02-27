@@ -73,6 +73,28 @@ CREATE TABLE IF NOT EXISTS `circle_memberships` (
     FOREIGN KEY (`circle`) REFERENCES `circles` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `wall_posts` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `to` int(11) NOT NULL,
+    `from` int(11) NOT NULL,
+    `content` VARCHAR(10000) NOT NULL DEFAULT 0,
+    `timestamp` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`to`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `comments` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `from` int(11) NOT NULL,
+    `wall_post` int(11) NOT NULL,
+    `content` VARCHAR(10000) NOT NULL DEFAULT 0,
+    `timestamp` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`wall_post`) REFERENCES `wall_posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS `blogs` (
     `blogId` INT NOT NULL AUTO_INCREMENT,
     `about` VARCHAR(10000) NOT NULL,

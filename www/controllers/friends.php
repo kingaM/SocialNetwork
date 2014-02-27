@@ -20,8 +20,6 @@
                 $res->add($m->render('main', array('title' => 'Friends', 'content' => $content)));
                 $res->send();
             }else {
-                // $content = '<script src="/js/friends_friendsTable.js"></script>' . 
-                // '<div id="current_friends"></div><script>createFriendsTable();</script>';
                 $content = $m->render('friends_small', array());
                 $content = $m->render('user', array('content' => $content, 'username' => $username,
                     'timeline' => '', 'profile' => '', 'friends' => 'active'));
@@ -70,8 +68,7 @@
                 }
                 $res->add(json_encode(array('result' => 'requested')));
                 $res->send();
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 $res->add(json_encode(array('error' => $e->getMessage())));
                 $res->send();
             }
