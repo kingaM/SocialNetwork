@@ -45,6 +45,7 @@ function showRequests(requests) {
 function showCircles(circles) {
 
     $("#circlesList").empty();
+    $("#selectCircles").empty();
 
     for (var i = 0; i < circles.length; i++) {
         var cName = circles[i]['name'];
