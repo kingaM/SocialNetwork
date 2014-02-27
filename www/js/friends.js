@@ -7,18 +7,6 @@ function content() {
 }
 
 function showRequests(requests) {
-    // $("#requests_list").empty();
-    // $("#numOfFriendReqs").text(requests.length);
-    // for (var i = 0; i < requests.length; i++) {
-    //     var listItem = "<li>" + requests[i] + 
-    //     " <button type='button' class='btn btn-success btn-xs' " + 
-    //     "id='" + requests[i] + "_add'><span class='glyphicon glyphicon-ok'></span></button> " +
-    //     " <button type='button' class='btn btn-danger btn-xs' " + 
-    //     "id='" + requests[i] + "_del'><span class='glyphicon glyphicon-remove'></span></button></li>";
-    //     $("#requests_list").append(listItem);
-    //     $("#" + requests[i] + "_add").click(requests[i], acceptFriend);
-    //     $("#" + requests[i] + "_del").click(requests[i], deleteFriend);
-    // };
 
     var requestsList = new Array();
 
@@ -55,22 +43,70 @@ function showRequests(requests) {
 }
 
 function showCircles(circles) {
-    $("#circles_list").empty();
-    $("#selectCircles").empty();
+
+    $("#circlesList").empty();
+
     for (var i = 0; i < circles.length; i++) {
         var cName = circles[i]['name'];
-        var listItem = "<li>" + cName + " <button type='button' class='btn btn-danger btn-xs' " + 
-        "id='" + cName + "_del'><span class='glyphicon glyphicon-remove'></span></button>" + 
-        "<ul id='circle_" + i + "'></ul></li>";
-        $("#selectCircles").append("<option>" + circles[i]['name'] + "</option>");
-        $("#circles_list").append(listItem);
-        for (var j = 0; j < circles[i]['users'].length; j++) {
-            var user = circles[i]['users'][j];
-            var circleListItem = "<li>" + user + "</li>";
-            $("#circle_" + i).append(circleListItem);
-        };
+
+        var tableHTML = '<div class="table-responsive container-fluid">' + 
+                            '<table cellpadding="0" cellspacing="0" border="0" class="table ' + 
+                            'table-striped table-bordered datatable text-center" ' + 
+                            'id="circleTable_' + cName + '">' + 
+                                '<thead>' + 
+                                    '<tr>' + 
+                                        '<th class="text-center">Photo</th>' + 
+                                        '<th class="text-center">Name</th>' + 
+                                        '<th class="text-center">Friends since</th>' + 
+                                        '<th></th>' + 
+                                    '</tr>' + 
+                                '</thead>' + 
+                                '<tbody></tbody>' + 
+                            '</table>' + 
+                        '</div>';
+
+        var buttonHTML = "<button type='button' class='btn btn-danger btn-xs' " + 
+            "id='" + cName + "_del'>Delete Circle</button>"
+ 
+        var listItem =  '<div class="panel panel-default">' + 
+                            '<div class="panel-heading">' + 
+                                '<h4 class="panel-title">' + 
+                                    '<a data-toggle="collapse" data-parent="#circlesList"' + 
+                                    ' href="#collapse_' + cName + '">' + cName + '</a>' + 
+                                '</h4>' + 
+                            '</div>' + 
+                            '<div id="collapse_' + cName + '" class="panel-collapse collapse">' + 
+                                '<div class="panel-body">' + buttonHTML + "<br><br>" + tableHTML + 
+                                '</div>' + 
+                            '</div>' + 
+                        '</div>';
+
+        $("#circlesList").append(listItem);
+
+        $('#circleTable_' + cName).dataTable( {
+            "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+            "iDisplayLength": 5,
+            "aaSorting": [[1, "asc"]],
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ records per page"
+            },
+            "aoColumnDefs": [
+                {"bSortable": false, "aTargets": [0, 3]},
+            ],
+        });
+
+        // for (var j = 0; j < circles[i]['users'].length; j++) {
+        //     var user = circles[i]['users'][j];
+        //     var circleListItem = "<li>" + user + "</li>";
+        //     $("#circle_" + i).append(circleListItem);
+        // };
         $("#" + cName + "_del").click(cName, deleteCircle);
+        $("#selectCircles").append("<option>" + circles[i]['name'] + "</option>");
     };
+
+    fixTables();
 }
 
 function acceptFriend(name) {

@@ -148,6 +148,10 @@ if ( $.fn.DataTable.TableTools ) {
 }
 
 $(function(){
+    fixTables();
+});
+
+function fixTables() {
     $('.datatable').each(function(){
         var datatable = $(this);
         // SEARCH - Add the placeholder for Search and Turn this into in-line formcontrol
@@ -170,4 +174,4 @@ $(function(){
         var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_info]');
         length_sel.css('margin-top', '18px')
     });
-});
+}
