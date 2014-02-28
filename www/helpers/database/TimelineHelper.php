@@ -75,6 +75,9 @@
                 $postIDs[] = $r['id'];
             }
 
+            if(count($postIDs) === 0)
+                return $posts;
+
             $inSet = implode(",", $postIDs);
 
             $result = $this->db->fetch("SELECT c.id, c.wall_post, c.content, c.timestamp, u.login,
@@ -126,6 +129,93 @@
                 VALUES(:fromUser, :postID, :content, :time)",
                 Array(':fromUser' => $from, ':postID' => $postID, ':content' => $content, 
                     ':time' => time()));
+        }
+
+        /**
+         * Gets wall posts of a user's friends
+         *
+         * @param String $user The user to get the newsfeed for
+         *
+         */
+        public function getNewsFeed($user) {
+            // TODO: Fix this terrible efficiency!
+            require_once('helpers/database/FriendsHelper.php');
+            $fh = new FriendsHelper();
+            $friends = $fh->getFriends($user);
+            
+            $friendLogins = array();
+            $posts = array();
+            $postIDs = array();
+
+            foreach ($friends as $friend) {
+                $friendLogins[] = "'" . $friend['login'] . "'";
+            }
+
+            $inSet = implode(",", $friendLogins);
+
+            $result = $this->db->fetch("SELECT wp.id, wp.`content`, wp.`timestamp`,
+                (CASE WHEN toUser.middle_name IS NULL THEN 
+                        CONCAT(toUser.first_name, ' ', toUser.last_name) 
+                    ELSE 
+                        CONCAT(toUser.first_name, ' ', toUser.middle_name, ' ', toUser.last_name) 
+                END) as toName,
+                (CASE WHEN fromUser.middle_name IS NULL THEN 
+                        CONCAT(fromUser.first_name, ' ', fromUser.last_name) 
+                    ELSE 
+                        CONCAT(fromUser.first_name, ' ', fromUser.middle_name, ' ', fromUser.last_name) 
+                END) as fromName,
+                toUser.login as toLogin, fromUser.login as fromLogin
+                FROM wall_posts as wp, users as toUser, users as fromUser
+                WHERE wp.to=toUser.id AND wp.from=fromUser.id
+                AND toUser.login IN ($inSet)
+                ORDER BY `timestamp` DESC",
+                Array());
+
+            foreach ($result as $r) {
+                $post = array(  'id' => $r['id'],
+                                'to' => $r['toLogin'],
+                                'from' => $r['fromLogin'],
+                                'toName' => $r['toName'],
+                                'fromName' => $r['fromName'],
+                                'content' => $r['content'],
+                                'timestamp' => $r['timestamp'],
+                                'comments' => array());
+                $posts[] = $post;
+                $postIDs[] = $r['id'];
+            }
+
+            if(count($postIDs) === 0)
+                return $posts;
+
+            $inSet = implode(",", $postIDs);
+
+            $result = $this->db->fetch("SELECT c.id, c.wall_post, c.content, c.timestamp, u.login,
+                (CASE WHEN u.middle_name IS NULL THEN 
+                        CONCAT(u.first_name, ' ', u.last_name) 
+                    ELSE 
+                        CONCAT(u.first_name, ' ', u.middle_name, ' ', u.last_name) 
+                END) as fromName
+                FROM comments as c, users as u
+                WHERE u.ID=c.from AND wall_post IN ($inSet)",
+                Array());
+
+            foreach ($result as $r) {
+                $wallPostID = $r['wall_post'];
+                $comment = array(   'id' => $r['id'],
+                                    'content' => $r['content'],
+                                    'timestamp' => $r['timestamp'],
+                                    'login' => $r['login'],
+                                    'fromName' => $r['fromName']);
+                foreach ($posts as &$post) {
+                    if($post['id'] === $wallPostID) {
+                        $comments = &$post['comments'];
+                        $comments[] = $comment;
+                        break;
+                    }
+                }
+            }
+
+            return $posts;
         }
 
     }

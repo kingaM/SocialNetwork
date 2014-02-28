@@ -196,6 +196,12 @@
     // Timeline
 
     $router->addRoute(array(
+        'path' => '/api/newsfeed/',
+        'get' => array('Timeline', 'getNewsFeed'),
+        'file' => 'controllers/timeline.php',
+    ));
+
+    $router->addRoute(array(
         'path' => '/user/{username}/',
         'get' => array('Timeline', 'getPage'),
         'file' => 'controllers/timeline.php',

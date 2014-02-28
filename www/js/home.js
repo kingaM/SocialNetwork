@@ -1,13 +1,15 @@
 function content() {
     prepare();
+    setupNewsItems();
+    getPosts();
 }
 
-var newsItemTemplate;
+function getPosts() {
+    $.getJSON( "/api/newsfeed", function(data) {
+        showPosts(data);
+    });
+}
 
 function prepare() {
-    $.ajaxSetup({async:false});
-    $.get('/views/home_newsItem.mustache', function(template) {
-        newsItemTemplate = template;
-    });
-    $.ajaxSetup({async:true});
+
 }

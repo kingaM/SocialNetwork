@@ -51,5 +51,14 @@
                 $res->send();
             }
         }
+
+        public function getNewsFeed($req, $res) {
+            $user = $_SESSION['username'];
+            $db = new TimelineHelper();
+            $posts = $db->getNewsFeed($user);
+            $posts = array('posts' => $posts);
+            $res->add(json_encode($posts));
+            $res->send();
+        }
     }
 ?>
