@@ -7,11 +7,11 @@
 
     $public_pages = '#^(/api)?(/login|/register)$|^/activate/#';
 
-    if((!isset($_SESSION['id']) && !preg_match($public_pages, $_SERVER['REQUEST_URI'])) ||
-        (isset($_SESSION['id']) && $_SESSION['id'] == -1)) {
-        header('Location: /login');
-        die();
-    }
+    // if((!isset($_SESSION['id']) && !preg_match($public_pages, $_SERVER['REQUEST_URI'])) ||
+    //     (isset($_SESSION['id']) && $_SESSION['id'] == -1)) {
+    //     header('Location: /login');
+    //     die();
+    // }
 
     require_once(__DIR__ . '/libs/zaphpa.lib.php');
 
@@ -109,6 +109,11 @@
     $router->addRoute(array(
         'path' => '/register',
         'get' => array('Register', 'getPage'),
+        'file' => 'controllers/register.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/register',
         'post' => array('Register', 'addUser'),
         'file' => 'controllers/register.php',
     ));

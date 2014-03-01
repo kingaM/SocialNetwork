@@ -25,50 +25,46 @@
             $firstname = $req->data['firstname'];
             $middlename = $req->data['middlename'];
             $lastname = $req->data['lastname'];
-            $passwordRetype = $req->data['password_retype'];
-            $emailRetype = $req->data['email_retype'];
             $email = $req->data['email'];
+            $json = array();
 
             if (empty($username) || empty($password) || empty($firstname) || empty($lastname) ||
-                empty($email) || empty($passwordRetype) || empty($emailRetype)) {
-                $errorMessage .= "Complete the missing required fields. <br>";
+                empty($email)) {
+                $json["empty"] = True;
             }
-            if ($password != $passwordRetype) {
-                $errorMessage .= "The passwords do not match <br>";
-            }
+            $userDB = new UsersHelper();
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errorMessage .= "The e-mail is not valid. <br>";
+                $json["email-valid"] = False;
+            } else if ($userDB->checkEmailExists($email)) {
+                $json["email-unique"] = False;
             }
-            if ($email != $emailRetype) {
-                $errorMessage .= "The e-mails do not match <br>";
+            if (!ctype_alnum($username)) {
+                $json["username-valid"] = True;
+            } else if($userDB->checkUsernameExists($username)) {
+                $json["username-unique"] = False;
             }
-
-            if(!empty($errorMessage)) {
-                // TODO: Once we can, dynamically change the content of the page to display errors
-                // For now re-loading mustache, which clears all the data from the form
-                $res->add($this->renderTemplate($errorMessage));
+            if(!empty($json)) {
+                $res->add(json_encode(array('valid' => false, 'errors' => $json)));
                 $res->send();
             } else {
                 if(empty($middlename)) {
                     $middlename = NULL;
                 }
                 $hash = $email.time();
-                $db = new UsersHelper();
-                $result = $db->addUser($username, $password, $firstname, $lastname, $email, 
+                $result = $userDB->addUser($username, $password, $firstname, $lastname, $email, 
                     $hash, 0, $middlename);
                 if ($result < 0) {
-                    // TODO: Add a more fine-grained error message
-                    $errorMessage = "Something is not unique. <br>";
-                    // TODO: Once we can, dynamically change the content of the page to display errors
-                    // For now re-loading mustache, which clears all the data from the form
-                    $res->add($this->renderTemplate($errorMessage));
+                    $res->add(json_encode(array('valid' => true, 'suceeded' => false)));
                     $res->send();
                 } else {
-                    if($this->sendVerificationEmail($firstname, $email, $hash))
-                        echo "An e-mail has been sent to the e-mail address given." .
-                            " Please activate it with the URL provided in the e-mail.";
-                    else
-                        echo "Something went wrong. Please try again.";
+                    if($this->sendVerificationEmail($firstname, $email, $hash)) {
+                        $res->add(json_encode(array('valid' => true, 'suceeded' => true)));
+                        $res->send();
+                    } else {
+                        $res->add(json_encode(array('valid' => true, 'suceeded' => false)));
+                        $res->send();
+                    }
+                        
                 }
             }
         }

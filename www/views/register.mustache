@@ -1,21 +1,83 @@
-<p>Enter the following information to register. <br> 
-	{{{info}}}</p>
-<form method="post" action="./register" >
-	<label for="firstname">First Name</label> <br>
-    <input type="text" name="firstname" id="firstname"> <br>
-    <label for="middlename">Middle Name</label> <br>
-    <input type="text" name="middlename" id="middlename"> <br>
-    <label for="lastname">Last Name</label> <br>
-    <input type="text" name="lastname" id="lastname"> <br>
-    <label for="username">Username</label> <br>
-    <input type="text" name="username" id="username"> <br>
-    <label for="password">Password</label><br>
-    <input name="password" type="password" id="password"></input><br>
-    <label for="password">Re-Type Password</label><br>
-    <input name="password_retype" type="password" id="password"></input><br>
-    <label for="email">E-Mail</label> <br>
-    <input type="text" name="email" id="email"> <br>
-    <label for="email_retype">Retype E-Mail</label> <br>
-    <input type="text" name="email_retype" id="email"> <br>
-    <input type="submit" value="Submit"/>
-</form>
+<style>
+.form-horizontal .control-label{
+    /* text-align:right; */
+    text-align:left;
+}
+</style>
+<script src="/js/register.js"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div id="error-unknown">
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="form-horizontal">
+                <div class="form-group" id="form-group-firstname">
+                    <label for="firstname" class="col-md-2 control-label">First Name: </label>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="firstname" required>
+                        <label class="control-label" for="firstname" id="firstname-error" hidden></label>
+                    </div>
+                </div>
+                <div class="form-group" id="form-group-middlename">
+                    <label for="middlename" class="col-md-2 control-label" style="font-weight:normal;">Middle Name: </label>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="middlename">
+                        <label class="control-label" for="middlename" id="middlename-error" hidden></label>
+                    </div>
+                </div>
+                <div class="form-group" id="form-group-lastname">
+                    <label for="lastname" class="col-md-2 control-label">Last Name: </label>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="lastname" required>
+                        <label class="control-label" for="lastname" id="lastname-error" hidden></label>
+                    </div>
+                </div>
+                <div class="form-group" id="form-group-username">
+                    <label for="username" class="col-md-2 control-label">Username: </label>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="username" required>
+                        <label class="control-label" for="username" id="username-error" hidden></label>
+                    </div>
+                </div>
+                <div class="form-group" id="form-group-password">
+                    <label for="password" class="col-md-2 control-label">Password: </label>
+                    <div class="col-md-10">
+                        <input type="password" class="form-control" id="password" required>
+                        <label class="control-label" for="password" id="password-error" hidden></label>
+                    </div>
+                </div>
+                <div class="form-group" id="form-group-password-retype">
+                    <label for="password-retype" class="col-md-2 control-label">Retype Password: </label>
+                    <div class="col-md-10">
+                        <input type="password" class="form-control" id="password-retype" required>
+                        <label class="control-label" for="password-retype" id="password-retype-error" hidden></label>
+                    </div>
+                </div>
+                <div class="form-group" id="form-group-email">
+                    <label for="email" class="col-md-2 control-label">E-Mail: </label>
+                    <div class="col-md-10">
+                        <input type="email" class="form-control" id="email" required>
+                        <label class="control-label" for="email" id="email-error" hidden></label>
+                    </div>
+                </div>
+                <div class="form-group" id="form-group-email-retype">
+                    <label for="email-retype" class="col-md-2 control-label">Retype E-Mail: </label>
+                    <div class="col-md-10">
+                        <input type="email" class="form-control" id="email-retype" required>
+                        <label class="control-label" for="email-retype" id="email-retype-error" hidden></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class=" col-md-12">
+                        <button type="button" class="btn btn-success pull-right" id="submit-btn"><span class="glyphicon glyphicon-ok"></span> Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
