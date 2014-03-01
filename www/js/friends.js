@@ -15,16 +15,17 @@ function showRequests(requests) {
 
     for (var i = 0; i < requests.length; i++) {
         var login = requests[i]['login'];
+        var loginString = '"' + login + '"';
         var date = new Date(requests[i]['startTimestamp']*1000);
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
         var image = "<img src='" + "http://i.imgur.com/r8R1C6B.png" + "' style='max-height:100px;'></img>";
         var name = "<a href='/user/" + login + "/profile'>" + requests[i]['name'] + "</a>";
         var action =    "<button type='button' class='btn btn-success btn' " + 
-                        "id='" + requests[i]['login'] + "_add'>" + 
+                        "onclick='deleteFriend(" + loginString + ");'>" + 
                             "<span class='glyphicon glyphicon-ok'></span>" + 
                         "</button> <br><br>" +
                         "<button type='button' class='btn btn-danger btn' " + 
-                        "id='" + requests[i]['login'] + "_del'>" + 
+                        "onclick='addFriend(" + loginString + ");'>" + 
                             "<span class='glyphicon glyphicon-remove'></span>" + 
                         "</button>";
         var friend = [image, name, date, action];
@@ -34,12 +35,6 @@ function showRequests(requests) {
     $('#requestsTable').dataTable().fnClearTable();
     $('#requestsTable').dataTable().fnAddData(requestsList);
 
-    for (var i = 0; i < requests.length; i++) {
-        $("#" + requests[i]['login'] + "_del").click(requests[i]['login'], deleteFriend);
-        $("#" + requests[i]['login'] + "_add").click(requests[i]['login'], function(name){
-            addFriend(name.data);
-        });
-    }
 }
 
 function showCircles(circles) {
