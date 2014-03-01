@@ -55,9 +55,10 @@ function createFriendsTable() {
     });
 }
 
+var friendsList; // Used in a few methods
 function showFriends (friends, requests) {
 
-    var friendsList = new Array();
+    friendsList = new Array();
 
     var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
@@ -94,11 +95,16 @@ function showFriends (friends, requests) {
                "<span class='glyphicon glyphicon-plus'></span></button>";
         };
         var friend = [image, name, date, action];
-        friendsList.push(friend);
+        friendsList.push({"login": login, "info": friend});
     }
 
+    var showFriendsInfo = new Array();
+    for (var i = 0; i < friendsList.length; i++) {
+        showFriendsInfo.push(friendsList[i]["info"]);
+    };
+
     $('#friendsTable').dataTable().fnClearTable();
-    $('#friendsTable').dataTable().fnAddData(friendsList);
+    $('#friendsTable').dataTable().fnAddData(showFriendsInfo);
 
 }
 

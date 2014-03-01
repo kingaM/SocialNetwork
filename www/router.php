@@ -80,6 +80,12 @@
         'file' => 'controllers/friends.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/api/circles/{circleName}/{friendName}',
+        'delete' => array('Friends', 'deleteFromCircle'),
+        'file' => 'controllers/friends.php',
+    ));
+
     // Login, logout and register
 
     $router->addRoute(array(

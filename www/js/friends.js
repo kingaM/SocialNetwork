@@ -8,6 +8,7 @@ function content() {
 
 function showRequests(requests) {
 
+    $("#numOfFriendReqs").text(requests.length);
     var requestsList = new Array();
 
     var monthNames = ["January", "February", "March", "April", "May", "June",
@@ -93,11 +94,24 @@ function showCircles(circles) {
             ],
         });
 
-        // for (var j = 0; j < circles[i]['users'].length; j++) {
-        //     var user = circles[i]['users'][j];
-        //     var circleListItem = "<li>" + user + "</li>";
-        //     $("#circle_" + i).append(circleListItem);
-        // };
+        var circleUsers = new Array();
+        for (var j = 0; j < circles[i]['users'].length; j++) {
+            var username = circles[i]['users'][j];
+            for (var k = 0; k < friendsList.length; k++) {
+                if(friendsList[k]['login'] == username) {
+                    var friend = friendsList[k]['info'];
+                    var newAction = "<button type='button' class='btn btn-danger btn-sm'" + 
+                        "onclick='deleteFromCircle(\""+username+"\", \""+cName+"\");'>" + 
+                        "<span class='glyphicon glyphicon-remove'></span></button>";
+                    var circleFriend = [friend[0], friend[1], friend[2], newAction];
+                    circleUsers.push(circleFriend);
+                };
+            };
+        };
+
+        $('#circleTable_' + cName).dataTable().fnClearTable();
+        $('#circleTable_' + cName).dataTable().fnAddData(circleUsers);
+
         $("#" + cName + "_del").click(cName, deleteCircle);
         $("#selectCircles").append("<option>" + circles[i]['name'] + "</option>");
     };
@@ -155,6 +169,16 @@ function deleteCircle(name) {
     var circleName = name.data;
     $.ajax({
         url: "/api/circles/" + circleName,
+        type: "DELETE",
+        success: function(result) {
+            getFriends();
+        }
+    });
+}
+
+function deleteFromCircle(username, circleName) {
+    $.ajax({
+        url: "/api/circles/" + circleName + "/" + username,
         type: "DELETE",
         success: function(result) {
             getFriends();

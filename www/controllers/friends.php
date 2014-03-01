@@ -11,7 +11,7 @@
             $username = $req->params['username'];
 
             if(!$usersDB->checkUsernameExists($username))
-                return404($res);
+                $this->return404($res);
 
             if($username === $_SESSION['username']) {
                 $content = $m->render('friends', array());
@@ -56,7 +56,7 @@
             $username = $req->params['username'];
 
             if($username !== $_SESSION['username'])
-                return404($res);
+                $this->return404($res);
 
             try {
                 $db = new FriendsHelper();
@@ -78,7 +78,7 @@
 
             $username = $req->params['username'];
             if($username !== $_SESSION['username'])
-                return404($res);
+                $this->return404($res);
 
             $delUsername = $req->params['login'];
             $db = new FriendsHelper();
@@ -120,6 +120,15 @@
                 $res->add(json_encode(array('error' => $e->getMessage())));
                 $res->send();
             }
+        }
+
+        public function deleteFromCircle($req, $res) {
+            $circleName = $req->params['circleName'];
+            $username = $req->params['friendName'];
+            $owner = $_SESSION['id'];
+            $db = new FriendsHelper();
+            $db->deleteFromCircle($owner, $circleName, $username);
+            $res->send();
         }
 
         private function return404($res) {
