@@ -61,14 +61,17 @@ function showPosts(data) {
         var time = date.getHours() + ":" + date.getMinutes();
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
         var id = post['id'];
+        var title = "<a href='/user/" + post['from'] + "'>" + post['fromName'] + "</a>";
+        if(post['from'] != post['to'])
+            title += " <span class='glyphicon glyphicon-chevron-right'></span> " + 
+                        "<a href='/user/" + post['to'] + "'>" + post['toName'] + "</a>";
 
         var view = {
             wallPostID: id,
             imgURL: "http://i.imgur.com/r8R1C6B.png",
             date: date,
             time: time,
-            titleLink: "/user/" + post['from'],
-            title: post['fromName'],
+            title: title,
             text: post['content'],
             numOfReplies: post['comments'].length
         };
@@ -78,7 +81,6 @@ function showPosts(data) {
         $("#replyForm_" + id).submit(id, function(e){
             e.preventDefault();
             var id = e.data;
-            console.log(id)
             addComment(id, $("#replyForm_" + id + " :input").val());
         });
 

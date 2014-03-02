@@ -11,7 +11,7 @@
             </ul>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 excerpet">
-            <h3><a href="{{titleLink}}" title="">{{title}}</a></h3>
+            <h3>{{{title}}}</h3>
             <p>{{text}}</p>                        
                 <div class="container-fluid">
                 <div class="row">
@@ -36,6 +36,9 @@
                             <form accept-charset="UTF-8" action="" method="POST" id="replyForm_{{wallPostID}}" style="display:none;">
                                 <textarea class="form-control" name="message" placeholder="Type in your message" rows="2" style="margin-bottom:10px;"></textarea>
                                 <button class="btn btn-primary pull-right" type="submit">Reply</button>
+                                <button type="button" class="btn btn-danger pull-left" onclick="$('#replyToggle_{{wallPostID}}').show();$('#replyForm_{{wallPostID}}').hide();">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
                             </form>
                         </div>
                     </div>
