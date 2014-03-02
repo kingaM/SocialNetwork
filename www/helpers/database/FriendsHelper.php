@@ -1,6 +1,7 @@
 <?php
 
     require_once('helpers/database/database.php');
+    require_once('helpers/database/TimelineHelper.php');
 
     class FriendsHelper {
 
@@ -131,14 +132,22 @@
             if(sizeof($result) != 0)
                 throw new Exception("Friend request already sent to $addFriend");
 
-            // Check for an existing request from the other user
-            $result = $this->db->fetch("SELECT * 
-                FROM friendships as f, users as u
-                WHERE (f.user2=:requester AND f.user1=u.ID) 
-                AND u.login=:addFriend",
+            // Check for an existing request from the other user and grab their full names if so
+            $result = $this->db->fetch("SELECT 
+                (CASE WHEN u1.middle_name IS NULL THEN CONCAT(u1.first_name, ' ', u1.last_name) 
+                    ELSE CONCAT(u1.first_name, ' ', u1.middle_name, ' ', u1.last_name) END) as addN,
+                (CASE WHEN u2.middle_name IS NULL THEN CONCAT(u2.first_name, ' ', u2.last_name) 
+                    ELSE CONCAT(u2.first_name, ' ', u2.middle_name, ' ', u2.last_name) END) as reqN
+                FROM friendships as f, users as u1, users as u2
+                WHERE (f.user2=:requester AND f.user1=u1.ID) 
+                AND u1.login=:addFriend AND u2.ID=:requester",
                 Array(':requester' => $requester, ':addFriend' => $addFriend));
 
             if(sizeof($result) != 0) {
+
+                $reqName = $result[0]['reqN'];
+                $addName = $result[0]['addN'];
+
                 // Accept the friend request if there is an existing one
                 $result = $this->db->execute("UPDATE friendships
                     SET status=1, startTimestamp=:time
@@ -146,6 +155,13 @@
                     (SELECT ID FROM users WHERE login=:addFriend)",
                     Array(':requester' => $requester, ':addFriend' => $addFriend, 
                         ':time' => time()));
+
+                // Add new friendship to wall posts
+                $text1 = "$reqName and $addName are now friends.";
+                $text2 = "$addName and $reqName are now friends.";
+                $tlh = new TimelineHelper();
+                $tlh->addPost($_SESSION['username'], $addFriend, $text1, "friend");
+
                 return True;
             }
 

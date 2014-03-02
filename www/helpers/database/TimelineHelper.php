@@ -14,22 +14,25 @@
          * Adds a wall post
          *
          * @param String $to The username of the wall owner
-         * @param int $from The id of the sender
+         * @param String $from The id of the sender
          * @param String $content The content of the post
+         * @param String $type The type of activity: post/friend/birthday/blog
          *
          */
-        public function addPost($to, $from, $content) {
+        public function addPost($to, $from, $content, $type) {
 
             if(strlen($content) < 1)
                 throw new Exception("Can't make an empty post");
             if(strlen($content) > 10000)
                 throw new Exception("Content too long - 10,000 character limit");
 
-            $result = $this->db->execute("INSERT INTO wall_posts(`to`, `from`, content, `timestamp`)
-                SELECT ID as `to`, :fromUser, :content, :time 
-                FROM users WHERE login=:toUser",
+            $result = $this->db->execute("INSERT INTO wall_posts(`to`, `from`, content, `timestamp`, 
+                `type`, `lastTouched`)
+                SELECT toUser.ID as `to`, fromUser.ID as `from`, :content, :time, :type, :time 
+                FROM users as toUser, users as fromUser 
+                WHERE toUser.login=:toUser AND fromUser.login=:fromUser",
                 Array(':toUser' => $to, ':fromUser' => $from, ':content' => $content, 
-                    ':time' => time()));
+                    ':time' => time(), ':type' => $type));
         }
 
         /**
@@ -44,7 +47,7 @@
             $posts = array();
             $postIDs = array();
 
-            $result = $this->db->fetch("SELECT wp.id, wp.`content`, wp.`timestamp`,
+            $result = $this->db->fetch("SELECT wp.id, wp.`content`, wp.`timestamp`, wp.`type`,
                 (CASE WHEN toUser.middle_name IS NULL THEN 
                         CONCAT(toUser.first_name, ' ', toUser.last_name) 
                     ELSE 
@@ -57,9 +60,10 @@
                 END) as fromName,
                 toUser.login as toLogin, fromUser.login as fromLogin
                 FROM wall_posts as wp, users as toUser, users as fromUser
-                WHERE wp.to=toUser.id AND wp.from=fromUser.id
+                WHERE ((wp.to=toUser.id AND wp.from=fromUser.id) 
+                    OR (wp.from=toUser.id AND wp.to=fromUser.id AND wp.type='friend'))
                 AND toUser.login=:username
-                ORDER BY `timestamp` DESC",
+                ORDER BY `lastTouched` DESC",
                 Array(':username' => $username));
 
             foreach ($result as $r) {
@@ -70,6 +74,7 @@
                                 'fromName' => $r['fromName'],
                                 'content' => $r['content'],
                                 'timestamp' => $r['timestamp'],
+                                'type' => $r['type'],
                                 'comments' => array());
                 $posts[] = $post;
                 $postIDs[] = $r['id'];
@@ -129,6 +134,10 @@
                 VALUES(:fromUser, :postID, :content, :time)",
                 Array(':fromUser' => $from, ':postID' => $postID, ':content' => $content, 
                     ':time' => time()));
+
+            $result = $this->db->execute("UPDATE wall_posts
+                SET lastTouched=:time WHERE id=:postID",
+                Array(':time' => time(), ':postID' => $postID));
         }
 
         /**
@@ -153,7 +162,7 @@
 
             $inSet = implode(",", $friendLogins);
 
-            $result = $this->db->fetch("SELECT wp.id, wp.`content`, wp.`timestamp`,
+            $result = $this->db->fetch("SELECT wp.id, wp.`content`, wp.`timestamp`, wp.`type`,
                 (CASE WHEN toUser.middle_name IS NULL THEN 
                         CONCAT(toUser.first_name, ' ', toUser.last_name) 
                     ELSE 
@@ -168,7 +177,7 @@
                 FROM wall_posts as wp, users as toUser, users as fromUser
                 WHERE wp.to=toUser.id AND wp.from=fromUser.id
                 AND toUser.login IN ($inSet)
-                ORDER BY `timestamp` DESC",
+                ORDER BY `lastTouched` DESC",
                 Array());
 
             foreach ($result as $r) {
@@ -179,6 +188,7 @@
                                 'fromName' => $r['fromName'],
                                 'content' => $r['content'],
                                 'timestamp' => $r['timestamp'],
+                                'type' => $r['type'],
                                 'comments' => array());
                 $posts[] = $post;
                 $postIDs[] = $r['id'];

@@ -52,6 +52,7 @@ function renderReply(titleLink, title, date, time, text) {
 function showPosts(data) {
     $("#newsItems").empty();
     var posts = data['posts'];
+    var currUsername = window.location.pathname.split( '/' )[2];
     var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
 
@@ -61,10 +62,19 @@ function showPosts(data) {
         var time = date.getHours() + ":" + date.getMinutes();
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
         var id = post['id'];
-        var title = "<a href='/user/" + post['from'] + "'>" + post['fromName'] + "</a>";
-        if(post['from'] != post['to'])
-            title += " <span class='glyphicon glyphicon-chevron-right'></span> " + 
-                        "<a href='/user/" + post['to'] + "'>" + post['toName'] + "</a>";
+
+        var title;
+        if(post['type'] != "friend") {
+            title = "<a href='/user/" + post['from'] + "'>" + post['fromName'] + "</a>";
+            if(post['from'] != post['to'])
+                title += " <span class='glyphicon glyphicon-chevron-right'></span> " + 
+                            "<a href='/user/" + post['to'] + "'>" + post['toName'] + "</a>";
+        } else {
+            if(currUsername == post['to'])
+                title = "<a href='/user/" + post['from'] + "'>" + post['fromName'] + "</a>";
+            else
+                title = "<a href='/user/" + post['to'] + "'>" + post['toName'] + "</a>";
+        };
 
         var view = {
             wallPostID: id,

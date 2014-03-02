@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS `wall_posts` (
     `from` int(11) NOT NULL,
     `content` VARCHAR(10000) NOT NULL DEFAULT 0,
     `timestamp` int(11) NOT NULL,
+    `type` VARCHAR(11) NOT NULL,
+    `lastTouched` int(11) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`to`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
