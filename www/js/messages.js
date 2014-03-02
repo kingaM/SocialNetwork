@@ -40,6 +40,7 @@ function setupSearch() {
             url: "/api/messages/reciepients",
             data: values,
             success: function(data) {
+                console.log(data);
                 $("#conversations").empty();
                 prevConversations = null;
                 showReciepients($.parseJSON(data));

@@ -112,7 +112,6 @@
         public function searchReciepients($req, $res) {
             $db = new MessagesHelper();
             $searchText = $req->data['searchText'];
-            $firephp->log($searchText);
             $result = $db->getReciepientsSearch($_SESSION['id'], $searchText);
             $json = array("reciepients" => array());
             foreach ($result as $r) {
