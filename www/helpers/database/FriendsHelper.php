@@ -302,6 +302,8 @@
          */
         public function addCircle($userID, $circleName) {
 
+            $circleName = preg_replace("/[^a-zA-Z0-9]+/", "", $circleName);
+
             // Check circle doesn't already exist
             $result = $this->db->fetch("SELECT *
                 FROM circles 

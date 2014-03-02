@@ -16,7 +16,7 @@
         public function addPost($req, $res) {
             $to = $req->params['username'];
             $from = $_SESSION['username'];
-            $content = $req->data['content'];
+            $content = htmlspecialchars($req->data['content']);
             $db = new TimelineHelper();
             try {
                 $db->addPost($to, $from, $content, "post");
@@ -40,7 +40,7 @@
         public function addComment($req, $res) {
             $from = $_SESSION['id'];
             $postID = $req->params['postID'];
-            $content = $req->data['content'];
+            $content = htmlspecialchars($req->data['content']);
             $db = new TimelineHelper();
             try {
                 $db->addComment($postID, $from, $content);
