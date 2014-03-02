@@ -87,7 +87,7 @@
                 AND NOT u.ID=:user 
                 GROUP BY login",
                 Array(':user' => $userID));
-
+            $friends = array();
             foreach ($result as $r) {
                 $friends[] = $r['login'];
             }

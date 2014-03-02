@@ -154,7 +154,7 @@ function postMessageCircle(to, message) {
         type: "post",
         url: "/api/messages/circle/" + to,
         data: values,
-        success: function(data) 
+        success: function(data) {
             var json = $.parseJSON(data);
             var valid = json['valid'];    
             if(valid) {
