@@ -74,11 +74,13 @@
                         first_name, middle_name, last_name
                     FROM messages, users
                     WHERE ((`from` = :from AND `to_circle` = :to_circle AND `from` = users.id) 
-                        OR (`from` IN (
+                        OR ((`from` IN (
                             SELECT user
                             FROM circle_memberships 
-                            WHERE circle = :to_circle) 
-                        AND `to_circle` = :to_circle AND `from` = users.id)) 
+                            WHERE circle = :to_circle) OR `from` = (
+                                SELECT owner FROM circles WHERE
+                                circles.id = `to_circle`)) 
+                        AND `to_circle` = :to_circle AND `from` = users.id))
                     ORDER BY timestamp ASC";
             $array = array(':from' => $from, ':to_circle' => $to_circle);
             $result = $this->db->fetch($sql, $array);
@@ -124,6 +126,15 @@
                                 OR (`to_user` IS NOT NULL AND `to_user` = :from 
                                     AND  `from` = users.id AND `to_circle` IS NULL) 
                                 OR (`from` = :from AND  `to_circle` IS NOT NULL 
+                                    AND`to_circle` = circles.id AND `to_user` IS NULL)
+                                OR ((:from IN (
+                                        SELECT user
+                                        FROM circle_memberships 
+                                        WHERE circle = circles.id) 
+                                    OR :from = (
+                                            SELECT owner FROM circles WHERE
+                                            circles.id = `to_circle`))
+                                    AND `to_circle` IS NOT NULL 
                                     AND`to_circle` = circles.id AND `to_user` IS NULL))
                             AND timestamp = (SELECT timestamp 
                                             FROM messages 
@@ -134,10 +145,19 @@
                                                     AND  `from` = users.id AND `to_circle` IS NULL) 
                                                 OR (`from` = :from AND  `to_circle` IS NOT NULL 
                                                     AND`to_circle` = circles.id 
+                                                    AND `to_user` IS NULL)
+                                                OR ((:from IN (
+                                                        SELECT user
+                                                        FROM circle_memberships 
+                                                        WHERE circle = circles.id) OR :from = (
+                                                            SELECT owner FROM circles WHERE
+                                                            circles.id = `to_circle`))
+                                                    AND `to_circle` IS NOT NULL 
+                                                    AND`to_circle` = circles.id 
                                                     AND `to_user` IS NULL))
                                             ORDER BY timestamp DESC
                                             LIMIT 1)
-                        ORDER BY timestamp ASC ) AS reciepients
+                       ) AS reciepients
                     ORDER BY timestamp, login ASC ";
             $array = array(':from' => $from);
             return $this->db->fetch($sql, $array);
@@ -182,6 +202,15 @@
                                 OR (`to_user` IS NOT NULL AND `to_user` = :from 
                                     AND  `from` = users.id AND `to_circle` IS NULL) 
                                 OR (`from` = :from AND  `to_circle` IS NOT NULL 
+                                    AND`to_circle` = circles.id AND `to_user` IS NULL)
+                                OR ((:from IN (
+                                        SELECT user
+                                        FROM circle_memberships 
+                                        WHERE circle = circles.id) 
+                                    OR :from = (
+                                            SELECT owner FROM circles WHERE
+                                            circles.id = `to_circle`))
+                                    AND `to_circle` IS NOT NULL 
                                     AND`to_circle` = circles.id AND `to_user` IS NULL))
                             AND timestamp = (SELECT timestamp 
                                             FROM messages 
@@ -192,10 +221,19 @@
                                                     AND  `from` = users.id AND `to_circle` IS NULL) 
                                                 OR (`from` = :from AND  `to_circle` IS NOT NULL 
                                                     AND`to_circle` = circles.id 
+                                                    AND `to_user` IS NULL)
+                                                OR ((:from IN (
+                                                        SELECT user
+                                                        FROM circle_memberships 
+                                                        WHERE circle = circles.id) OR :from = (
+                                                            SELECT owner FROM circles WHERE
+                                                            circles.id = `to_circle`))
+                                                    AND `to_circle` IS NOT NULL 
+                                                    AND`to_circle` = circles.id 
                                                     AND `to_user` IS NULL))
                                             ORDER BY timestamp DESC
                                             LIMIT 1)
-                        ORDER BY timestamp ASC ) AS reciepients
+                       ) AS reciepients
                     WHERE (reciepients.name LIKE :searchPhrase 
                         OR reciepients.login LIKE :searchPhrase)
                     ORDER BY timestamp, login ASC ";
