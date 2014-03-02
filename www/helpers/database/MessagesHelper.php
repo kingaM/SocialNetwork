@@ -1,6 +1,7 @@
 <?php
     
     require_once('helpers/database/database.php');
+    require_once('libs/FirePHPCore/FirePHP.class.php');   
 
     /**
      * A helper class consiting of methods used to get information needed for messaging 
@@ -139,6 +140,66 @@
                         ORDER BY timestamp ASC ) AS reciepients
                     ORDER BY timestamp, login ASC ";
             $array = array(':from' => $from);
+            return $this->db->fetch($sql, $array);
+        }
+
+        /**
+         * Gets all users that a given user was talking to.
+         *     
+         * @param  integer $from The id of the user.
+         * @return Array         The array of the results, in a row by row and column by column
+         *                       format.  
+         */
+        public function getReciepientsSearch($from, $searchPhrase) {
+            $sql = "SELECT DISTINCT * 
+                    FROM (
+                        SELECT
+                            CASE `type` 
+                                WHEN 'C' THEN CONCAT('Circle: ', name, ' owned by ', (
+                                    SELECT CASE 
+                                        WHEN id = :from THEN 'You'
+                                        WHEN middle_name IS NULL 
+                                            THEN CONCAT(first_name, ' ', last_name) 
+                                        ELSE CONCAT(first_name, ' ', middle_name, ' ', last_name)
+                                        END
+                                    FROM users 
+                                    WHERE users.id = owner)
+                                ) 
+                                ELSE (CASE 
+                                        WHEN middle_name IS NULL 
+                                            THEN CONCAT(first_name, ' ', last_name) 
+                                        ELSE CONCAT(first_name, ' ', middle_name, ' ', last_name) 
+                                    END)
+                                END AS name,
+                            CASE `type`
+                                WHEN 'C' THEN CONCAT(owner, '_', name)
+                                ELSE login 
+                                END AS login,
+                            content, timestamp
+                        FROM messages, users, circles
+                        WHERE ((`from` = :from AND `to_user` IS NOT NULL
+                                    AND `to_user` = users.id AND `to_circle` IS NULL)
+                                OR (`to_user` IS NOT NULL AND `to_user` = :from 
+                                    AND  `from` = users.id AND `to_circle` IS NULL) 
+                                OR (`from` = :from AND  `to_circle` IS NOT NULL 
+                                    AND`to_circle` = circles.id AND `to_user` IS NULL))
+                            AND timestamp = (SELECT timestamp 
+                                            FROM messages 
+                                            WHERE ((`from` = :from AND `to_user` IS NOT NULL 
+                                                    AND `to_user` = users.id 
+                                                    AND `to_circle` IS NULL)
+                                                OR (`to_user` IS NOT NULL AND `to_user` = :from 
+                                                    AND  `from` = users.id AND `to_circle` IS NULL) 
+                                                OR (`from` = :from AND  `to_circle` IS NOT NULL 
+                                                    AND`to_circle` = circles.id 
+                                                    AND `to_user` IS NULL))
+                                            ORDER BY timestamp DESC
+                                            LIMIT 1)
+                        ORDER BY timestamp ASC ) AS reciepients
+                    WHERE (reciepients.name LIKE :searchPhrase 
+                        OR reciepients.login LIKE :searchPhrase)
+                    ORDER BY timestamp, login ASC ";
+            $array = array(':from' => $from, ':searchPhrase' => '%' . $searchPhrase . '%');
             return $this->db->fetch($sql, $array);
         }
 

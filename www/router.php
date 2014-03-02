@@ -158,7 +158,7 @@
     $router->addRoute(array(
         'path' => '/api/user/{username}/friends/{login}',
         'handlers' => array(
-            'username' => Zaphpa_Constants::PATTERN_ALPHA
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
             'login' => Zaphpa_Constants::PATTERN_ALPHA
         ),
         'delete' => array('Friends', 'removeFriend'),
@@ -198,6 +198,7 @@
     $router->addRoute(array(
         'path' => '/api/messages/reciepients',
         'get' => array('Messages', 'getReciepients'),
+        'post' => array('Messages', 'searchReciepients'),
         'file' => 'controllers/messages.php',
     ));
 

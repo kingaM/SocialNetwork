@@ -108,5 +108,26 @@
             $res->add(json_encode($json));
             $res->send();
         }
+
+        public function searchReciepients($req, $res) {
+            $firephp = FirePHP::getInstance(true);
+            $db = new MessagesHelper();
+            $searchText = $req->data['searchText'];
+            $firephp->log($searchText);
+            $result = $db->getReciepientsSearch($_SESSION['id'], $searchText);
+            
+            $firephp->log($result);
+            $json = array("reciepients" => array());
+            foreach ($result as $r) {
+                $json["reciepients"][] = array(
+                    'username' => $r['login'], 
+                    'name' => $r['name'],
+                    'message' => $r['content'], 
+                    'timestamp' => $r['timestamp']);
+            }
+            $res->add(json_encode($json));
+            $firephp->log($json);
+            $res->send();
+        }
     }
 ?>
