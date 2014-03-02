@@ -15,11 +15,11 @@
 
         public function addPost($req, $res) {
             $to = $req->params['username'];
-            $from = $_SESSION['id']; // Quicker to use the id
-            $content = $req->data['content'];
+            $from = $_SESSION['username'];
+            $content = htmlspecialchars($req->data['content']);
             $db = new TimelineHelper();
             try {
-                $db->addPost($to, $from, $content);
+                $db->addPost($to, $from, $content, "post");
                 $res->add(json_encode(array('result' => 'added')));
                 $res->send();
             } catch (Exception $e) {
@@ -40,7 +40,7 @@
         public function addComment($req, $res) {
             $from = $_SESSION['id'];
             $postID = $req->params['postID'];
-            $content = $req->data['content'];
+            $content = htmlspecialchars($req->data['content']);
             $db = new TimelineHelper();
             try {
                 $db->addComment($postID, $from, $content);

@@ -6,21 +6,27 @@
 
 <div class="container-fluid">
 
-    <hgroup class="mb20">
-        <h1>Wall Post</h1>
-    </hgroup>
-    <div class="container-fluid">
-        <div class="row">
+    <div class="panel-group">
+        <hgroup class="mb20"><h1>
+            <a data-toggle="collapse" href="#collapseNewPost">
+              New Post
+            </a>
+        </h1></hgroup>
+        <div id="collapseNewPost" class="panel-collapse collapse">
+          <div class="panel-body">
             <div class="container-fluid">
-                <div class="panel panel-default">
-                    <div class="panel-body">                
-                        <form accept-charset="UTF-8" action="/api/user/test" method="POST" id="newPostForm">
-                            <textarea class="form-control counted" name="content" placeholder="Type in your message" rows="2" style="margin-bottom:10px;"></textarea>
-                            <button class="btn btn-primary pull-right" type="submit">Post</button>
-                        </form>
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-body">                
+                            <form accept-charset="UTF-8" action="/api/user/test" method="POST" id="newPostForm">
+                                <textarea class="form-control counted" name="content" placeholder="Type in your message" rows="2" style="margin-bottom:10px;"></textarea>
+                                <button class="btn btn-primary pull-right" type="submit">Post</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+          </div>
         </div>
     </div>
 

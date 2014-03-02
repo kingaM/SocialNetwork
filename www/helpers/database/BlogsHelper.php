@@ -1,6 +1,7 @@
 <?php
     
     require_once('helpers/database/database.php');
+    require_once('helpers/database/TimelineHelper.php');
 
     class BlogsHelper {
 
@@ -169,7 +170,15 @@
                     VALUES (:postId, :content)";
                 $array = array(':postId' => $id, ':content' => $content);
                 $this->db->execute($sql, $array);
-                return $this->db->commit();
+                $id = $this->db->getLastId();
+                $ret = $this->db->commit();
+
+                $tlh = new TimelineHelper();
+                $content = "Created a new blog post, <a href='/user/".$_SESSION['username'].
+                            "/blogs/$url/posts/$id'>$title</a>";
+                $tlh->addPost($_SESSION['username'], $_SESSION['username'], $content, "blog");
+
+                return $ret;
             } catch (Exception $e) {
                 return $this->db->rollBack();
             }
@@ -188,6 +197,12 @@
                 VALUES (:userId, :name, :url, :about)";
             $array = array(':userId' => $userId, ':name' => $name, ':url' => $url, 
                 ':about' => $about);
+
+            $tlh = new TimelineHelper();
+            $content = "Created a new blog, <a href='/user/".$_SESSION['username'].
+                        "/blogs/$url/pages/1'>$name</a>";
+            $tlh->addPost($_SESSION['username'], $_SESSION['username'], $content, "blog");
+
             return $this->db->execute($sql, $array);
         }
 
