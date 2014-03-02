@@ -319,7 +319,7 @@
             foreach ($posts as $post) {
                 $n=10;
                 $query=$text;
-                preg_match_all('/(?:[^ ]+ ){0,'.$n.'}'.$query.'(?: [^ ]+){0,'.$n.'}/i',
+                preg_match_all('/(?:[^ ]+ ){0,'.$n.'}'.$query.'[a-zA-Z0-9]*(?: [^ ]+){0,'.$n.'}/i',
                     strip_tags($post['content']), $matches);
                 $jsonPosts[] = array(
                     'id' => $post['postId'],

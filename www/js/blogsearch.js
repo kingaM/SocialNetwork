@@ -52,5 +52,5 @@ function showPost(post) {
 }
 
 function boldWords(input, keyword) {
-    return input.replace(new RegExp('(^|\\s)(' + keyword + ')(\\s|$)','ig'), '$1<b>$2</b>$3');
+    return input.replace(new RegExp(keyword,'ig'), '<b>' + keyword + '</b>');
 }

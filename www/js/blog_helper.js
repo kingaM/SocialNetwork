@@ -1,19 +1,24 @@
 function setupSearch() {
     $("#search").click(function(e) {
         e.preventDefault();
-        postSearch($("#search-txt").val());
+        if ($("#search-txt").val().trim().length === 0) {
+            location.replace("/user/" + username + "/blogs/" + 
+            blog + "/pages/1")
+        } else {
+            postSearch($("#search-txt").val());
+        }
     });
     $('#search-txt').keydown(function(e) {
         var keypressed = e.keyCode || e.which;
         if (keypressed == 13) {
                 e.preventDefault();
-                postSearch($("#search-txt").val());         
+                $("#search").click(); 
         }
     });
 }
 
 function postSearch(text) {
-    window.location.replace("/user/" + username + "/blogs/" + blog + "/search/" + 
+    location.replace("/user/" + username + "/blogs/" + blog + "/search/" + 
         encodeURIComponent(text));
 }
 

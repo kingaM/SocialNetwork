@@ -6,7 +6,7 @@ function content() {
     blog = window.location.pathname.split( '/' )[4];
     $('#summernote').summernote({ 
         height: 300,   //set editable area's height
-        focus: true    //set focus editable area after Initialize summernote
+        focus: true,    //set focus editable area after Initialize summernote
     });
 
     $("#submit-btn").click(function(e) {
