@@ -1,6 +1,8 @@
 var currentReciepient = null;
 var prevConversations = null;
 var prevMessages = null;
+var inSearch = false;
+var first = true;
 
 function content() {
     $('#message-text').keydown(function (event) {
@@ -13,10 +15,42 @@ function content() {
     sendMessage();
     getReciepients();
     setupDropdown();
+    setupSearch();
     window.setInterval(function(){
         getReciepients();
         showMessages(currentReciepient);
     }, 5000);
+}
+
+function setupSearch() {
+    $('#search-reciepients-text').keydown(function (event) {
+        var keypressed = event.keyCode || event.which;
+        if (keypressed == 13) {
+                event.preventDefault();
+                $("#search-reciepients").click();         
+        }
+    });
+    $("#search-reciepients").click(function (e) {
+        e.preventDefault();
+        inSearch = true;
+        var values = {};
+        values["searchText"] = $("#search-reciepients-text").val();
+        $.ajax({
+            type: "post",
+            url: "/api/messages/reciepients",
+            data: values,
+            success: function(data) {
+                $("#conversations").empty();
+                prevConversations = null;
+                showReciepients($.parseJSON(data));
+            }
+        });
+    });
+    $("#cancel-reciepients").click(function (e) {
+        e.preventDefault();
+        inSearch = false;
+        getReciepients();
+    })
 }
 
 function setupDropdown() {
@@ -26,7 +60,7 @@ function setupDropdown() {
     $('#new-message-form').submit(function(e) {
         e.preventDefault();
         var messageText = $("#new-message").val();
-        var to = $("#to").val();
+        var to = $("#searchUsers_search-username").val();
         postMessage(to, messageText, true);
     });
     $('#new-message-circles-form').submit(function(e) {
@@ -47,7 +81,7 @@ function setupDropdown() {
 function hideDropdown(valid, friend) {
     if(valid && friend) {
         $("#new-message").val("");
-        $("#to").val("");
+        $("#searchUsers_search-username").val("");
         $('[data-toggle="dropdown"]').parent().removeClass('open');
         $("#form-group-to").removeClass("has-error");
         $("#control-label-to").hide();
@@ -57,11 +91,9 @@ function hideDropdown(valid, friend) {
         if(!valid) {
             $("#control-label-to").text("The username is invalid");
         } else if (!friend) {
-            $("#control-label-to").text("This user is not your friend, so you cannot send him a" +
-                "message");
+            $("#control-label-to").text("This user is not your friend, so you cannot send him/her" +
+                " a message");
         }
-        
-        console.log("Username invalid");
     }
 }
 
@@ -78,7 +110,6 @@ function hideDropdownCircles(valid) {
         if(!valid) {
             $("#control-label-to-circles").text("The name of the circle is invalid");
         }         
-        console.log("Username invalid");
     }
 }
 
@@ -103,10 +134,9 @@ function postMessage(to, message, newM) {
         url: "/api/messages/user/" + to,
         data: values,
         success: function(data) {
-            console.log(data);
             var json = $.parseJSON(data);
-            var valid = json['valid'];
-            var friend = json['friend'];      
+            var valid = json["valid"];
+            var friend = json["friend"];   
             if(valid && friend) {
                 showMessages(currentReciepient);
             }
@@ -125,7 +155,6 @@ function postMessageCircle(to, message) {
         url: "/api/messages/circle/" + to,
         data: values,
         success: function(data) {
-            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];    
             if(valid) {
@@ -137,28 +166,34 @@ function postMessageCircle(to, message) {
 }
 
 function getReciepients() {
-    $.getJSON( "/api/messages/reciepients", function(data) {
-        var data_length = data["reciepients"].length;
-        var reciepients = data["reciepients"];
-        for (var i = 0; i < data_length; i++) {
-            if(prevConversations != null && i < prevConversations.length) {
-                if(prevConversations[i]["username"] != reciepients[i]["username"] ) {
-                    addConversation(reciepients[i]["username"], reciepients[i]["name"], 
-                        reciepients[i]["message"]);
-                } else if(prevConversations[i]["message"] != reciepients[i]["message"]) {
-                    $("#"+reciepients[i]["username"] +"-message").html(reciepients[i]["message"]);
-                }
-            } else {
+    if(!inSearch) {
+        $.getJSON( "/api/messages/reciepients", function(data) {
+            showReciepients(data);
+            prevConversations = data["reciepients"];
+        });
+    }
+}
+
+function showReciepients(data) {
+    var data_length = data["reciepients"].length;
+    var reciepients = data["reciepients"];
+    for (var i = 0; i < data_length; i++) {
+        if(prevConversations != null && i < prevConversations.length) {
+            if(prevConversations[i]["username"] != reciepients[i]["username"] ) {
                 addConversation(reciepients[i]["username"], reciepients[i]["name"], 
-                        reciepients[i]["message"]);
-            }          
-        }
-        if(data_length > 0 && prevConversations == null) {
-            $("#" + data["reciepients"][data_length - 1]["username"]).trigger('click');
-        }
-        prevConversations = reciepients;
-        
-    });
+                    reciepients[i]["message"]);
+            } else if(prevConversations[i]["message"] != reciepients[i]["message"]) {
+                $("#"+reciepients[i]["username"] +"-message").html(reciepients[i]["message"]);
+            }
+        } else {
+            addConversation(reciepients[i]["username"], reciepients[i]["name"], 
+                    reciepients[i]["message"]);
+        }          
+    }
+    if(data_length > 0 && first) {
+        $("#" + data["reciepients"][data_length - 1]["username"]).trigger('click');
+        first = false;
+    }
 }
 
 function showMessages(username) {
@@ -187,7 +222,7 @@ function addMessages(firstName, middleName, lastName, message, timestamp) {
     var content = "<div class=\"msg-wrap\">" +
                 "<div class=\"media msg\">" +
                     "<div class=\"media-body\">" +
-                        "<small class=\"pull-right time\"><i class=\"fa fa-clock-o\"></i>" +
+                        "<small class=\"pull-right time\"><i class=\"fa fa-clock-o\"></i> " +
                             new Date(timestamp*1000).toLocaleString() + "</small>" +
 
                         "<h5 class=\"media-heading\">" + firstName + " " + middleName + " " + 

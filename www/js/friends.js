@@ -8,6 +8,7 @@ function content() {
 
 function showRequests(requests) {
 
+    $("#numOfFriendReqs").text(requests.length);
     var requestsList = new Array();
 
     var monthNames = ["January", "February", "March", "April", "May", "June",
@@ -15,16 +16,17 @@ function showRequests(requests) {
 
     for (var i = 0; i < requests.length; i++) {
         var login = requests[i]['login'];
+        var loginString = '"' + login + '"';
         var date = new Date(requests[i]['startTimestamp']*1000);
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
         var image = "<img src='" + "http://i.imgur.com/r8R1C6B.png" + "' style='max-height:100px;'></img>";
         var name = "<a href='/user/" + login + "/profile'>" + requests[i]['name'] + "</a>";
         var action =    "<button type='button' class='btn btn-success btn' " + 
-                        "id='" + requests[i]['login'] + "_add'>" + 
+                        "onclick='deleteFriend(" + loginString + ");'>" + 
                             "<span class='glyphicon glyphicon-ok'></span>" + 
                         "</button> <br><br>" +
                         "<button type='button' class='btn btn-danger btn' " + 
-                        "id='" + requests[i]['login'] + "_del'>" + 
+                        "onclick='addFriend(" + loginString + ");'>" + 
                             "<span class='glyphicon glyphicon-remove'></span>" + 
                         "</button>";
         var friend = [image, name, date, action];
@@ -34,12 +36,6 @@ function showRequests(requests) {
     $('#requestsTable').dataTable().fnClearTable();
     $('#requestsTable').dataTable().fnAddData(requestsList);
 
-    for (var i = 0; i < requests.length; i++) {
-        $("#" + requests[i]['login'] + "_del").click(requests[i]['login'], deleteFriend);
-        $("#" + requests[i]['login'] + "_add").click(requests[i]['login'], function(name){
-            addFriend(name.data);
-        });
-    }
 }
 
 function showCircles(circles) {
@@ -98,11 +94,24 @@ function showCircles(circles) {
             ],
         });
 
-        // for (var j = 0; j < circles[i]['users'].length; j++) {
-        //     var user = circles[i]['users'][j];
-        //     var circleListItem = "<li>" + user + "</li>";
-        //     $("#circle_" + i).append(circleListItem);
-        // };
+        var circleUsers = new Array();
+        for (var j = 0; j < circles[i]['users'].length; j++) {
+            var username = circles[i]['users'][j];
+            for (var k = 0; k < friendsList.length; k++) {
+                if(friendsList[k]['login'] == username) {
+                    var friend = friendsList[k]['info'];
+                    var newAction = "<button type='button' class='btn btn-danger btn-sm'" + 
+                        "onclick='deleteFromCircle(\""+username+"\", \""+cName+"\");'>" + 
+                        "<span class='glyphicon glyphicon-remove'></span></button>";
+                    var circleFriend = [friend[0], friend[1], friend[2], newAction];
+                    circleUsers.push(circleFriend);
+                };
+            };
+        };
+
+        $('#circleTable_' + cName).dataTable().fnClearTable();
+        $('#circleTable_' + cName).dataTable().fnAddData(circleUsers);
+
         $("#" + cName + "_del").click(cName, deleteCircle);
         $("#selectCircles").append("<option>" + circles[i]['name'] + "</option>");
     };
@@ -160,6 +169,16 @@ function deleteCircle(name) {
     var circleName = name.data;
     $.ajax({
         url: "/api/circles/" + circleName,
+        type: "DELETE",
+        success: function(result) {
+            getFriends();
+        }
+    });
+}
+
+function deleteFromCircle(username, circleName) {
+    $.ajax({
+        url: "/api/circles/" + circleName + "/" + username,
         type: "DELETE",
         success: function(result) {
             getFriends();

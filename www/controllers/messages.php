@@ -83,7 +83,7 @@
             
             $result = $messagesDB->addMessage($ownerId, 
                 NULL, $circleId, $messageText, time());
-                return json_encode(array('valid' => 1));
+            return json_encode(array('valid' => 1));
         }
 
         public function addMessage($req, $res) {
@@ -97,7 +97,7 @@
                 $name = $circle[1];
                 $json = $this->addMessageCircle($name, $owner, $req->data["messageText"]);
             }
-            $res->add(json_encode($json));
+            $res->add($json);
             $res->send();
         }
 
@@ -105,6 +105,23 @@
             $circleName = $req->params['circleName'];
             $json = $this->addMessageCircle($circleName, $_SESSION['id'], 
                 $req->data["messageText"]);
+            $res->add($json);
+            $res->send();
+        }
+
+        public function searchReciepients($req, $res) {
+            $db = new MessagesHelper();
+            $searchText = $req->data['searchText'];
+            $firephp->log($searchText);
+            $result = $db->getReciepientsSearch($_SESSION['id'], $searchText);
+            $json = array("reciepients" => array());
+            foreach ($result as $r) {
+                $json["reciepients"][] = array(
+                    'username' => $r['login'], 
+                    'name' => $r['name'],
+                    'message' => $r['content'], 
+                    'timestamp' => $r['timestamp']);
+            }
             $res->add(json_encode($json));
             $res->send();
         }

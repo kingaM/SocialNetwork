@@ -60,7 +60,7 @@
             $email = $req->data['email'];
             $password = $req->data['password'];
             $userDB = new UsersHelper();
-            $validEmail = filter_var($email, FILTER_VALIDATE_EMAIL);
+            $validEmail = filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
             $unique = !$userDB->checkEmailExists($email); 
             $valid = $userDB->verifyUser($_SESSION['username'], $password) >= 0;
             if(!$valid || !$validEmail || !$unique) {

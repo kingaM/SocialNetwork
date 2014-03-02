@@ -87,7 +87,7 @@
                 AND NOT u.ID=:user 
                 GROUP BY login",
                 Array(':user' => $userID));
-
+            $friends = array();
             foreach ($result as $r) {
                 $friends[] = $r['login'];
             }
@@ -315,6 +315,7 @@
          *
          * @param int $userID The user adding the circle
          * @param String $circleName The name of the circle
+         * @param String $username The name of the user to add
          *
          */
         public function addToCircle($owner, $circleName, $username) {
@@ -352,6 +353,20 @@
                 FROM users as u, circles as c
                 WHERE c.owner=:owner AND c.name=:circleName AND u.login=:username",
                 Array(':owner' => $owner, ':circleName' => $circleName, ':username' => $username));
+        }
+
+        /**
+         * Deletes a user from a circle
+         *
+         * @param int $userID The user adding the circle
+         * @param String $circleName The name of the circle
+         *
+         */
+        public function deleteFromCircle($owner, $circleName, $username) {
+            $result = $this->db->execute("DELETE FROM circle_memberships 
+                WHERE user IN (SELECT id FROM users WHERE login=:username) 
+                AND circle IN (SELECT id FROM circles WHERE owner=:owner AND name=:cName)",
+                Array(':username' => $username, ':owner' => $owner, ':cName' => $circleName));
         }
 
     }

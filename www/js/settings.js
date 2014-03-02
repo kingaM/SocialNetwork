@@ -39,6 +39,7 @@ function setEditBtns() {
 
 function setSubmitBtns() {
     $("#username-submit-btn .custom-submit-btn").click(function(e) {
+        hideAllErrors();
         e.preventDefault();
         var values = {};
         values['username'] = $("#new-username").val();
@@ -49,6 +50,7 @@ function setSubmitBtns() {
             data: values,
             success: function(data) {
                 console.log(data);
+                hideAllErrors();
                 var json = $.parseJSON(data);
                 var valid = json['valid'];
                 if(valid && json['succeded']) {
@@ -84,6 +86,7 @@ function setSubmitBtns() {
         }); 
     });
     $("#password-submit-btn .custom-submit-btn").click(function(e) {
+        hideAllErrors();
         e.preventDefault();
         if ($("#new-password").val() !== $("#new-password-retype").val()) {
             $("#new-password-retype-error").show();
@@ -101,6 +104,7 @@ function setSubmitBtns() {
             data: values,
             success: function(data) {
                 console.log(data);
+                hideAllErrors();
                 var json = $.parseJSON(data);
                 var valid = json['valid'];
                 if(valid) {
@@ -117,6 +121,7 @@ function setSubmitBtns() {
         }); 
     });
     $("#email-submit-btn .custom-submit-btn").click(function(e) {
+        hideAllErrors();
         e.preventDefault();
         if ($("#new-email").val() !== $("#new-email-retype").val()) {
             $("#new-email-retype-error").show();
@@ -137,6 +142,7 @@ function setSubmitBtns() {
                 var json = $.parseJSON(data);
                 var valid = json['valid'];
                 var validPassword = json['password'];
+                hideAllErrors();
                 if(valid && json['succeded']) {
                     hideAndClearAll();
                     getUserInfo();
@@ -222,6 +228,10 @@ function hideAndClearAll() {
     $("#email-edit-btn").show();
     $("#password-submit-btn").hide();
     $("#password-edit-btn").show();
+    hideAllErrors();
+}
+
+function hideAllErrors() {
     // Clear all the error messages
     $("#new-username-error").hide();
     $("#password-username-error").hide();
@@ -236,6 +246,7 @@ function hideAndClearAll() {
     $("#form-group-password-current").removeClass("has-error");
     $("#form-group-password-retype").removeClass("has-error");
     $("#form-group-new-email").removeClass("has-error");
+    $("#form-group-email-retype").removeClass("has-error");
     $("#form-group-email-password").removeClass("has-error");
 }
 

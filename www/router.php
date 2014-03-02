@@ -39,53 +39,12 @@
         'file' => 'controllers/users.php',
     ));
 
-    // Friends
-
-    $router->addRoute(array(
-        'path' => '/user/{username}/friends',
-        'get' => array('Friends', 'getPage'),
-        'file' => 'controllers/friends.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/api/user/{username}/friends',
-        'get' => array('Friends', 'getFriends'),
-        'post' => array('Friends', 'addFriend'),
-        'file' => 'controllers/friends.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/api/user/{username}/friends',
-        'get' => array('Friends', 'getFriends'),
-        'post' => array('Friends', 'addFriend'),
-        'file' => 'controllers/friends.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/api/user/{username}/friends/{login}',
-        'delete' => array('Friends', 'removeFriend'),
-        'file' => 'controllers/friends.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/api/circles',
-        'post' => array('Friends', 'addCircle'),
-        'file' => 'controllers/friends.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/api/circles/{circleName}',
-        'post' => array('Friends', 'addToCircle'),
-        'delete' => array('Friends', 'deleteCircle'),
-        'file' => 'controllers/friends.php',
-    ));
-
     // Login, logout and register
 
     $router->addRoute(array(
         'path' => '/login',
-        'get' => array('Login', 'getPage'),
-        'file' => 'controllers/login.php',
+        'get' => array('Register', 'getPage'),
+        'file' => 'controllers/register.php',
     ));
 
     $router->addRoute(array(
@@ -101,8 +60,7 @@
     ));
 
     $router->addRoute(array(
-        'path' => '/register',
-        'get' => array('Register', 'getPage'),
+        'path' => '/api/register',
         'post' => array('Register', 'addUser'),
         'file' => 'controllers/register.php',
     ));
@@ -111,39 +69,6 @@
         'path' => '/activate/{hash}',
         'get' => array('Register', 'activate'),
         'file' => 'controllers/register.php',
-    ));
-
-    // Messages
-
-    $router->addRoute(array(
-        'path' => '/messages',
-        'get' => array('Messages', 'getPage'),
-        'file' => 'controllers/messages.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/api/messages/reciepients',
-        'get' => array('Messages', 'getReciepients'),
-        'file' => 'controllers/messages.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/api/messages/user/{username}',
-        'handlers' => array(
-            'username' => Zaphpa_Constants::PATTERN_ALPHA
-        ),
-        'get' => array('Messages', 'getMessages'),
-        'post' => array('Messages', 'addMessage'),
-        'file' => 'controllers/messages.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/api/messages/circle/{circleName}',
-        'handlers' => array(
-            'circleName' => Zaphpa_Constants::PATTERN_ALPHA
-        ),
-        'post' => array('Messages', 'addCircleMessage'),
-        'file' => 'controllers/messages.php',
     ));
 
     // Profile
@@ -193,6 +118,103 @@
         'file' => 'controllers/settings.php',
     ));
 
+    // Friends
+
+    $router->addRoute(array(
+        'path' => '/user/{username}/friends',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Friends', 'getPage'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/friends',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Friends', 'getFriends'),
+        'post' => array('Friends', 'addFriend'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/friends',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Friends', 'getFriends'),
+        'post' => array('Friends', 'addFriend'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/friends/{login}',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
+            'login' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'delete' => array('Friends', 'removeFriend'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/circles',
+        'post' => array('Friends', 'addCircle'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/circles/{circleName}',
+        'post' => array('Friends', 'addToCircle'),
+        'delete' => array('Friends', 'deleteCircle'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/circles/{circleName}/{friendName}',
+        'handlers' => array(
+            'friendName' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'delete' => array('Friends', 'deleteFromCircle'),
+        'file' => 'controllers/friends.php',
+    ));
+
+    // Messages
+
+    $router->addRoute(array(
+        'path' => '/messages',
+        'get' => array('Messages', 'getPage'),
+        'file' => 'controllers/messages.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/messages/reciepients',
+        'get' => array('Messages', 'getReciepients'),
+        'post' => array('Messages', 'searchReciepients'),
+        'file' => 'controllers/messages.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/messages/user/{username}',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Messages', 'getMessages'),
+        'post' => array('Messages', 'addMessage'),
+        'file' => 'controllers/messages.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/messages/circle/{circleName}',
+        'handlers' => array(
+            'circleName' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'post' => array('Messages', 'addCircleMessage'),
+        'file' => 'controllers/messages.php',
+    ));
+
     // Timeline
 
     $router->addRoute(array(
@@ -203,12 +225,18 @@
 
     $router->addRoute(array(
         'path' => '/user/{username}/',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
         'get' => array('Timeline', 'getPage'),
         'file' => 'controllers/timeline.php',
     ));
 
     $router->addRoute(array(
         'path' => '/api/user/{username}/',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
         'get' => array('Timeline', 'getPosts'),
         'post' => array('Timeline', 'addPost'),
         'file' => 'controllers/timeline.php',
@@ -216,6 +244,10 @@
 
     $router->addRoute(array(
         'path' => '/api/user/{username}/posts/{postID}',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
+            'postID' => Zaphpa_Constants::PATTERN_DIGIT
+        ),
         'post' => array('Timeline', 'addComment'),
         'file' => 'controllers/timeline.php',
     ));

@@ -55,9 +55,10 @@ function createFriendsTable() {
     });
 }
 
+var friendsList; // Used in a few methods
 function showFriends (friends, requests) {
 
-    var friendsList = new Array();
+    friendsList = new Array();
 
     var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
@@ -78,36 +79,36 @@ function showFriends (friends, requests) {
 
     for (var i = 0; i < friends.length; i++) {
         var login = friends[i]['login'];
+        var loginString = '"' + login + '"';
         var date = new Date(friends[i]['startTimestamp']*1000);
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
         var image = "<img src='" + "http://i.imgur.com/r8R1C6B.png" + "' style='max-height:100px;'></img>";
         var name = "<a href='/user/" + login + "/profile'>" + friends[i]['name'] + "</a>";
         var action;
         if ($.inArray(login, sessionUserFriends) >= 0) {
-            action = "<button type='button' class='btn btn-danger btn-sm' id='" + 
-                login + "_del'><span class='glyphicon glyphicon-remove'></span></button>";
+            action = "<button type='button' class='btn btn-danger btn-sm'" + 
+                "onclick='deleteFriend(" + loginString + ");'>" + 
+                "<span class='glyphicon glyphicon-remove'></span></button>";
         } else {
-            action = "<button type='button' class='btn btn-success btn-sm' id='" + 
-                login + "_add'><span class='glyphicon glyphicon-plus'></span></button>";
+            action = "<button type='button' class='btn btn-success btn-sm'" + 
+               "onclick='addFriend(" + loginString + ");'>" + 
+               "<span class='glyphicon glyphicon-plus'></span></button>";
         };
         var friend = [image, name, date, action];
-        friendsList.push(friend);
+        friendsList.push({"login": login, "info": friend});
     }
+
+    var showFriendsInfo = new Array();
+    for (var i = 0; i < friendsList.length; i++) {
+        showFriendsInfo.push(friendsList[i]["info"]);
+    };
 
     $('#friendsTable').dataTable().fnClearTable();
-    $('#friendsTable').dataTable().fnAddData(friendsList);
-
-    for (var i = 0; i < friends.length; i++) {
-        $("#" + friends[i]['login'] + "_del").click(friends[i]['login'], deleteFriend);
-        $("#" + friends[i]['login'] + "_add").click(friends[i]['login'], function(name){
-            addFriend(name.data);
-        });
-    }
+    $('#friendsTable').dataTable().fnAddData(showFriendsInfo);
 
 }
 
-function deleteFriend(name) {
-    var username = name.data;
+function deleteFriend(username) {
     $.ajax({
         url: "/api/user/" + sessionUser + "/friends/" + username,
         type: "DELETE",
