@@ -23,24 +23,34 @@ function content() {
 }
 
 function setupSearch() {
+    $('#search-reciepients-text').keydown(function (event) {
+        var keypressed = event.keyCode || event.which;
+        if (keypressed == 13) {
+                event.preventDefault();
+                $("#search-reciepients").click();         
+        }
+    });
     $("#search-reciepients").click(function (e) {
         e.preventDefault();
         inSearch = true;
         var values = {};
         values["searchText"] = $("#search-reciepients-text").val();
-        console.log(values);
         $.ajax({
             type: "post",
             url: "/api/messages/reciepients",
             data: values,
             success: function(data) {
-                console.log(data);
                 $("#conversations").empty();
                 prevConversations = null;
                 showReciepients($.parseJSON(data));
             }
         });
     });
+    $("#cancel-reciepients").click(function (e) {
+        e.preventDefault();
+        inSearch = false;
+        getReciepients();
+    })
 }
 
 function setupDropdown() {
@@ -84,8 +94,6 @@ function hideDropdown(valid, friend) {
             $("#control-label-to").text("This user is not your friend, so you cannot send him/her" +
                 " a message");
         }
-        
-        console.log("Username invalid");
     }
 }
 
@@ -102,7 +110,6 @@ function hideDropdownCircles(valid) {
         if(!valid) {
             $("#control-label-to-circles").text("The name of the circle is invalid");
         }         
-        console.log("Username invalid");
     }
 }
 
@@ -127,7 +134,6 @@ function postMessage(to, message, newM) {
         url: "/api/messages/user/" + to,
         data: values,
         success: function(data) {
-            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
             var friend = json['friend'];      
@@ -148,8 +154,7 @@ function postMessageCircle(to, message) {
         type: "post",
         url: "/api/messages/circle/" + to,
         data: values,
-        success: function(data) {
-            console.log(data);
+        success: function(data) 
             var json = $.parseJSON(data);
             var valid = json['valid'];    
             if(valid) {
