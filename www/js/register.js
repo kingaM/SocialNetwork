@@ -4,6 +4,13 @@ function content() {
 }
 
 function setLogin() {
+    $('#login-password').keydown(function (event) {
+        var keypressed = event.keyCode || event.which;
+        if (keypressed == 13) {
+                event.preventDefault();
+                $("#sign-in-btn").click();         
+        }
+    });
     $('#sign-in-btn').click(function(e) {
     e.preventDefault();
     var values = {};
@@ -85,12 +92,12 @@ function setSubmitBtn() {
                             if (key == "username-valid") {
                                 $("#form-group-username").addClass("has-error");
                                 $("#username-error").show();
-                                $("#username-error").html("The username address is not valid.");
+                                $("#username-error").html("The username is not valid.");
                             }
                             if (key == "username-unique") {
                                 $("#form-group-username").addClass("has-error");
                                 $("#username-error").show();
-                                $("#username-error").html("The username address is not unique.");
+                                $("#username-error").html("The username is not unique.");
                             }
                         }
                     }
