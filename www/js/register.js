@@ -1,5 +1,31 @@
 function content() {
     setSubmitBtn();
+    setLogin();
+}
+
+function setLogin() {
+    $('#sign-in-btn').click(function(e) {
+    e.preventDefault();
+    var values = {};
+    values['username'] = $("#login-username").val();
+    values['password'] = $("#login-password").val();    
+
+    $.ajax({
+        type: "post",
+        url: "/api/login",
+        data: values,
+        success: function(response) {
+                   var valid = $.parseJSON(response)['valid'];
+                   if(valid) {
+                        window.location.href = "./";
+                   } else {
+                        showError("error-login", "The username and/or password are not valid." +
+                            " Please try again.")
+                        $("#login-password").val("");
+                   }
+                },
+        });
+    });
 }
 
 function setSubmitBtn() {
@@ -69,7 +95,8 @@ function setSubmitBtn() {
                         }
                     }
                 } else if(!json['suceeded']) {
-                    showError();
+                    showError("error-unknown", "Something went wrong, but we don't know what." +
+                        "Please try again later.");
                 } else {
                     showSuccess();
                 }
@@ -92,12 +119,11 @@ function clearErrors() {
 
 }
 
-function showError() {
-    $("#error-unknown").html("<div class=\"alert alert-danger alert-dismissable\">" +
+function showError(id, text) {
+    $("#" + id).html("<div class=\"alert alert-danger alert-dismissable\">" +
         "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
         "aria-hidden=\"true\">&times;</button>" +
-        "<strong>Error:</strong> Something went wrong, but we don't know what." +
-        "Please try again later." + 
+        "<strong>Error:</strong>" + text +
         "</div>");
 }
 

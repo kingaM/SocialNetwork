@@ -1,7 +1,7 @@
 <style>
 .form-horizontal .control-label{
-    /* text-align:right; */
-    text-align:left;
+/* text-align:right; */
+text-align:left;
 }
 </style>
 <script src="/js/register.js"></script>
@@ -9,12 +9,30 @@
     <div class="row">
         <div class="col-md-10">
             <div id="error-unknown">
-
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-10 well">
+            <div id="error-login">
+            </div>
+            <h3> Login </h3>
+            <div class="form-inline" role="form">
+                <div class="form-group">
+                    <label class="sr-only" for="login-username">Username</label>
+                    <input type="email" class="form-control" id="login-username" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="login-password">Password</label>
+                    <input type="password" class="form-control" id="login-password" placeholder="Password">
+                </div>
+                <button type="button" class="btn btn-success" id="sign-in-btn">Sign in</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 well">
+            <h3> Register </h3>
             <div class="form-horizontal">
                 <div class="form-group" id="form-group-firstname">
                     <label for="firstname" class="col-md-2 control-label">First Name: </label>
@@ -74,7 +92,7 @@
                 </div>
                 <div class="form-group">
                     <div class=" col-md-12">
-                        <button type="button" class="btn btn-success pull-right" id="submit-btn"><span class="glyphicon glyphicon-ok"></span> Submit</button>
+                        <button type="button" class="btn btn-success pull-right" id="submit-btn"><span class="glyphicon glyphicon-ok"></span> Register</button>
                     </div>
                 </div>
             </div>

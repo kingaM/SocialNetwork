@@ -43,8 +43,8 @@
 
     $router->addRoute(array(
         'path' => '/login',
-        'get' => array('Login', 'getPage'),
-        'file' => 'controllers/login.php',
+        'get' => array('Register', 'getPage'),
+        'file' => 'controllers/register.php',
     ));
 
     $router->addRoute(array(
@@ -57,12 +57,6 @@
         'path' => '/logout',
         'get' => array('Login', 'logout'),
         'file' => 'controllers/login.php',
-    ));
-
-    $router->addRoute(array(
-        'path' => '/register',
-        'get' => array('Register', 'getPage'),
-        'file' => 'controllers/register.php',
     ));
 
     $router->addRoute(array(
@@ -231,12 +225,18 @@
 
     $router->addRoute(array(
         'path' => '/user/{username}/',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
         'get' => array('Timeline', 'getPage'),
         'file' => 'controllers/timeline.php',
     ));
 
     $router->addRoute(array(
         'path' => '/api/user/{username}/',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
         'get' => array('Timeline', 'getPosts'),
         'post' => array('Timeline', 'addPost'),
         'file' => 'controllers/timeline.php',
@@ -244,6 +244,10 @@
 
     $router->addRoute(array(
         'path' => '/api/user/{username}/posts/{postID}',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA,
+            'postID' => Zaphpa_Constants::PATTERN_DIGIT
+        ),
         'post' => array('Timeline', 'addComment'),
         'file' => 'controllers/timeline.php',
     ));
