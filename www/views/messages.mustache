@@ -13,14 +13,14 @@
                   <div class="col-md-12">
                     <form class="form" role="form" method="post" accept-charset="UTF-8" id="new-message-form">
                       <div class="form-group" id="form-group-to">
-                        <div id="search1"></div>
+                        <div id="search-username"></div>
                         <script src="/helpers/autocompleter.js"></script>
-                        <script>easyIncludeAutoComplete("search1");</script>
-{{!                         <input type="text" class="form-control" id="to" placeholder="Username" required>
-                        <label class="control-label" for="to" id="control-label-to" hidden></label> }}
+                        <script>easyIncludeAutoComplete("search-username");</script>
+                        {{! <input type="text" class="form-control" id="to" placeholder="Username" required> }}
+                        <label class="control-label" for="to" id="control-label-to" hidden></label>
                       </div>
                       <div class="form-group">
-                        <textarea class="form-control send-message" rows="3" placeholder="Write a reply..." id="new-message"></textarea>
+                        <textarea class="form-control send-message" rows="3" placeholder="Write a reply..." id="new-message" required></textarea>
                       </div>
                       <div class="form-group">
                         <button type="submit" class="btn send-message-btn btn-block">Send</button>
@@ -43,7 +43,7 @@
                         <label class="control-label" for="to" id="control-label-to-circles" hidden></label>
                       </div>
                       <div class="form-group">
-                        <textarea class="form-control send-message" rows="3" placeholder="Write a reply..." id="new-message-circles"></textarea>
+                        <textarea class="form-control send-message" rows="3" placeholder="Write a reply..." id="new-message-circles" required></textarea>
                       </div>
                       <div class="form-group">
                         <button type="submit" class="btn send-message-btn btn-block">Send</button>

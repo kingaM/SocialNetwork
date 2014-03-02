@@ -60,7 +60,7 @@ function setupDropdown() {
     $('#new-message-form').submit(function(e) {
         e.preventDefault();
         var messageText = $("#new-message").val();
-        var to = $("#to").val();
+        var to = $("#searchUsers_search-username").val();
         postMessage(to, messageText, true);
     });
     $('#new-message-circles-form').submit(function(e) {
@@ -81,7 +81,7 @@ function setupDropdown() {
 function hideDropdown(valid, friend) {
     if(valid && friend) {
         $("#new-message").val("");
-        $("#to").val("");
+        $("#searchUsers_search-username").val("");
         $('[data-toggle="dropdown"]').parent().removeClass('open');
         $("#form-group-to").removeClass("has-error");
         $("#control-label-to").hide();
@@ -135,8 +135,8 @@ function postMessage(to, message, newM) {
         data: values,
         success: function(data) {
             var json = $.parseJSON(data);
-            var valid = json['valid'];
-            var friend = json['friend'];      
+            var valid = json["valid"];
+            var friend = json["friend"];   
             if(valid && friend) {
                 showMessages(currentReciepient);
             }
