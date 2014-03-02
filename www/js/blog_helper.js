@@ -32,7 +32,7 @@ function setButtons(postNumber) {
     } else {
         $("#pages").append('<li><a href="'+ url + (page - 1) + '">&laquo;</a></li>')
     }
-    for(var i = 1; i <= postNumber/2; i++) {
+    for(var i = 1; i <= Math.ceil(postNumber/2); i++) {
         if (page == i) {
             $('#pages').append('<li class="active"><a href="' + url + i + '">' + i +
                 '<span class="sr-only">(current)</span></a></li>');
@@ -41,7 +41,7 @@ function setButtons(postNumber) {
                 '<span class="sr-only">(current)</span></a></li>');
         }
     }
-    if (page == postNumber/2) {
+    if (page == Math.ceil(postNumber/2)) {
         $("#pages").append('<li class="disabled"><a href="#">&raquo;</a></li>');
     } else {
         $("#pages").append('<li><a href="'+ url + (page + 1) + '">&raquo;</a></li>');

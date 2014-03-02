@@ -101,7 +101,6 @@ function showBlogs(blogs) {
 }
 
 function showBlog(blog) {
-    console.log(blog['name']);
     var html = "<div class=\"col-md-6\">" +
             "<div class=\"well well-sm\">" +
                 "<div class=\"row\">" +
@@ -119,8 +118,6 @@ function showBlog(blog) {
                 "</div>" +
             "</div>" +
         "</div>";
-
-    console.log(html);
 
     $("#blog-list").append(html);
 
