@@ -22,11 +22,11 @@ function showRequests(requests) {
         var image = "<img src='" + "http://i.imgur.com/r8R1C6B.png" + "' style='max-height:100px;'></img>";
         var name = "<a href='/user/" + login + "/profile'>" + requests[i]['name'] + "</a>";
         var action =    "<button type='button' class='btn btn-success btn' " + 
-                        "onclick='deleteFriend(" + loginString + ");'>" + 
+                        "onclick='addFriend(" + loginString + ");'>" + 
                             "<span class='glyphicon glyphicon-ok'></span>" + 
                         "</button> <br><br>" +
                         "<button type='button' class='btn btn-danger btn' " + 
-                        "onclick='addFriend(" + loginString + ");'>" + 
+                        "onclick='deleteFriend(" + loginString + ");'>" + 
                             "<span class='glyphicon glyphicon-remove'></span>" + 
                         "</button>";
         var friend = [image, name, date, action];

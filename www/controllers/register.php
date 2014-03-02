@@ -76,12 +76,12 @@
             if ($authenticated == -1) {
                 echo 'The user does not exist';
             } else if ($authenticated == 1) {
-                echo 'You have already authenticated, now you can login.';
+                header('Location: /login');
             } else if ($authenticated == 0) {
                 $db->updateAuthenticated($hash);
                 header('Location: /login');
             } else {
-                echo 'Something went massively wrong';
+                echo 'Something went wrong. Try again later.';
             }
         }
 
