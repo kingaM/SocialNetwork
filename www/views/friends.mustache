@@ -8,7 +8,7 @@
 </ul>
 
 <div id="friends">
-    <div id="add_friends">
+    <div id="add_friends" class="row">
         <h2>Add Friend</h2>
 
         <form id="addForm" class="form-inline">
@@ -19,7 +19,7 @@
         </form>
     </div>
 
-    <div id="current_friends">
+    <div id="current_friends" class="row">
         <h2>Current Friends</h2>
     </div>
 </div>
@@ -42,22 +42,29 @@
 </div>
 
 <div id="circles">
-    <h2>New Circle</h2>
-    <form id="newCircle" class="form-inline">
-        <input type="text" class="form-control" placeholder="Circle Name">
-        <button type="submit" class="btn btn-primary">Create</button>
-    </form>
-    <h2>Add to Circles</h2>
-    <form id="addToCircle" class="form-inline">
-        <select class="form-control" id="selectCircles"></select>
-        <div id="search2" class="container col-md-4"></div>
-        <script src="/helpers/autocompleter.js"></script>
-        <script>easyIncludeAutoComplete("search2");</script>
-        <button type="submit" class="btn btn-primary">Add</button>
-    </form>
-    <h2>Circles</h2>
-
-    <div class="panel-group" id="circlesList"></div>
+    <div class="row">
+        <h2>New Circle</h2>
+        <form id="newCircle" class="form-inline">
+            <div class="form-group" id="addCircleGroup">
+                <input type="text" class="form-control" placeholder="Circle Name">
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+    <div class="row">
+        <h2>Add to Circles</h2>
+        <form id="addToCircle" class="form-inline">
+            <select class="form-control" id="selectCircles"></select>
+            <div id="search2" class="container col-md-4"></div>
+            <script src="/helpers/autocompleter.js"></script>
+            <script>easyIncludeAutoComplete("search2");</script>
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+    <div class="row">
+        <h2>Circles</h2>
+        <div class="panel-group" id="circlesList"></div>
+    </div>
 
 
 </div>

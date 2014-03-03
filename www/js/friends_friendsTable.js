@@ -127,10 +127,15 @@ function addFriend(username) {
         success: function(response) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
-                if(key == "error")
-                    displayModal(val);
-                else if(key == "result" && val == "requested") {
-                    displayModal("Friend request sent")
+                if(key == "error") {
+                    $("#searchUsersGroup_search1").addClass("has-error");
+                    var label = '<label id="addError" class="control-label" ' + 
+                        'for="searchUsersGroup_search1">' + val + '</label>';
+                    $("#addError").remove();
+                    $(label).insertAfter("#searchUsersGroup_search1");
+                } else if(key == "result" && val == "requested") {
+                    $("#searchUsersGroup_search1").removeClass("has-error");
+                    $("#addError").remove();
                     $("#addForm")[0].reset();
                 }
             });
