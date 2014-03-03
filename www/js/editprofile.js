@@ -1,4 +1,5 @@
 var g_data = null;
+var files = null;
 
 function content() {
     var pathArray = window.location.pathname.split( '/' );
@@ -18,8 +19,50 @@ function content() {
         $("#submit-btn-group").hide();
         getUserInfo();              
     });
+     
+    // Add events
+    $('input[type=file]').on('change', prepareUpload);
+     
+    // Grab the files and set them to our variable
+    function prepareUpload(event)
+    {
+      files = event.target.files;
+    }
+
+    $('#image-form').on('submit', uploadFiles);
 
     getUserInfo();
+}
+
+function uploadFiles(event)
+{
+    event.stopPropagation(); 
+    event.preventDefault(); 
+
+    var data = new FormData();
+    $.each(files, function(key, value)
+    {
+        console.log(key + " " + value);
+        data.append(key, value);
+    });
+    
+    $.ajax({
+        url: '/api/user/profile/image',
+        type: 'POST',
+        data: data,
+        cache: false,
+        dataType: 'json',
+        processData: false, 
+        contentType: false, 
+        success: function(data, textStatus, jqXHR)
+        {
+            console.log(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown)
+        {
+            console.log('ERRORS: ' + textStatus);
+        }
+    });
 }
 
 function showError() {

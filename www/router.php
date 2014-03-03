@@ -92,6 +92,15 @@
         'file' => 'controllers/profile.php',
     ));
 
+    $router->addRoute(array(
+        'path' => 'api/user/profile/image',
+        // 'handlers' => array(
+        //     'username' => Zaphpa_Constants::PATTERN_ALPHA
+        // ),
+        'post' => array('Profile', 'savePhoto'),
+        'file' => 'controllers/profile.php',
+    ));
+
     // Settings
     
     $router->addRoute(array(
