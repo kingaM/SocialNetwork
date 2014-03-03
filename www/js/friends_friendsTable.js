@@ -79,6 +79,8 @@ function showFriends (friends, requests) {
 
     for (var i = 0; i < friends.length; i++) {
         var login = friends[i]['login'];
+        if(login == sessionUser)
+            continue;
         var loginString = '"' + login + '"';
         var date = new Date(friends[i]['startTimestamp']*1000);
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
@@ -86,12 +88,17 @@ function showFriends (friends, requests) {
         var name = "<a href='/user/" + login + "/profile'>" + friends[i]['name'] + "</a>";
         var action;
         if ($.inArray(login, sessionUserFriends) >= 0) {
-            action = "<button type='button' class='btn btn-danger btn-sm'" + 
-                "onclick='deleteFriend(" + loginString + ");'>" + 
-                "<span class='glyphicon glyphicon-remove'></span></button>";
+            var currUsername = window.location.pathname.split( '/' )[2];
+            if(currUsername == sessionUser)
+                action = "<button type='button' class='btn btn-danger btn-sm'" + 
+                    "onclick='deleteFriend(" + loginString + ");'>" + 
+                    "<span class='glyphicon glyphicon-remove'></span></button>";
+            else
+                action = "<button type='button' class='btn btn-success btn-sm disabled'>" + 
+                    "Friend <span class='glyphicon glyphicon-ok'></span></button>";
         } else {
             action = "<button type='button' class='btn btn-success btn-sm'" + 
-               "onclick='addFriend(" + loginString + ");'>" + 
+               "onclick='addFriend(" + loginString + ");' id='add_" + login + "'>" + 
                "<span class='glyphicon glyphicon-plus'></span></button>";
         };
         var friend = [image, name, date, action];
@@ -133,13 +140,19 @@ function addFriend(username) {
                         'for="searchUsersGroup_search1">' + val + '</label>';
                     $("#addError").remove();
                     $(label).insertAfter("#searchUsersGroup_search1");
+                    $("#add_" + username).text("Sent");
+                    $("#add_" + username).addClass("disabled");
                 } else if(key == "result" && val == "requested") {
                     $("#searchUsersGroup_search1").removeClass("has-error");
                     $("#addError").remove();
+                    $("#add_" + username).text("Sent");
+                    $("#add_" + username).addClass("disabled");
                     $("#addForm")[0].reset();
                 }
             });
-            getFriends();
+            var currUsername = window.location.pathname.split( '/' )[2];
+            if(sessionUser == currUsername)
+                getFriends();
         }
     });
 }
