@@ -132,10 +132,15 @@ function addCircle(circleName) {
         success: function(response) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
-                if(key == "error")
-                    displayModal(val);
-                else if(key == "result") {
-                    displayModal("Circle added");
+                if(key == "error") {
+                    $("#addCircleGroup").addClass("has-error");
+                    var label = '<label id="addCircleError" class="control-label" ' + 
+                        'for="addCircleInput">' + val + '</label>';
+                    $("#addCircleError").remove();
+                    $(label).insertAfter("#newCircle");
+                } else if(key == "result") {
+                    $("#addCircleGroup").removeClass("has-error");
+                    $("#addCircleError").remove();
                     $("#newCircle")[0].reset();
                 }
             });
@@ -153,10 +158,15 @@ function addToCircle(circleName, username) {
         success: function(response) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
-                if(key == "error")
-                    displayModal(val);
-                else if(key == "result") {
-                    displayModal("Added");
+                if(key == "error") {
+                    $("#searchUsersGroup_search2").addClass("has-error");
+                    var label = '<label id="addToCircleError" class="control-label" ' + 
+                        'for="searchUsersGroup_search2">' + val + '</label>';
+                    $("#addToCircleError").remove();
+                    $(label).insertAfter("#searchUsersGroup_search2");
+                } else if(key == "result") {
+                    $("#searchUsersGroup_search2").removeClass("has-error");
+                    $("#addToCircleError").remove();
                     $("#addToCircle")[0].reset();
                 }
             });
