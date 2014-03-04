@@ -1,0 +1,4 @@
+# To keep the directory, but not the files in it. 
+
+*
+!.gitignore
