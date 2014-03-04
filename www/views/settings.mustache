@@ -1,126 +1,124 @@
 <link rel="stylesheet" type="text/css" href="/css/settings.css">
 <script src="/js/settings.js"></script>
-
 <div class="container">
     <div id="error-unknown">
-
     </div>
     <table class="table table-condensed table-responsive">
         <tbody>
-        <tr>
-            <td><h4>Username:</h4></td>
-            <td id="username">
-                <h4>Username</h4>
-            </td>
-            <td id="username-edit" hidden>
-                <div class="form-horizontal">
-                    <div class="form-group" id="form-group-username-username">
-                        <label for="new-username" class="col-sm-4 control-label">Username: </label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="new-username" placeholder="Enter username">
-                            <label class="control-label" for="new-username" id="new-username-error" hidden></label>
+            <tr>
+                <td><h4>Username:</h4></td>
+                <td id="username">
+                    <h4>Username</h4>
+                </td>
+                <td id="username-edit" hidden>
+                    <div class="form-horizontal">
+                        <div class="form-group" id="form-group-username-username">
+                            <label for="new-username" class="col-sm-4 control-label">Username: </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="new-username" placeholder="Enter username">
+                                <label class="control-label" for="new-username" id="new-username-error" hidden></label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-group-username-password">
+                            <label for="password-username" class="col-sm-4 control-label">Enter Password to Confirm: </label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="password-username" placeholder="Enter password">
+                                <label class="control-label" for="password-username" id="password-username-error" hidden></label>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group" id="form-group-username-password">
-                        <label for="password-username" class="col-sm-4 control-label">Enter Password to Confirm: </label>
-                        <div class="col-sm-8">
-                            <input type="password" class="form-control" id="password-username" placeholder="Enter password">
-                            <label class="control-label" for="password-username" id="password-username-error" hidden></label>
+                </td>
+                <td id="username-edit-btn"><button type="button" class="btn btn-default">Edit</button></td>
+                <td id="username-submit-btn" hidden>
+                    <div class="form">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default custom-submit-btn">Submit</button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default custom-cancel-btn">Cancel</button>
                         </div>
                     </div>
-                </div>
-            </td>
-            <td id="username-edit-btn"><button type="button" class="btn btn-default">Edit</button></td>
-            <td id="username-submit-btn" hidden>
-                <div class="form">
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default custom-submit-btn">Submit</button>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default custom-cancel-btn">Cancel</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td><h4>Password:</h4></td>
-            <td id="password"><h4> ******* </h4></td>
-            <td id="password-edit" hidden>
-                <div class="form-horizontal">
-                    <div class="form-group" id="form-group-password-current">
-                        <label for="password-password" class="col-sm-4 control-label">Current Password: </label>
-                        <div class="col-sm-8">
-                            <input type="password" class="form-control" id="password-password" placeholder="Enter password">
-                            <label class="control-label" for="password-password" id="password-password-error" hidden></label>
+                </td>
+            </tr>
+            <tr>
+                <td><h4>Password:</h4></td>
+                <td id="password"><h4> ******* </h4></td>
+                <td id="password-edit" hidden>
+                    <div class="form-horizontal">
+                        <div class="form-group" id="form-group-password-current">
+                            <label for="password-password" class="col-sm-4 control-label">Current Password: </label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="password-password" placeholder="Enter password">
+                                <label class="control-label" for="password-password" id="password-password-error" hidden></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password" class="col-sm-4 control-label">New Password: </label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="new-password" placeholder="Enter password">
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-group-password-retype">
+                            <label for="new-password-retype" class="col-sm-4 control-label">Retype New Password: </label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="new-password-retype" placeholder="Enter password">
+                                <label class="control-label" for="new-password-retype" id="new-password-retype-error" hidden></label>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="new-password" class="col-sm-4 control-label">New Password: </label>
-                        <div class="col-sm-8">
-                            <input type="password" class="form-control" id="new-password" placeholder="Enter password">
+                </td>
+                <td id="password-edit-btn"><button type="button" class="btn btn-default">Edit</button></td>
+                <td id="password-submit-btn" hidden>
+                    <div class="form">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default custom-submit-btn">Submit</button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default custom-cancel-btn">Cancel</button>
                         </div>
                     </div>
-                    <div class="form-group" id="form-group-password-retype">
-                        <label for="new-password-retype" class="col-sm-4 control-label">Retype New Password: </label>
-                        <div class="col-sm-8">
-                            <input type="password" class="form-control" id="new-password-retype" placeholder="Enter password">
-                            <label class="control-label" for="new-password-retype" id="new-password-retype-error" hidden></label>
+                </td>
+            </tr>
+            <tr>
+                <td><h4>E-mail</h4></td>
+                <td id="email"><h4> Old e-mail </h4></td>
+                <td id="email-edit" hidden>
+                    <div class="form-horizontal">
+                        <div class="form-group" id="form-group-new-email">
+                            <label for="new-email" class="col-sm-4 control-label">E-mail: </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="new-email" placeholder="Enter E-mail">
+                                <label class="control-label" for="new-email" id="new-email-error" hidden></label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-group-email-retype">
+                            <label for="new-email" class="col-sm-4 control-label">Re-type E-mail: </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="new-email-retype" placeholder="Enter E-mail">
+                                <label class="control-label" for="new-email-retype" id="new-email-retype-error" hidden></label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-group-email-password">
+                            <label for="password-email" class="col-sm-4 control-label">Enter Password to Confirm: </label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="password-email" placeholder="Enter password">
+                                <label class="control-label" for="password-email" id="password-email-error" hidden></label>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </td>
-            <td id="password-edit-btn"><button type="button" class="btn btn-default">Edit</button></td>
-            <td id="password-submit-btn" hidden>
-                <div class="form">
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default custom-submit-btn">Submit</button>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default custom-cancel-btn">Cancel</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td><h4>E-mail</h4></td>
-            <td id="email"><h4> Old e-mail </h4></td>
-            <td id="email-edit" hidden>
-                <div class="form-horizontal">
-                    <div class="form-group" id="form-group-new-email">
-                        <label for="new-email" class="col-sm-4 control-label">E-mail: </label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="new-email" placeholder="Enter E-mail">
-                            <label class="control-label" for="new-email" id="new-email-error" hidden></label>
+                </td>
+                <td id="email-edit-btn"><button type="button" class="btn btn-default">Edit</button></td>
+                <td id="email-submit-btn" hidden>
+                    <div class="form">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default custom-submit-btn">Submit</button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default custom-cancel-btn">Cancel</button>
                         </div>
                     </div>
-                    <div class="form-group" id="form-group-email-retype">
-                        <label for="new-email" class="col-sm-4 control-label">Re-type E-mail: </label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="new-email-retype" placeholder="Enter E-mail">
-                            <label class="control-label" for="new-email-retype" id="new-email-retype-error" hidden></label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="form-group-email-password">
-                        <label for="password-email" class="col-sm-4 control-label">Enter Password to Confirm: </label>
-                        <div class="col-sm-8">
-                            <input type="password" class="form-control" id="password-email" placeholder="Enter password">
-                            <label class="control-label" for="password-email" id="password-email-error" hidden></label>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td id="email-edit-btn"><button type="button" class="btn btn-default">Edit</button></td>
-            <td id="email-submit-btn" hidden>
-                <div class="form">
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default custom-submit-btn">Submit</button>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default custom-cancel-btn">Cancel</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

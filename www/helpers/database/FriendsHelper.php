@@ -3,6 +3,9 @@
     require_once('helpers/database/database.php');
     require_once('helpers/database/TimelineHelper.php');
 
+    /**
+     * A helper that has database functions related to the Friends feature of the site. 
+     */
     class FriendsHelper {
 
         private $db;

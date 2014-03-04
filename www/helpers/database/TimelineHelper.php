@@ -2,6 +2,10 @@
 
     require_once('helpers/database/database.php');
 
+    /**
+     * A helper that has database functions related to the Timeline and News Feed feature of the 
+     * site. 
+     */
     class TimelineHelper {
 
         private $db;

@@ -2,6 +2,9 @@
     
     require_once('helpers/database/database.php');
 
+    /**
+     * A helper that has bassic database functions acting on basic User infomation. 
+     */
     class UsersHelper {
 
         private $db = NULL;

@@ -54,7 +54,8 @@ function getPostNumber() {
         "/postsNum", 
         function(data) {
             if(!data['valid']) {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
             } else {
                 setButtons(data['posts']);
             }
@@ -66,7 +67,8 @@ function getBlogInfo() {
         blog + "/info", 
         function(data) {
             if(!data['valid']) {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
             } else {
                 $("#blog-title-link").html(data['name']);
                 $("#blog-description").html(data['about']);
@@ -100,13 +102,4 @@ function showDate(timestamp) {
     var curr_year = date.getFullYear();
     return curr_date + "<SUP>" + sup + "</SUP> " 
         + m_names[curr_month] + " " + curr_year;
-}
-
-function showError() {
-    $("#error-unknown").html("<div class=\"alert alert-danger alert-dismissable\">" +
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
-        "aria-hidden=\"true\">&times;</button>" +
-        "<strong>Error:</strong> Something went wrong, but we don't know what." +
-        "Please try again later." + 
-        "</div>");
 }

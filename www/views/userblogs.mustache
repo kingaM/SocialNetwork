@@ -1,46 +1,44 @@
 <link rel="stylesheet" type="text/css" href="/css/userblogs.css">
 <script src="/js/userblogs.js"></script>
 <div class="row">
-    <div id="error-unknown">
-
-    </div>
-    <div class="col-md-12">
-        <div class="form-group pull-right " id="edit-btn-group" hidden>
-            <div class="btn-group">
-                <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="new-blog">
-                    <span class="glyphicon glyphicon-pencil"></span>Create New Blog
-                    <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu pull-right" style="padding: 15px;min-width: 500px;">
-                    <li>
-                       <div class="row">
-                          <div class="col-md-12">
-                             <form class="form" role="form" method="post" accept-charset="UTF-8" id="new-post-form">
-                                <div class="form-group" id="form-group-name">
-                                   <input type="text" class="form-control" id="name" placeholder="Blog Name" required>
-                                   <label class="control-label" for="name" id="control-label-name" hidden></label>
-                                </div>
-                                <div class="form-group" id="form-group-url">
-                                   <input type="text" class="form-control" id="url" placeholder="Unique alphanumeric identifier of the blog" required>
-                                   <label class="control-label" for="url" id="control-label-url" hidden></label>
-                                </div>
-                                <div class="form-group">
-                                   <textarea class="form-control send-post" rows="3" placeholder="About" id="new-post" requried></textarea>
-                                </div>
-                                <div class="form-group">
-                                   <button type="submit" class="btn btn-default btn-block">Send</button>
-                                </div>
-                             </form>
-                          </div>
-                       </div>
-                    </li>
-                 </ul>
+  <div id="error-unknown">
+  </div>
+  <div class="col-md-12">
+    <div class="form-group pull-right " id="edit-btn-group" hidden>
+      <div class="btn-group">
+        <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="new-blog">
+        <span class="glyphicon glyphicon-pencil"></span>Create New Blog
+        <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu pull-right" style="padding: 15px;min-width: 500px;">
+          <li>
+            <div class="row">
+              <div class="col-md-12">
+                <form class="form" role="form" method="post" accept-charset="UTF-8" id="new-post-form">
+                  <div class="form-group" id="form-group-name">
+                    <input type="text" class="form-control" id="name" placeholder="Blog Name" required>
+                    <label class="control-label" for="name" id="control-label-name" hidden></label>
+                  </div>
+                  <div class="form-group" id="form-group-url">
+                    <input type="text" class="form-control" id="url" placeholder="Unique alphanumeric identifier of the blog" required>
+                    <label class="control-label" for="url" id="control-label-url" hidden></label>
+                  </div>
+                  <div class="form-group">
+                    <textarea class="form-control send-post" rows="3" placeholder="About" id="new-post" requried></textarea>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-default btn-block">Send</button>
+                  </div>
+                </form>
+              </div>
             </div>
-        </div>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="col-md-12">
-        <div class="row" id="blog-list">
-
-        </div>
+  </div>
+  <div class="col-md-12">
+    <div class="row" id="blog-list">
     </div>
+  </div>
 </div>

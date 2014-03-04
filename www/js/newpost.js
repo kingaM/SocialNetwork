@@ -30,7 +30,8 @@ function content() {
                     var json = $.parseJSON(data);
                     var valid = json['valid'];    
                     if(!valid) {
-                        showError();
+                        showError("error-unknown", "Something went wrong, but we don't know what." +
+                            "Please try again later.");
                     } else {
                         window.location.replace("/user/" + username + "/blogs/" + 
                             blog + "/pages/1"); 
@@ -45,13 +46,4 @@ function content() {
         window.location.replace("/user/" + username + "/blogs/" + 
             blog + "/pages/1");
     });
-}
-
-function showError() {
-    $("#error-unknown").html("<div class=\"alert alert-danger alert-dismissable\">" +
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
-        "aria-hidden=\"true\">&times;</button>" +
-        "<strong>Error:</strong> Something went wrong, but we don't know what." +
-        "Please try again later." + 
-        "</div>");
 }

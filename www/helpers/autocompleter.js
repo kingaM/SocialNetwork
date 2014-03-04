@@ -3,6 +3,12 @@
 // <div id="<ID>" class="container col-md-4"></div><script src="/helpers/autocompleter.js"></script>
 // <script>easyIncludeAutoComplete("<ID>");</script>
 
+
+/**
+ * Includes an autocomplete search box, which autocompletes with the usernames of the registered
+ * users. To get the input in javascript use searchUsers_{id} tag.
+ * @param  {string} id The id of the div to place the search box in. 
+ */
 function easyIncludeAutoComplete(id) {
     var searchHTML = '<script src="/libs/bootstrap3-typeahead.js"></script>' + 
     '<div class="input-group" id="searchUsersGroup_' + id + '">' + 
@@ -20,7 +26,10 @@ function easyIncludeAutoComplete(id) {
     $('#searchUsers_' + id).typeahead({source: autocomplete});
 }
 
-
+/**
+ * Helper function for the autocomplete search box. It sends a GET request to get the users that
+ * fit the letters already entered in the input field from the database.
+ */
 function autocomplete(query, process) {
     $.getJSON( "/api/users/autocomplete/" + query, function(data) {
         var suggestions = [];

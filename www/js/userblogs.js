@@ -36,11 +36,11 @@ function postBlog(name, url, text) {
         url: "/api/user/" + username + "/blogs",
         data: values,
         success: function(data) {
-            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
             if (!valid) {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
                 return;
             }
             var unique = json['unique'];
@@ -81,7 +81,8 @@ function getUserBlogs() {
     $.getJSON( "/api/user/" + username + "/blogs", 
         function(data) {
             if(!data['valid']) {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
             } else {
                 if(data['currentUser']) {
                     $("#edit-btn-group").show();
@@ -104,7 +105,7 @@ function showBlog(blog) {
     var html = "<div class=\"col-md-6\">" +
             "<div class=\"well well-sm\">" +
                 "<div class=\"row\">" +
-                    "<div class=\"col-xs-9 col-md-9 section-box\">" +
+                    "<div class=\"col-md-12 section-box\">" +
                         "<h2>"
                              + blog['name']  + 
                             "<a href=\"./blogs/"+ blog['url'] + "/pages/1\" target=\"_blank\">" +
@@ -121,15 +122,6 @@ function showBlog(blog) {
 
     $("#blog-list").append(html);
 
-}
-
-function showError() {
-    $("#error-unknown").html("<div class=\"alert alert-danger alert-dismissable\">" +
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
-        "aria-hidden=\"true\">&times;</button>" +
-        "<strong>Error:</strong> Something went wrong, but we don't know what." +
-        "Please try again later." + 
-        "</div>");
 }
 
 function validateAlphanumeric(string){

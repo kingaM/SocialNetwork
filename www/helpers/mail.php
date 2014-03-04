@@ -1,6 +1,15 @@
 <?php
 
 class Mail {
+    /**
+     * Sends an e-mail using a pre-configured gmail account through SMTP.
+     * 
+     * @param  string  $to      The e-mail of the person the e-mail is to.
+     * @param  string  $subject The subject of the e-mail.
+     * @param  string  $body    The body of the e-mail.
+     * 
+     * @return boolean          Returns true if send succeeded, false otherwise.
+     */
     public static function sendMail($to,$subject,$body) {
         require 'libs/class.phpmailer.php';
         $from = "comp3013.social.network@gmail.com";

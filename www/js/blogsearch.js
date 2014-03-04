@@ -17,7 +17,8 @@ function getUserBlogs() {
         blog + "/search/" + searchword, 
         function(data) {
             if(!data['valid']) {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
             } else {
                 showPosts(data['posts']);
             }

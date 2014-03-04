@@ -33,11 +33,6 @@ function content() {
     $("[data-toggle='tooltip']").tooltip();
 
     getUserInfo();
-    //     $.getJSON('/api/user/' + window.location.pathname.split( '/' )[2] + '/profile/image',  
-    //     function(data) {
-    //         $("#profile-pic").attr("src", data['image']);
-    //     }
-    //     );
 }
 
 function uploadFiles(event)
@@ -48,7 +43,6 @@ function uploadFiles(event)
     var data = new FormData();
     $.each(files, function(key, value)
     {
-        console.log(key + " " + value);
         data.append(key, value);
     });
     
@@ -60,36 +54,28 @@ function uploadFiles(event)
         processData: false, 
         contentType: false, 
         success: function(data) {
-            console.log(data);
             var json = $.parseJSON(data);
             if(json['valid']) {
                 $("#profile-pic").attr("src", json['image']);
                 $('.fileinput').fileinput('clear');
             } else {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
             }
             
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log("ERROR: " + textStatus);
+            console.error("ERROR: " + textStatus);
         }
     });
-}
-
-function showError() {
-    $("#error-unknown").html("<div class=\"alert alert-danger alert-dismissable\">" +
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
-        "aria-hidden=\"true\">&times;</button>" +
-        "<strong>Error:</strong> Something went wrong, but we don't know what." +
-        "Please try again later." + 
-        "</div>");
 }
 
 function getUserInfo() {
     $.getJSON( "/api/user/" + window.location.pathname.split( '/' )[2] + "/profile", 
         function(data) {
             if(!data['valid']) {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
             } else {
                 if(data['currentUser']) {
                     g_data = data;
@@ -184,14 +170,14 @@ function submitInfo() {
         url: "/api/user/" + window.location.pathname.split( '/' )[2] + "/profile",
         data: values,
         success: function(data) {
-            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
             if(valid) {
                 getUserInfo();
                 $("#submit-btn-group").hide();
             } else {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
             }
         }
     }); 

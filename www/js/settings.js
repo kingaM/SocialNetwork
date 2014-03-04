@@ -57,7 +57,8 @@ function setSubmitBtns() {
                     hideAndClearAll();
                     getUserInfo();
                 } else if (valid && !json['succeded']) {
-                    showError();
+                    showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
                 } else {
                     if (!json['password']) {
                         $("#password-username-error").show();
@@ -67,7 +68,8 @@ function setSubmitBtns() {
                     }
                     // Should not happen
                     if (!json['unique'] && !json['alphaNum']) {
-                        showError();
+                        showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
                     }
                     if (!json['unique']) {
                         $("#new-username-error").show();
@@ -115,7 +117,8 @@ function setSubmitBtns() {
                     $("#password-password-error").html("The password is incorrect.");
                     $("#form-group-password-current").addClass("has-error");
                 } else {
-                    showError();
+                    showError("error-unknown", "Something went wrong, but we don't know what." +
+                        "Please try again later.");
                 }
             }
         }); 
@@ -147,7 +150,8 @@ function setSubmitBtns() {
                     hideAndClearAll();
                     getUserInfo();
                 } else if (valid && !json['succeded']) {
-                    showError();
+                    showError("error-unknown", "Something went wrong, but we don't know what." +
+                            "Please try again later.");
                 } else {
                     if (!json['password']) {
                         $("#password-email-error").show();
@@ -157,7 +161,8 @@ function setSubmitBtns() {
                     }
                     // Should not happen
                     if (!json['unique'] && !json['validEmail']) {
-                        showError();
+                        showError("error-unknown", "Something went wrong, but we don't know what." +
+                            "Please try again later.");
                     }
                     if (!json['unique']) {
                         $("#new-email-error").show();
@@ -188,7 +193,8 @@ function getUserInfo() {
     $.getJSON( "/api/user/" + "-1" + "/profile", 
         function(data) {
             if(!data['valid']) {
-                showError();
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
             } else {
                 showInfo(data['user']);
             }

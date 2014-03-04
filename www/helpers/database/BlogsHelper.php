@@ -3,6 +3,9 @@
     require_once('helpers/database/database.php');
     require_once('helpers/database/TimelineHelper.php');
 
+    /**
+     * A helper that has database functions related to the Blog feature of the site. 
+     */
     class BlogsHelper {
 
         private $db = NULL;
