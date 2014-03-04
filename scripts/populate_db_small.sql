@@ -13,6 +13,7 @@ INSERT INTO profile(userId, gender, dob, about, locations, languages, profilePic
 VALUES
 	(1, 'Male', 593136000, 'A young man looking for love', 'England, Germany', 'English, German',
         null),
+    (2, null, null, null, null, null, null),
 	(3, 'Female', 593106000, 'A young woman studying in Cambridge', 'England', 'English',
         null);
 

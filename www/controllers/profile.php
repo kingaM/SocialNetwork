@@ -66,10 +66,18 @@
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
-            $usersDB->updateProfileInfo($_SESSION['id'], $req->data["firstName"], 
-                $req->data["middleName"], $req->data["lastName"], $req->data["gender"], 
-                $req->data["dob"], $req->data["about"], $req->data["locations"], 
-                $req->data["languages"]);
+            $data = $req->data;
+            foreach ($data as $key => $value) {
+                $data[$key] = trim($data[$key]);
+                $data[$key] = strip_tags($data[$key]);
+                if($data[$key] == "") {
+                    $data[$key] = null;
+                } 
+            }
+            $usersDB->updateProfileInfo($_SESSION['id'], $data["firstName"], 
+                $data["middleName"], $data["lastName"], $data["gender"], 
+                $data["dob"], $data["about"], $data["locations"], 
+                $data["languages"]);
             $res->add(json_encode(array('valid' => true)));
             $res->send();
         }

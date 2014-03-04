@@ -89,13 +89,21 @@
         public function addMessage($req, $res) {
             $username = $req->params['username'];
             $pos = strpos($username,'_');
+            $data = $req->data;
+            foreach ($data as $key => $value) {
+                $data[$key] = trim($data[$key]);
+                $data[$key] = strip_tags($data[$key]);
+                if($data[$key] == "") {
+                    $data[$key] = null;
+                } 
+            }
             if( $pos === false) {
-                $json = $this->addMessageUser($username, $req->data["messageText"]);
+                $json = $this->addMessageUser($username, $data["messageText"]);
             } else {
                 $circle = explode('_', $username);
                 $owner = $circle[0];
                 $name = $circle[1];
-                $json = $this->addMessageCircle($name, $owner, $req->data["messageText"]);
+                $json = $this->addMessageCircle($name, $owner, $data["messageText"]);
             }
             $res->add($json);
             $res->send();
@@ -104,7 +112,7 @@
         public function addCircleMessage($req, $res) {
             $circleName = $req->params['circleName'];
             $json = $this->addMessageCircle($circleName, $_SESSION['id'], 
-                $req->data["messageText"]);
+                strip_tags(trim($req->data["messageText"])));
             $res->add($json);
             $res->send();
         }

@@ -20,11 +20,20 @@
 
             $errorMessage = '';
 
+            $data = $req->data;
+            foreach ($data as $key => $value) {
+                $data[$key] = trim($data[$key]);
+                $data[$key] = strip_tags($data[$key]);
+                if($data[$key] == "") {
+                    $data[$key] = null;
+                } 
+            }
+
         	$username = $req->data['username'];
         	$password = $req->data['password'];
-            $firstname = $req->data['firstname'];
-            $middlename = $req->data['middlename'];
-            $lastname = $req->data['lastname'];
+            $firstname = $data['firstname'];
+            $middlename = $data['middlename'];
+            $lastname = $data['lastname'];
             $email = $req->data['email'];
             $json = array();
 

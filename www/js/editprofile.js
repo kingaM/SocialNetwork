@@ -102,19 +102,25 @@ function getUserInfo() {
 }
 
 function showInfo(user) {
+    var profilePicture = user["profilePicture"];
+    if (profilePicture == null) {
+        profilePicture = "http://placehold.it/380x500";
+    }
+    var dob = user["dob"];
+    if (dob == null) {
+         dob = "";
+    } else {
+        dob = new Date(user["dob"] * 1000).toLocaleDateString();
+    }
     $("#name").html("<h4>" + user["firstName"] + " " + user["middleName"] + " " + 
         user["lastName"] +  "</h4>");
     $("#places-lived").html(user["locations"]);
-    $("#dob").html(new Date(user["dob"] * 1000).toLocaleDateString());
+    $("#dob").html(dob);
     $("#languages").html(user["languages"]);
     $("#gender").html(user["gender"]);
     $("#email").html(user["email"]);
     $("#about").html(user["about"].replace(/\n/g, "<br/>"));
-    var picture = user['profilePicture'];
-    if (picture == null) {
-        picture = "http://placehold.it/380x500";
-    }
-    $("#profile-pic").attr("src", user['profilePicture']);
+    $("#profile-pic").attr("src", profilePicture);
 }
 
 function editInfo(user) {
@@ -129,8 +135,14 @@ function editInfo(user) {
         user["locations"] +  "\" id=\"locations-txt\" >");
     $("#dob").html("<input type=\"text\" class=\"span2 form-control\" id=\"dob-txt\"" + 
         "format=\"dd-mm-yyyy\" data-date=\"\">");
+    var dob = user["dob"];
+    if (dob == null) {
+         dob = "dd-mm-yyyy";
+    } else {
+        dob = new Date(user["dob"] * 1000).toLocaleDateString();
+    }
     $('#dob-txt').datepicker();
-    $('#dob-txt').datepicker('setValue', new Date(user["dob"] * 1000));
+    $('#dob-txt').datepicker('setValue', dob);
     $("#languages").html("<input type=\"text\" class=\"form-control\" value=\"" + 
         user["locations"] +  "\" id=\"languages-txt\" >");
     $("#gender").html("<select class=\"form-control\" value=\"" + 
@@ -172,6 +184,7 @@ function submitInfo() {
         url: "/api/user/" + window.location.pathname.split( '/' )[2] + "/profile",
         data: values,
         success: function(data) {
+            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
             if(valid) {
