@@ -159,6 +159,7 @@
             foreach ($friends as $friend) {
                 $friendLogins[] = "'" . $friend['login'] . "'";
             }
+            $friendLogins[] = "'" .$_SESSION['username'] . "'";
 
             $inSet = implode(",", $friendLogins);
 

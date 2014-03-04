@@ -108,3 +108,23 @@ function showPosts(data) {
         };
     };
 }
+
+function addPost(content, username) {
+    $.ajax({
+        url: "/api/user/" + username,
+        type: "POST",
+        data: {content: content},
+
+        success: function(response) {
+            var data = $.parseJSON(response);
+            $.each( data, function(key, val) {
+                if(key == "error")
+                    displayModal(val);
+                else if(key == "result" && val == "added") {
+                    $("#newPostForm")[0].reset();
+                }
+            });
+            getPosts();
+        }
+    });
+}

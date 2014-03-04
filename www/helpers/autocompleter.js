@@ -5,7 +5,7 @@
 
 function easyIncludeAutoComplete(id) {
     var searchHTML = '<script src="/libs/bootstrap3-typeahead.js"></script>' + 
-    '<div class="input-group">' + 
+    '<div class="input-group" id="searchUsersGroup_' + id + '">' + 
         '<input type="text" class="form-control" data-provide="typeahead" id="searchUsers_' + id + 
             '" placeholder="Username" autocomplete="off">' + 
         '<span class="input-group-btn">' + 
