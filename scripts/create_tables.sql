@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `profile` (
 	`about` VARCHAR(10000),
 	`locations` VARCHAR(1000),
 	`languages` VARCHAR(1000),
+    `profilePicture` VARCHAR(1000),
 	PRIMARY KEY (`userId`),
 	FOREIGN KEY (`userId`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );

@@ -147,7 +147,7 @@
          */
         public function getUser($id) {
             $sql = "SELECT id, first_name, middle_name, last_name, gender, dob, about, locations, 
-                languages, email, login
+                languages, email, login, profilePicture
                 FROM users, profile
                 WHERE id = :id AND activated = 1
                 AND id = userId";
@@ -211,7 +211,7 @@
          */
         public function updatePassword($id, $password) {
             $sql = "UPDATE users
-                SET password = :password
+                SET password = sha1(:password)
                 WHERE id = :id";
             $array = array(':id' => $id, ':password' => $password);
             return $this->db->execute($sql, $array);
@@ -276,6 +276,24 @@
                 $suggestions[] = $r['login'];
             }
             return $suggestions;
+        }
+
+        /**
+         * Gets URL of the picture of the user. 
+         * 
+         * @param  string  $id The id of the user. 
+         * @return string      The url of the photo or NULL if there is an error.  
+         */
+        public function getPictureUrl($id) {
+            $sql = "SELECT profilePicture FROM profile WHERE
+                userId = :id";
+            $array = array(':id' => $id);
+            $result = $this->db->fetch($sql, $array);
+            if(sizeof($result) != 1) {
+                return NULL;
+            } else {
+                return $result[0]["profilePicture"];
+            }
         }
 
     }

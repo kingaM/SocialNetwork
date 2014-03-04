@@ -9,10 +9,12 @@ VALUES
 	('Test', NULL, 'User', 'fake@gmail.com', 'test', SHA1('test'),
 		SHA1('fake@gmail.com1391362036'), 1);
 
-INSERT INTO profile(userId, gender, dob, about, locations, languages)
+INSERT INTO profile(userId, gender, dob, about, locations, languages, profilePicture)
 VALUES
-	(1, 'Male', 593136000, 'A young man looking for love', 'England, Germany', 'English, German'),
-	(3, 'Female', 593106000, 'A young woman studying in Cambridge', 'England', 'English');
+	(1, 'Male', 593136000, 'A young man looking for love', 'England, Germany', 'English, German',
+        null),
+	(3, 'Female', 593106000, 'A young woman studying in Cambridge', 'England', 'English',
+        null);
 
 INSERT INTO friendships(user1, user2, status, startTimestamp)
 VALUES
@@ -51,7 +53,7 @@ VALUES
     (1, 'Bok Choy', 1393003907),
     (1, 'Chicken stir-fry', 1361454065),
     (1, 'Dessert', 1361536865),
-    (1, 'Chcocolate trifle', 1362055265),
+    (1, 'Chocolate trifle', 1362055265),
     (1, 'Beef Burger', 1363869665),
     (1, 'Chicken Burger', 1366548065),
     (1, 'Salsa', 1366551665),

@@ -93,10 +93,11 @@
     ));
 
     $router->addRoute(array(
-        'path' => 'api/user/profile/image',
-        // 'handlers' => array(
-        //     'username' => Zaphpa_Constants::PATTERN_ALPHA
-        // ),
+        'path' => 'api/user/{username}/profile/image',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Profile', 'getPhoto'),
         'post' => array('Profile', 'savePhoto'),
         'file' => 'controllers/profile.php',
     ));

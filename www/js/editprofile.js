@@ -30,8 +30,14 @@ function content() {
     }
 
     $('#image-form').on('submit', uploadFiles);
+    $("[data-toggle='tooltip']").tooltip();
 
     getUserInfo();
+    //     $.getJSON('/api/user/' + window.location.pathname.split( '/' )[2] + '/profile/image',  
+    //     function(data) {
+    //         $("#profile-pic").attr("src", data['image']);
+    //     }
+    //     );
 }
 
 function uploadFiles(event)
@@ -47,20 +53,25 @@ function uploadFiles(event)
     });
     
     $.ajax({
-        url: '/api/user/profile/image',
+        url: '/api/user/' + window.location.pathname.split( '/' )[2] + '/profile/image',
         type: 'POST',
         data: data,
         cache: false,
-        dataType: 'json',
         processData: false, 
         contentType: false, 
-        success: function(data, textStatus, jqXHR)
-        {
+        success: function(data) {
             console.log(data);
+            var json = $.parseJSON(data);
+            if(json['valid']) {
+                $("#profile-pic").attr("src", json['image']);
+                $('.fileinput').fileinput('clear');
+            } else {
+                showError();
+            }
+            
         },
-        error: function(jqXHR, textStatus, errorThrown)
-        {
-            console.log('ERRORS: ' + textStatus);
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log("ERROR: " + textStatus);
         }
     });
 }
@@ -83,6 +94,7 @@ function getUserInfo() {
                 if(data['currentUser']) {
                     g_data = data;
                     $("#edit-btn-group").show();
+                    $("#image-form").show();
                 } 
                 showInfo(data['user']);
             }
@@ -98,6 +110,11 @@ function showInfo(user) {
     $("#gender").html(user["gender"]);
     $("#email").html(user["email"]);
     $("#about").html(user["about"].replace(/\n/g, "<br/>"));
+    var picture = user['profilePicture'];
+    if (picture == null) {
+        picture = "http://placehold.it/380x500";
+    }
+    $("#profile-pic").attr("src", user['profilePicture']);
 }
 
 function editInfo(user) {
@@ -139,7 +156,6 @@ function submitInfo() {
     var languages = $("#languages-txt").val();
     var gender = $("#gender-txt").val();
     var about = $("#about-txt").val();
-    $("#submit-btn-group").hide();
 
     var values = {};
     values["firstName"] = firstName;
@@ -160,6 +176,7 @@ function submitInfo() {
             var valid = json['valid'];
             if(valid) {
                 getUserInfo();
+                $("#submit-btn-group").hide();
             } else {
                 showError();
             }

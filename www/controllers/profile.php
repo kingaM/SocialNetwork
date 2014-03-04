@@ -1,7 +1,6 @@
 <?php
 
     include_once('helpers/database/UsersHelper.php');
-    require_once('libs/FirePHPCore/FirePHP.class.php'); 
     require_once('libs/ImageManipulator.php');
 
     class Profile {
@@ -52,7 +51,8 @@
                     'languages' => $userInfo['languages'],
                     'about' => $userInfo['about'],
                     'email' => $userInfo['email'],
-                    'username' => $userInfo['login']
+                    'username' => $userInfo['login'],
+                    'profilePicture' => $userInfo['profilePicture']
                     )
                 )));
                 $res->send();
@@ -75,48 +75,49 @@
         }
 
         public function savePhoto($req, $res) {
-            $firephp = FirePHP::getInstance(true);
-            $firephp->log(var_dump($req));
-            $firephp->log($_FILES);
             if(sizeof($_FILES) != 1) {
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
             else {
                 $result = $this->uploadImage($_FILES[0]);
-                if ($result == -1) {
+                if ($result === false) {
                     $res->add(json_encode(array('valid' => false)));
-                    $res->send();
-                } else if ($result == 0) {
-                    $res->add(json_encode(array('valid' => true, 'succeeded' => false)));
                     $res->send();
                 }
             }
-            $res->add(json_encode(array('valid' => true, 'succeeded' => true)));
+            $res->add(json_encode(array('valid' => true, 'image' => $result)));
+            $res->send();
+        }
+
+        public function getPhoto($req, $res) {
+            $username = $req->params['username'];
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if ($userId == -1) {
+                $res->add(json_encode(array('valid' => false, 'image' => NULL)));
+                $res->send();
+            }
+            $url = $usersDB->getPictureUrl($userId);
+            $res->add(json_encode(array('valid' => false, 'image' => $url)));
             $res->send();
         }
 
         private function uploadImage($file) {
-            $firephp = FirePHP::getInstance(true);
             if ($file['error'] > 0) {
-                return -1;
+                return false;
             } else {
-                // array of valid extensions
                 $validExtensions = array('.jpg', '.jpeg', '.gif', '.png');
-                // get extension of the uploaded file
                 $fileExtension = strrchr($file['name'], ".");
-                // check if file Extension is on the list of allowed ones
                 if (in_array($fileExtension, $validExtensions)) {
                     $manipulator = new ImageManipulator($file['tmp_name']);
-                    // resizing to 200x200
-                    $newImage = $manipulator->resample(200, 200);
-                    // saving file to uploads folder
-                    $firephp->log($fileExtension);
-                    $manipulator->save('uploads/profile_pics/' . $_SESSION['id'] . "." . 
+                    $newImage = $manipulator->resample(380, 500, false);
+                    $manipulator->save('uploads/profile_pics/' . $_SESSION['id'] . 
                        $fileExtension);
-                    return 1;
+                    return '/uploads/profile_pics/' . $_SESSION['id'] . 
+                       $fileExtension;
                 } else {
-                    return 0;
+                    return false;
                 }
             }
         }
