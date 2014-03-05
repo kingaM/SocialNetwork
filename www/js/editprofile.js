@@ -96,7 +96,7 @@ function getUserInfo() {
 function showInfo(user) {
     var profilePicture = user["profilePicture"];
     if (profilePicture == null) {
-        profilePicture = "http://placehold.it/380x500";
+        profilePicture = "http://placehold.it/400x400";
     }
     var dob = user["dob"];
     if (dob == null) {
