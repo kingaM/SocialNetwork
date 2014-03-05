@@ -12,10 +12,10 @@
       <div class="row col-md-12">
         <div class="col-md-5">
           <div class="row">
-            <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive" id="profile-pic" width="380px" height="500px"/>
+            <img src="http://placehold.it/400x400" alt="" class="img-rounded img-responsive" id="profile-pic" width="380px" height="500px"/>
           </div>
-          <div class="row col-md-12">
-            <form class="form-inline" role="form" id="image-form" data-toggle="tooltip" data-placement="top" title="For best results please provide a 380 x 500 px image." hidden>
+          <div class="row col-md-12 has-error">
+            <form class="form-inline" role="form" id="image-form" data-toggle="tooltip" data-placement="top" title="For best results please provide a 400 x 400 px image." hidden>
               <div class="form-group" >
                 <div class="fileinput fileinput-new" data-provides="fileinput" style="margin-top: 10px">
                   <span class="btn btn-default btn-file"><span class="fileinput-new">Select picture</span><span class="fileinput-exists">Change</span><input type="file" name="image"></span>
@@ -25,6 +25,9 @@
               </div>
               <div class="form-group" id="upload-btn-group">
                 <button type="submit" class="btn btn-default" id="submit-btn-img">Change profile picture</button>
+              </div>
+              <div class="form-group" id="image-error-group">
+                <label class="control-label" id="control-label-image" hidden>The photo is invalid - please upload a different photo.</label>
               </div>
             </form>
           </div>

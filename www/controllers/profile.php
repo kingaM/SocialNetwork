@@ -87,14 +87,24 @@
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
-            else {
-                $result = $this->uploadImage($_FILES[0]);
-                if ($result === false) {
-                    $res->add(json_encode(array('valid' => false)));
-                    $res->send();
-                }
+            $username = $req->params['username'];
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if ($userId == -1) {
+                $res->add(json_encode(array('valid' => false, 'image' => NULL)));
+                $res->send();
             }
-            $res->add(json_encode(array('valid' => true, 'image' => $result)));
+            $result = $this->uploadImage($_FILES[0]);
+            if ($result === false) {
+                $res->add(json_encode(array('valid' => true, 'image_error' => true)));
+                $res->send();
+            } 
+            if ($usersDB->updatePictureUrl($userId, $result)) {
+                $res->add(json_encode(array('valid' => true, 'image_error' => false, 
+                    'image' => $result)));
+                $res->send();
+            }
+            $res->add(json_encode(array('valid' => false)));
             $res->send();
         }
 
@@ -119,11 +129,11 @@
                 $fileExtension = strrchr($file['name'], ".");
                 if (in_array($fileExtension, $validExtensions)) {
                     $manipulator = new ImageManipulator($file['tmp_name']);
-                    $newImage = $manipulator->resample(380, 500, false);
-                    $manipulator->save('uploads/profile_pics/' . $_SESSION['id'] . 
-                       $fileExtension);
-                    return '/uploads/profile_pics/' . $_SESSION['id'] . 
+                    $newImage = $manipulator->resample(400, 400, false);
+                    $pictureName = 'uploads/profile_pics/' . $_SESSION['id'] . 
                        $fileExtension;
+                    $manipulator->save($pictureName);
+                    return "/" . $pictureName;
                 } else {
                     return false;
                 }

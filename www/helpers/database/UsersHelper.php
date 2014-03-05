@@ -299,6 +299,21 @@
             }
         }
 
+        /**
+         * Updates URL of the picture of the user. 
+         * 
+         * @param  string  $id  The id of the user.
+         * @param  string  $url The new url of the picture.
+         * @return boolean      True if succeeded, false otherwise.   
+         */
+        public function updatePictureUrl($id, $url) {
+            $sql = "UPDATE profile
+                SET profilePicture = :url 
+                WHERE userId = :id";
+            $array = array(':id' => $id, ':url' => $url);
+            return $this->db->execute($sql, $array);
+        }
+
     }
 
 ?>

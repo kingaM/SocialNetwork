@@ -17,6 +17,7 @@ function content() {
     $("#cancel-btn").click(function(e) {
         e.preventDefault();
         $("#submit-btn-group").hide();
+        $("#control-label-image").hide();
         getUserInfo();              
     });
      
@@ -55,17 +56,22 @@ function uploadFiles(event)
         contentType: false, 
         success: function(data) {
             var json = $.parseJSON(data);
-            if(json['valid']) {
-                $("#profile-pic").attr("src", json['image']);
-                $('.fileinput').fileinput('clear');
-            } else {
+            if(!json['valid']) {
                 showError("error-unknown", "Something went wrong, but we don't know what." +
                     "Please try again later.");
+            } else if(json['image_error']) {
+                $("#control-label-image").show();
+            } else {
+                $("#profile-pic").attr("src", json['image']);
+                $('.fileinput').fileinput('clear');
+                $("#control-label-image").hide();
             }
             
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("ERROR: " + textStatus);
+            showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
         }
     });
 }
