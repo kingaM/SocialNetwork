@@ -398,6 +398,27 @@
         'file' => 'controllers/blog.php',
     ));
 
+    // Photos
+    
+    $router->addRoute(array(
+        'path' => '/user/{username}/photos',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Photos', 'getAlbums'),
+        'file' => 'controllers/photos.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/photos',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Photos', 'getPhotoAlbums'),
+        'post' => array('Photos', 'addNewAlbum'),
+        'file' => 'controllers/photos.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {

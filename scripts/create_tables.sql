@@ -126,3 +126,12 @@ CREATE TABLE IF NOT EXISTS `posts_details` (
     PRIMARY KEY (`postDetailId`),
     FOREIGN KEY (`postId`) REFERENCES `posts` (`postId`) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS `photo_albums` (
+    `albumId` INT NOT NULL AUTO_INCREMENT,
+    `about` VARCHAR(10000) NOT NULL,
+    `user` INT NOT NULL,
+    `name` VARCHAR(100) NOT NULL, 
+    PRIMARY KEY (`albumId`),
+    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);

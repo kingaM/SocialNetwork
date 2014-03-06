@@ -1,0 +1,77 @@
+<style type="text/css">
+a.nohover:hover { color: none; text-decoration: none;}
+</style>
+<script src="/js/photos.js"></script>
+<div class="row">
+  <div id="error-unknown">
+  </div>
+  <div class="col-md-12">
+    <div class="form-group pull-right " id="edit-btn-group" hidden>
+      <div class="btn-group">
+        <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="new-album-dropdown">
+        <span class="glyphicon glyphicon-plus"></span> Create New Photo Album
+        <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu pull-right" style="padding: 15px;min-width: 500px;">
+          <li>
+            <div class="row">
+              <div class="col-md-12">
+                <form class="form" role="form" method="post" accept-charset="UTF-8" id="new-album-form">
+                  <div class="form-group" id="form-group-name">
+                    <input type="text" class="form-control" id="name" placeholder="Album Name" required>
+                    <label class="control-label" for="name" id="control-label-name" hidden></label>
+                  </div>
+                  <div class="form-group">
+                    <textarea class="form-control" rows="3" placeholder="About" id="new-album" requried></textarea>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-default btn-block">Create Album</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="panel-group" id="accordion-cat-1">
+      <div id="photo-collections-list">
+        <div class="panel panel-default panel-faq">
+          <div class="panel-heading">
+            <a class="nohover" data-toggle="collapse" data-parent="#accordion-cat-1" href="#faq-cat-1-sub-1">
+            <h4 class="panel-title">
+            FAQ Item Category #1 <br>
+            <small> About </small>
+            <span class="pull-right"><i class="glyphicon glyphicon-plus"></i></span>
+            </h4>
+            </a>
+          </div>
+          <div id="faq-cat-1-sub-1" class="panel-collapse collapse">
+            <div class="panel-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default panel-faq">
+          <div class="panel-heading">
+            <a class="nohover" data-toggle="collapse" data-parent="#accordion-cat-1" href="#faq-cat-1-sub-2">
+            <h4 class="panel-title">
+            FAQ Item Category #2 <br>
+            <small> About </small>
+            <span class="pull-right"><i class="glyphicon glyphicon-plus"></i></span>
+            </h4>
+            </a>
+          </div>
+          <div id="faq-cat-1-sub-2" class="panel-collapse collapse">
+            <div class="panel-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
