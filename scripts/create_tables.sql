@@ -135,3 +135,14 @@ CREATE TABLE IF NOT EXISTS `photo_albums` (
     PRIMARY KEY (`albumId`),
     FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS `photos` (
+    `photoId` INT NOT NULL AUTO_INCREMENT,
+    `description` VARCHAR(1000), 
+    `timestamp` INT NOT NULL,
+    `albumId` INT NOT NULL, 
+    `url` VARCHAR(1000) NOT NULL,
+    `thumbnailUrl` VARCHAR(1000) NOT NULL,
+    PRIMARY KEY (`photoId`),
+    FOREIGN KEY (`albumId`) REFERENCES `photo_albums` (`albumId`) ON DELETE CASCADE ON UPDATE CASCADE
+);

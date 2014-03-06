@@ -81,6 +81,25 @@
             return $this->db->execute($sql, $array);
         }
 
+        /**
+         * Gets all photos of a particular user in a particular photo album.
+         * 
+         * @param  integer $userId  The id of the user.
+         * @param  integer $albumId The id of the album.
+         * 
+         * @return Array           An array with all the photos and information about them.
+         */
+        public function getPhotos($userId, $albumId) {
+            $sql = "SELECT photoId, `timestamp`, `description`, `url`, `thumbnailUrl` 
+                    FROM photos, photo_albums
+                    WHERE photos.albumId = :albumId AND photos.albumId = photo_albums.albumId AND
+                        photo_albums.user = :userId
+                    ORDER BY timestamp DESC";
+            $array = array(':userId' => $userId, ':albumId' => $albumId);
+            $result = $this->db->fetch($sql, $array);
+            return $result;
+        }
+
     }
 
 ?>

@@ -90,10 +90,10 @@ function showPhotoAlbums(albums) {
         var album = albums[i];
         showPhotoAlbum(album, i);
     }
-        $('.collapse').on('show.bs.collapse', function() {
+    $('.collapse').on('show.bs.collapse', function() {
         var id = $(this).attr('id');
         console.log(id);
-      //  loadPhotos(id);
+        loadPhotos(id);
         $('a[href="#' + id + '"]').closest('.panel-heading').addClass('active-faq');
         $('a[href="#' + id + '"] .panel-title span').html('<i class="glyphicon glyphicon-minus"></i>');
     });
@@ -113,9 +113,25 @@ function loadPhotos(id) {
                     "Please try again later.");
             } else {
                 console.log(data);
-                showPhotos(data['photos']);
+                showPhotos(id, data['photos']);
             }
     });
+}
+
+function showPhotos(id, photos) {
+    var html = '<div id="links-' + id + '">' + '</div>';
+    $("#" + id).html(html);
+    for (i = 0; i < photos.length; ++i) {
+        var photo = photos[i];
+        showPhoto(photo, "links-" + id);
+    }
+}
+
+function showPhoto(photo, id) {
+    var html = '<a href="' + photo["url"] + '" title="' + photo["description"] + '" data-gallery>' +
+    '<img src="' + photo["thumbnailUrl"] + '" height="200" width="200">' +
+        '</a>';
+    $("#" + id).append(html);
 }
 
 function showPhotoAlbum(album) {

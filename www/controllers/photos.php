@@ -13,9 +13,9 @@
             return $m->render('main', array('title' => '404', 'content' => $content));
         }
 
-        private function checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB) {
+        private function checkUsernameAndPhotoAlbum($username, $blogName, $usersDB, $photosDB) {
             $id = $usersDB->getIdFromUsername($username);
-            if($id == -1 || $blogsDB->getBlogId($id, $blogName) == -1) {
+            if($id == -1 || $photosDB->getBlogId($id, $blogName) == -1) {
                 return -1;
             }
             return $id;
@@ -83,6 +83,42 @@
                 $json['valid'] = false;
             }
             $res->add(json_encode($json));
+            $res->send();
+        }
+
+        public function getPhotos($req, $res) {
+            $username = $req->params['username'];
+            $id = $req->params['id'];
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId == -1) {
+                $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
+                    'photos' => NULL)));
+                $res->send();
+            }
+            if($userId === $_SESSION['id']) {
+                $currentUser = true;
+            } else {
+                $currentUser = false;
+            }
+            $photosDB = new PhotosHelper();
+            $posts = $photosDB->getPhotos($userId, $id);
+            if(sizeof($posts) < 0) {
+                $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
+                    'photos' => NULL)));
+                $res->send();
+            }
+            $jsonPosts = array();
+            foreach ($posts as $post) {
+                $jsonPosts[] = array(
+                    'id' => $post['photoId'],
+                    'description' => $post['description'],
+                    'timestamp' => $post['timestamp'],
+                    'url' => $post['url'], 
+                    'thumbnailUrl' => $post['thumbnailUrl']);
+            }
+            $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
+                'photos' => $jsonPosts)));
             $res->send();
         }
     }

@@ -92,3 +92,11 @@ INSERT INTO photo_albums(`user`, `name`, `about`)
 VALUES 
     (3, 'Summer Holidays', 'My summer Holidays.'),
     (3, 'Cuba', 'Had a great time in Cuba :P');
+
+
+INSERT INTO photos(`albumId`, `timestamp`, `description`, `url`, `thumbnailUrl`)
+VALUES 
+    (1, 1394135655, 'A nice description', '/uploads/album_pics/full/31394135655.jpg', 
+        '/uploads/album_pics/thumbnail/31394135655.jpg'),
+    (1, 1394135578, null, '/uploads/album_pics/full/31394135578.jpg', 
+        '/uploads/album_pics/thumbnail/31394135578.jpg');
