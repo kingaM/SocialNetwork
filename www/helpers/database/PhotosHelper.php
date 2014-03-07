@@ -100,6 +100,15 @@
             return $result;
         }
 
+        public function addPhoto($albumId, $timestamp, $description, $url, $thumbnailUrl) {
+            $sql = "INSERT INTO photos(`albumId`, `timestamp`, `description`, `url`, 
+                `thumbnailUrl`) 
+                    VALUES (:albumId, :timestamp, :description, :url, :thumbnailUrl)";
+            $array = array(':albumId' => $albumId, ':timestamp' => $timestamp, 
+                ':description' => $description, ':url' => $url, ':thumbnailUrl' => $thumbnailUrl); 
+            return $this->db->execute($sql, $array);     
+        }
+
     }
 
 ?>

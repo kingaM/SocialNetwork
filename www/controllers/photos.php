@@ -2,6 +2,8 @@
 
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/PhotosHelper.php');
+    require_once('libs/ImageManipulator.php');
+    require_once('libs/FirePHPCore/FirePHP.class.php');  
 
     class Photos {
 
@@ -120,6 +122,100 @@
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
                 'photos' => $jsonPosts)));
             $res->send();
+        }
+
+        public function addPhoto($req, $res) {
+            if(sizeof($_FILES) != 1) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+            $username = $req->params['username'];
+            $albumId = $req->params['id'];
+            $firephp = FirePHP::getInstance(true);
+            $firephp->log($req->data);
+            $data = $req->data;
+            $data["description"] = trim($data["description"]);
+            $data["description"] = strip_tags($data["description"]);
+            if($data["description"] == "") {
+                $data["description"] = null;
+            } 
+            $usersDB = new UsersHelper();
+            $photosDB = new PhotosHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if ($userId == -1) {
+                $res->add(json_encode(array('valid' => false, 'image' => NULL)));
+                $res->send();
+            }
+            $timestamp = time();
+            try {
+                $url = $this->uploadImage($_FILES[0], $timestamp);
+                $thumbnailUrl = $this->uploadThumbnail($_FILES[0], $timestamp);
+            } catch (Exception $e) {
+                $res->add(json_encode(array('valid' => true, 'image_error' => true)));
+                $res->send();
+            }
+            if ($url === false || $thumbnailUrl === false) {
+                $res->add(json_encode(array('valid' => true, 'image_error' => true)));
+                $res->send();
+            } 
+            if ($photosDB->addPhoto($albumId, $timestamp, $data["description"], $url, 
+                $thumbnailUrl)) {
+                $res->add(json_encode(array('valid' => true, 'image_error' => false, 
+                    'image' => $url, 'thumbnailUrl' => $thumbnailUrl)));
+                $res->send();
+            }
+            $res->add(json_encode(array('valid' => false)));
+            $res->send();
+        }
+
+        private function uploadImage($file, $timestamp) {
+            if ($file['error'] > 0) {
+                return false;
+            } else {
+                $validExtensions = array('.jpg', '.jpeg', '.gif', '.png');
+                $fileExtension = strrchr($file['name'], ".");
+                if (in_array($fileExtension, $validExtensions)) {
+                    $manipulator = new ImageManipulator($file['tmp_name']);
+                    $pictureName = 'uploads/album_pics/full/' . $_SESSION['id'] . $timestamp .
+                       $fileExtension;
+                    $manipulator->save($pictureName);
+                    return "/" . $pictureName;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        private function uploadThumbnail($file, $timestamp) {
+            if ($file['error'] > 0) {
+                return false;
+            } else {
+                $validExtensions = array('.jpg', '.jpeg', '.gif', '.png');
+                $fileExtension = strrchr($file['name'], ".");
+                if (in_array($fileExtension, $validExtensions)) {
+                    $manipulator = new ImageManipulator($file['tmp_name']);
+                    $pictureName = 'uploads/album_pics/thumbnail/' . $_SESSION['id'] . $timestamp .
+                       $fileExtension;
+                    $firephp = FirePHP::getInstance(true);
+                    $height = $manipulator->getHeight();
+                    $width = $manipulator->getWidth();
+                    $firephp->log($width . " " . $height);
+                    if ($height <= $width) {
+                        $width  = round(200 / $height * $width);
+                        $height = 200;
+                    } else {
+                        $height = round(200 / $width * $height);
+                        $width = 200;
+                    }
+                    $firephp->log($width . " " . $height);
+                    $manipulator = $manipulator->resample($width, $height, false);
+                    $manipulator = $manipulator->crop(0, 0, 200, 200);
+                    $manipulator->save($pictureName);
+                    return "/" . $pictureName;
+                } else {
+                    return false;
+                }
+            }
         }
     }
 ?>

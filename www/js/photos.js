@@ -1,9 +1,66 @@
 var username = 'username';
+var files;
+var currentAlbumId;
 
 function content() {
     username = window.location.pathname.split( '/' )[2];
     getPhotoAlbums();
     setupDropdown();
+
+    $('input[type=file]').on('change', function (event) {
+        files = event.target.files;
+    });
+
+    $('#upload-btn').click(uploadFiles);
+
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        console.log("Hidden function executed");
+        $("#image-description").val("");
+        $('.fileinput').fileinput('clear');
+    });
+}
+
+function uploadFiles(event) {
+    event.stopPropagation(); 
+    event.preventDefault(); 
+
+    var data = new FormData();
+    $.each(files, function(key, value) {
+        data.append(key, value);
+    });
+
+    data.append("description", $("#image-description").val());
+    
+    $.ajax({
+        url: '/api/user/' + window.location.pathname.split( '/' )[2] + '/photos/' + 
+            currentAlbumId,
+        type: 'POST',
+        data: data,
+        cache: false,
+        processData: false, 
+        contentType: false, 
+        success: function(data) {
+            console.log(data);
+            var json = $.parseJSON(data);
+            if(!json['valid']) {
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
+            } else if(json['image_error']) {
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
+               // $("#control-label-image").show();
+            } else {
+                $('#myModal').modal('hide');
+                loadPhotos(currentAlbumId);
+            }
+            
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("ERROR: " + textStatus);
+            showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
+        }
+    });
 }
 
 function setupDropdown() {
@@ -128,7 +185,8 @@ function showPhotos(id, photos) {
 }
 
 function showPhoto(photo, id) {
-    var html = '<a href="' + photo["url"] + '" title="' + photo["description"] + '" data-gallery>' +
+    var html = '<a href="' + photo["url"] + '" title="' + 
+        (photo["description"] ? photo["description"] : "") + '" data-gallery>' +
     '<img src="' + photo["thumbnailUrl"] + '" height="200" width="200">' +
         '</a>';
     $("#" + id).append(html);
@@ -142,10 +200,12 @@ function showPhotoAlbum(album) {
                     album['id'] + '" href="#' + album['id'] + '">' +
                 '<h4 class="panel-title">' + album['name'] +
                  '<br>' +
-                '<small>' + album['about'] + '</small>' +
+                '<small>' + album['about'] + ' </small>' +
                 '<span class="pull-right">' +'<i class="glyphicon glyphicon-plus">' +'</i>' 
                     +'</span>' +
-                '</h4>' +
+                    '<button class="btn btn-primary" id="upload-' + album['id'] + '">' + 
+                    'Upload' + '</button>' +
+                '</h4>' + 
                 '</a>' +
               '</div>' +
               '<div id="' + album['id'] + 
@@ -157,11 +217,9 @@ function showPhotoAlbum(album) {
         '</div>';
 
     $("#photo-collections-list").append(html);
+    $("#upload-" + album['id']).click(function (e) {
+        e.preventDefault();
+        $('#myModal').modal('show');
+        currentAlbumId = album['id'];
+    });
 }
-
-function validateAlphanumeric(string){
-    if(/[^a-zA-Z0-9]/.test(string)) {
-       return false;
-    }
-    return true;     
- }

@@ -428,6 +428,7 @@
             'username' => Zaphpa_Constants::PATTERN_ALPHA
         ),
         'get' => array('Photos', 'getPhotos'),
+        'post' => array('Photos', 'addPhoto'),
         'file' => 'controllers/photos.php',
     ));
 
