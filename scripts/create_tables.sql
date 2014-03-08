@@ -3,34 +3,34 @@ CREATE DATABASE IF NOT EXISTS SocialNetwork;
 USE SocialNetwork;
 
 CREATE TABLE IF NOT EXISTS `users` (
-	`ID` INT NOT NULL AUTO_INCREMENT,
-	`first_name` VARCHAR(50) NOT NULL, 
-	`middle_name` VARCHAR(50),
-	`last_name` VARCHAR(50) NOT NULL, 
-	`email` VARCHAR(100) NOT NULL, 
-	`login` VARCHAR(50) NOT NULL, 
-	`password` VARCHAR(50) NOT NULL,
-	`hash` VARCHAR(50) NOT NULL, 
-	`activated` BOOLEAN NOT NULL DEFAULT FALSE,
+    `ID` INT NOT NULL AUTO_INCREMENT,
+    `first_name` VARCHAR(50) NOT NULL, 
+    `middle_name` VARCHAR(50),
+    `last_name` VARCHAR(50) NOT NULL, 
+    `email` VARCHAR(100) NOT NULL, 
+    `login` VARCHAR(50) NOT NULL, 
+    `password` VARCHAR(50) NOT NULL,
+    `hash` VARCHAR(50) NOT NULL, 
+    `activated` BOOLEAN NOT NULL DEFAULT FALSE,
     `admin` BOOLEAN NOT NULL DEFAULT FALSE,
-	UNIQUE (`login`),
-	UNIQUE (`email`),
-	UNIQUE (`hash`),
-	PRIMARY KEY(`ID`)
+    UNIQUE (`login`),
+    UNIQUE (`email`),
+    UNIQUE (`hash`),
+    PRIMARY KEY(`ID`)
 );
 
 # TODO: Enable multiple locations and languages as a seperate table. Create a table with all 
 # languages and locations for reference and to check the validity of the data. 
 CREATE TABLE IF NOT EXISTS `profile` (
-	`userId` INT NOT NULL,
-	`gender` VARCHAR(10),
-	`dob` INT,
-	`about` VARCHAR(10000),
-	`locations` VARCHAR(1000),
-	`languages` VARCHAR(1000),
+    `userId` INT NOT NULL,
+    `gender` VARCHAR(10),
+    `dob` INT,
+    `about` VARCHAR(10000),
+    `locations` VARCHAR(1000),
+    `languages` VARCHAR(1000),
     `profilePicture` VARCHAR(1000),
-	PRIMARY KEY (`userId`),
-	FOREIGN KEY (`userId`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    PRIMARY KEY (`userId`),
+    FOREIGN KEY (`userId`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `friendships` (
