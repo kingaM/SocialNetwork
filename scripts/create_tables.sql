@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`password` VARCHAR(50) NOT NULL,
 	`hash` VARCHAR(50) NOT NULL, 
 	`activated` BOOLEAN NOT NULL DEFAULT FALSE,
+    `admin` BOOLEAN NOT NULL DEFAULT FALSE,
 	UNIQUE (`login`),
 	UNIQUE (`email`),
 	UNIQUE (`hash`),

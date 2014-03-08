@@ -314,6 +314,24 @@
             return $this->db->execute($sql, $array);
         }
 
+        /**
+         * Checks if a user is an admin
+         * 
+         * @param  string $username
+         * 
+         * @return boolean
+         */
+        public function isAdmin($username) {
+            $array = $this->db->fetch("SELECT * FROM users 
+                WHERE login=:username AND admin=1", 
+                array(':username' => $username));
+            if(sizeof($array) != 0) {
+                return true;
+            }
+
+            return false;
+        }
+
     }
 
 ?>

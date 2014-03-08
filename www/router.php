@@ -398,6 +398,14 @@
         'file' => 'controllers/blog.php',
     ));
 
+    // Admin
+
+    $router->addRoute(array(
+        'path' => '/admin',
+        'get' => array('Admin', 'getPage'),
+        'file' => 'controllers/admin.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {
