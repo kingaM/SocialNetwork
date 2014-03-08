@@ -5,6 +5,10 @@ img {
     padding: 2px;
     margin: 2px;
 }
+
+/*.blueimp-gallery .modal-body img {
+  position: relative !important;
+}*/
 </style>
 <link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
 <link rel="stylesheet" href="/libs/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
@@ -49,7 +53,7 @@ img {
   <!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
   <div id="blueimp-gallery" class="blueimp-gallery">
     <!-- The container for the modal slides -->
-    <div class="slides"></div>
+    <div class="slides">My Name is</div>
     <!-- Controls for the borderless lightbox -->
     <h3 class="title"></h3>
     <a class="prev">‹</a>
@@ -66,6 +70,7 @@ img {
           <h4 class="modal-title"></h4>
         </div>
         <div class="modal-body next"></div>
+        <div id="slides">My name is... This is important</div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left prev">
           <i class="glyphicon glyphicon-chevron-left"></i>
@@ -110,9 +115,7 @@ img {
   </div>
 </div>
 <div class="col-md-12">
-  <div class="panel-group" id="accordion-cat-1">
-    <div id="photo-collections-list">
-    </div>
+  <div class="panel-group" id="accordion">
   </div>
 </div>
 </div>

@@ -18,6 +18,9 @@ function content() {
         $("#image-description").val("");
         $('.fileinput').fileinput('clear');
     });
+
+    // var gellery = $('#blueimp-gallery').data('gallery');
+    // gallery.slidesContainer: 'div',
 }
 
 function uploadFiles(event) {
@@ -159,6 +162,7 @@ function showPhotoAlbums(albums) {
         console.log(id);
         $('a[href="#' + id + '"]').closest('.panel-heading').removeClass('active-faq');
         $('a[href="#' + id + '"] .panel-title span').html('<i class="glyphicon glyphicon-plus"></i>');
+        $("#" + id).empty();
     });
 }
 
@@ -182,6 +186,26 @@ function showPhotos(id, photos) {
         var photo = photos[i];
         showPhoto(photo, "links-" + id);
     }
+    var links = [];
+    for (i = 0; i < photos.length; ++i) {
+        links.push(photos[i]["url"]);
+    }
+    // $('#links-' + id).click(function (event) {
+    //     console.log("ON CLICK")
+    //     event = event || window.event;
+    //     var target = event.target || event.srcElement,
+    //         link = target.src ? target.parentNode : target;
+    //         // options = {index: link, event: event},
+    //         // links = $('#links-' + id + ' a').get();
+    //     var options = {container: '#blueimp-gallery', index: link, event: event, 
+    //         onslidecomplete: function (index, slide) {
+    //         console.log(slide);
+
+    //     }};
+    //     console.log(links);
+    //     blueimp.Gallery(links, options);
+    // });
+    // var gallery = blueimp.Gallery(links, options);
 }
 
 function showPhoto(photo, id) {
@@ -194,10 +218,10 @@ function showPhoto(photo, id) {
 
 function showPhotoAlbum(album) {
     var html = 
-            '<div class="panel panel-default panel-faq">' +
+            '<div class="panel panel-default">' +
               '<div class="panel-heading">' +
-                '<a class="nohover" data-toggle="collapse" data-parent="#accordion-cat-' + 
-                    album['id'] + '" href="#' + album['id'] + '">' +
+                '<a class="nohover" data-toggle="collapse" data-parent="#accordion" href="#' + 
+                    album['id'] + '">' +
                 '<h4 class="panel-title">' + album['name'] +
                  '<br>' +
                 '<small>' + album['about'] + ' </small>' +
@@ -216,7 +240,7 @@ function showPhotoAlbum(album) {
               '</div>' +
         '</div>';
 
-    $("#photo-collections-list").append(html);
+    $("#accordion").append(html);
     $("#upload-" + album['id']).click(function (e) {
         e.preventDefault();
         $('#myModal').modal('show');
