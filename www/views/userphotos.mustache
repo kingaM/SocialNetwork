@@ -8,16 +8,24 @@ div.flex {
   display: flex;
 }
 
-a.nohover:hover { color: none; text-decoration: none;}
-img {
-    border: 1px solid black;
-    padding: 2px;
-    margin: 2px;
+a.nohover:hover { 
+  color: none; 
+  text-decoration: none;
 }
 
-/*.blueimp-gallery .modal-body img {
-  position: relative !important;
-}*/
+.caption {
+    position:absolute;
+    top: 195;
+    right:0;
+    z-index:2;
+}
+
+.thumbnail {
+    position:relative;
+    overflow:hidden;
+    width: 200px;
+    height: 200px;
+}
 </style>
 <link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
 <link rel="stylesheet" href="/libs/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
@@ -26,6 +34,7 @@ img {
 <script src="http://blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
 <script src="/libs/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"></script>
 <script src="/js/photos.js"></script>
+
 <div class="row">
   <div id="error-unknown">
   </div>

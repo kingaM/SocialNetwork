@@ -182,7 +182,7 @@ function showPhotos(id, photos) {
     $("#" + id).html(html);
     for (i = 0; i < photos.length; ++i) {
         var photo = photos[i];
-        showPhoto(photo, "links-" + id);
+        showPhoto(photo, id);
     }
     var links = [];
     for (i = 0; i < photos.length; ++i) {
@@ -191,11 +191,47 @@ function showPhotos(id, photos) {
 }
 
 function showPhoto(photo, id) {
-    var html = '<a href="' + photo["url"] + '" title="' + 
+    var img = '<a href="' + photo["url"] + '" title="' + 
         (photo["description"] ? photo["description"] : "") + '" data-gallery>' +
-    '<img src="' + photo["thumbnailUrl"] + '" height="200" width="200">' +
+    '<img src="' + photo["thumbnailUrl"] + '" class="img-responsive">' +
         '</a>';
-    $("#" + id).append(html);
+    var html = '<div class="col-lg-3 col-md-6"><div class="thumbnail" id="photo-' + photo['id'] + 
+            '">' +
+      '<div class="caption">' +
+        '<button class="btn btn-danger btn-sm" id="photo-btn-' + photo['id'] + '" >' + 
+            '<i class="glyphicon glyphicon-remove"></i>' + 
+        '</button>' +
+      '</div>' + img + '</div></div>';
+    $("#links-" + id).append(html);
+    $("#photo-btn-" + photo['id']).hide();
+    $("#photo-btn-" + photo['id']).click(function (e) {
+        e.preventDefault();
+        console.log('photo-' + photo['id']);
+        $.ajax({
+            type: "delete",
+            url: "/api/user/" + username + "/photos/" + id + "/" + photo['id'],
+            success: function(data) {
+                console.log(data);
+                var json = $.parseJSON(data);
+                var valid = json['valid'];
+                if (!valid) {
+                    showError("error-unknown", "Something went wrong, but we don't know what." +
+                        "Please try again later.");
+                    return;
+                }  
+                if(valid) {
+                    loadPhotos(id);
+                }
+            }
+        });
+    });
+    $("#photo-" + photo['id']).hover(
+        function() {
+            $("#photo-btn-" + photo['id']).show();
+        }, function() {
+            $("#photo-btn-" + photo['id']).hide();
+        }
+    );
 }
 
 function showPhotoAlbum(album) {
@@ -205,17 +241,17 @@ function showPhotoAlbum(album) {
                 '<a class="nohover" data-toggle="collapse" data-parent="#accordion" href="#' + 
                     album['id'] + '">' +
                     '<div class="flex">' +
-                    '<div class="col-md-7">' +
+                    '<div class="col-lg-7 col-md-4">' +
                 '<h4 class="panel-title">' + album['name'] +
                  '<br>' +
                 '<small>' + album['about'] + ' </small></h4></div>' +
-                '<div class="col-md-2" >' +
+                '<div class="col-lg-2 col-md-4" >' +
                     '<button class="btn btn-primary" id="upload-' + album['id'] + '">' + 
                     'Add Photo to Album' + '</button></div>' +
-                '<div class="col-md-2" >' +
+                '<div class="col-lg-2 col-md-3" >' +
                     '<button class="btn btn-danger" id="delete-' + album['id'] + '">' + 
                     'Delete Album' + '</button></div>' +
-                '<div class="col-md-1 style="text-align:left;">' +
+                '<div class="col-lg-1 col-md-1" style="text-align:left;">' +
                     '<span class="pull-right" id="icon-' + album['id'] + '">' +
                     '<i class="glyphicon glyphicon-plus">' +'</i>' 
                     +'</span>' +

@@ -100,6 +100,34 @@
             return $result;
         }
 
+        /**
+         * Get one photo of a particular user in a particular photo album.
+         * @param  integer $userId  The id of the user.
+         * @param  integer $albumId The id of the album.
+         * @param  integer $photoId The id of the photo.
+         * @return boolean          True if succeeded, false otherwise.
+         */
+        public function getPhoto($userId, $albumId, $photoId) {
+            $sql = "SELECT photoId, `timestamp`, `description`, `url`, `thumbnailUrl` 
+                    FROM photos, photo_albums
+                    WHERE photos.albumId = :albumId AND photos.albumId = photo_albums.albumId AND
+                        photo_albums.user = :userId AND photoId = :photoId";
+            $array = array(':userId' => $userId, ':albumId' => $albumId, ':photoId' => $photoId);
+            $result = $this->db->fetch($sql, $array);
+            if(sizeof($result) != 1) {
+                return -1;
+            }
+            return $result[0];
+        }
+
+        /**
+         * Adds new photo to a particular album.
+         * @param integer $albumId      The id of the album.
+         * @param integer $timestamp    The timestamp the picture was uploaded.
+         * @param string  $description  The description about the picture.
+         * @param string  $url          The absolute url of the picture.
+         * @param string  $thumbnailUrl The absolute url of the thumbnail of the picture.
+         */
         public function addPhoto($albumId, $timestamp, $description, $url, $thumbnailUrl) {
             $sql = "INSERT INTO photos(`albumId`, `timestamp`, `description`, `url`, 
                 `thumbnailUrl`) 
@@ -109,9 +137,28 @@
             return $this->db->execute($sql, $array);     
         }
 
+        /**
+         * Deletes a particular album. 
+         * @param  integer $userId  The id of the user.
+         * @param  integer $albumId The id of the album.
+         * @return boolean          True if succeeded, false otherwise.
+         */
         public function deleteAlbum($userId, $albumId) {
             $sql = "DELETE FROM `photo_albums` WHERE `albumId` = :albumId AND `user` = :userId";
             $array = array(':albumId' => $albumId, ':userId' => $userId); 
+            return $this->db->execute($sql, $array); 
+        }
+
+        /**
+         * Deletes one photo of a particular user in a particular photo album.
+         * @param  integer $userId  The id of the user.
+         * @param  integer $albumId The id of the album.
+         * @param  integer $photoId The id of the photo.
+         * @return boolean          True if succeeded, false otherwise.
+         */
+        public function deletePhoto($userId, $albumId, $photoId) {
+            $sql = "DELETE FROM `photos` WHERE `albumId` = :albumId AND `photoId` = :photoId";
+            $array = array(':albumId' => $albumId, ':photoId' => $photoId); 
             return $this->db->execute($sql, $array); 
         }
 

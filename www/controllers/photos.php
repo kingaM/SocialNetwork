@@ -237,5 +237,24 @@
             $res->add(json_encode(array('valid' => true)));
             $res->send();
         }
+
+        public function deletePhoto($req, $res) {
+            $username = $req->params['username'];
+            $albumId = $req->params['albumId'];
+            $photoId = $req->params['photoId'];
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId !== $_SESSION['id']) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+            $photosDB = new PhotosHelper();
+            $photo = $photosDB->getPhoto($userId, $albumId, $photoId);
+            unlink(substr($photo['thumbnailUrl'], 1));
+            unlink(substr($photo['url'], 1));
+            $photosDB->deletePhoto($_SESSION['id'], $albumId, $photoId);
+            $res->add(json_encode(array('valid' => true)));
+            $res->send();
+        }
     }
 ?>
