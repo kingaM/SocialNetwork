@@ -144,7 +144,7 @@ function getPhotoAlbums() {
 }
 
 function showPhotoAlbums(albums) {
-    $("#photo-collections-list").empty();
+    $("#accordion").empty();
     var i;
     for (i = 0; i < albums.length; ++i) {
         var album = albums[i];
@@ -154,14 +154,12 @@ function showPhotoAlbums(albums) {
         var id = $(this).attr('id');
         console.log(id);
         loadPhotos(id);
-        $('a[href="#' + id + '"]').closest('.panel-heading').addClass('active-faq');
-        $('a[href="#' + id + '"] .panel-title span').html('<i class="glyphicon glyphicon-minus"></i>');
+        $('#icon-' + id).html('<i class="glyphicon glyphicon-minus"></i>');
     });
     $('.collapse').on('hide.bs.collapse', function() {
         var id = $(this).attr('id');
         console.log(id);
-        $('a[href="#' + id + '"]').closest('.panel-heading').removeClass('active-faq');
-        $('a[href="#' + id + '"] .panel-title span').html('<i class="glyphicon glyphicon-plus"></i>');
+        $('#icon-' + id).html('<i class="glyphicon glyphicon-plus"></i>');
         $("#" + id).empty();
     });
 }
@@ -190,22 +188,6 @@ function showPhotos(id, photos) {
     for (i = 0; i < photos.length; ++i) {
         links.push(photos[i]["url"]);
     }
-    // $('#links-' + id).click(function (event) {
-    //     console.log("ON CLICK")
-    //     event = event || window.event;
-    //     var target = event.target || event.srcElement,
-    //         link = target.src ? target.parentNode : target;
-    //         // options = {index: link, event: event},
-    //         // links = $('#links-' + id + ' a').get();
-    //     var options = {container: '#blueimp-gallery', index: link, event: event, 
-    //         onslidecomplete: function (index, slide) {
-    //         console.log(slide);
-
-    //     }};
-    //     console.log(links);
-    //     blueimp.Gallery(links, options);
-    // });
-    // var gallery = blueimp.Gallery(links, options);
 }
 
 function showPhoto(photo, id) {
@@ -222,16 +204,25 @@ function showPhotoAlbum(album) {
               '<div class="panel-heading">' +
                 '<a class="nohover" data-toggle="collapse" data-parent="#accordion" href="#' + 
                     album['id'] + '">' +
+                    '<div class="flex">' +
+                    '<div class="col-md-7">' +
                 '<h4 class="panel-title">' + album['name'] +
                  '<br>' +
-                '<small>' + album['about'] + ' </small>' +
-                '<span class="pull-right">' +'<i class="glyphicon glyphicon-plus">' +'</i>' 
-                    +'</span>' +
+                '<small>' + album['about'] + ' </small></h4></div>' +
+                '<div class="col-md-2" >' +
                     '<button class="btn btn-primary" id="upload-' + album['id'] + '">' + 
-                    'Upload' + '</button>' +
-                '</h4>' + 
+                    'Add Photo to Album' + '</button></div>' +
+                '<div class="col-md-2" >' +
+                    '<button class="btn btn-danger" id="delete-' + album['id'] + '">' + 
+                    'Delete Album' + '</button></div>' +
+                '<div class="col-md-1 style="text-align:left;">' +
+                    '<span class="pull-right" id="icon-' + album['id'] + '">' +
+                    '<i class="glyphicon glyphicon-plus">' +'</i>' 
+                    +'</span>' +
+                    '</div>' +
+                '</div>' +
+                '</div>' +
                 '</a>' +
-              '</div>' +
               '<div id="' + album['id'] + 
                     '" class="panel-collapse collapse">' +
                 '<div class="panel-body">' +
@@ -245,5 +236,25 @@ function showPhotoAlbum(album) {
         e.preventDefault();
         $('#myModal').modal('show');
         currentAlbumId = album['id'];
+    });
+    $("#delete-" + album['id']).click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "delete",
+            url: "/api/user/" + username + "/photos/" + album['id'],
+            success: function(data) {
+                console.log(data);
+                var json = $.parseJSON(data);
+                var valid = json['valid'];
+                if (!valid) {
+                    showError("error-unknown", "Something went wrong, but we don't know what." +
+                        "Please try again later.");
+                    return;
+                }  
+                if(valid) {
+                    getPhotoAlbums();
+                }
+            }
+        });
     });
 }

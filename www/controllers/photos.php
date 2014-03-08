@@ -217,5 +217,25 @@
                 }
             }
         }
+
+        public function deleteAlbum($req, $res) {
+            $username = $req->params['username'];
+            $albumId = $req->params['id'];
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId !== $_SESSION['id']) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+            $photosDB = new PhotosHelper();
+            $photosToDelete = $photosDB->getPhotos($userId, $albumId);
+            foreach ($photosToDelete as $photo) {
+                unlink(substr($photo['thumbnailUrl'], 1));
+                unlink(substr($photo['url'], 1));
+            }
+            $photosDB->deleteAlbum($_SESSION['id'], $albumId);
+            $res->add(json_encode(array('valid' => true)));
+            $res->send();
+        }
     }
 ?>

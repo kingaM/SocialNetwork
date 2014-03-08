@@ -419,8 +419,6 @@
         'file' => 'controllers/photos.php',
     ));
 
-   // /api/user/" + username + "/photos/" + id
-
     $router->addRoute(array(
         'path' => '/api/user/{username}/photos/{id}',
         'handlers' => array(
@@ -429,6 +427,7 @@
         ),
         'get' => array('Photos', 'getPhotos'),
         'post' => array('Photos', 'addPhoto'),
+        'delete' => array('Photos', 'deleteAlbum'),
         'file' => 'controllers/photos.php',
     ));
 

@@ -109,6 +109,12 @@
             return $this->db->execute($sql, $array);     
         }
 
+        public function deleteAlbum($userId, $albumId) {
+            $sql = "DELETE FROM `photo_albums` WHERE `albumId` = :albumId AND `user` = :userId";
+            $array = array(':albumId' => $albumId, ':userId' => $userId); 
+            return $this->db->execute($sql, $array); 
+        }
+
     }
 
 ?>
