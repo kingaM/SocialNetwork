@@ -1,6 +1,8 @@
 var username = 'username';
 var files;
 var currentAlbumId;
+var gPhotos = [];
+var photosIndexes = {};
 
 function content() {
     username = window.location.pathname.split( '/' )[2];
@@ -18,9 +20,6 @@ function content() {
         $("#image-description").val("");
         $('.fileinput').fileinput('clear');
     });
-
-    // var gellery = $('#blueimp-gallery').data('gallery');
-    // gallery.slidesContainer: 'div',
 }
 
 function uploadFiles(event) {
@@ -51,12 +50,10 @@ function uploadFiles(event) {
             } else if(json['image_error']) {
                 showError("error-unknown", "Something went wrong, but we don't know what." +
                     "Please try again later.");
-               // $("#control-label-image").show();
             } else {
                 $('#myModal').modal('hide');
                 loadPhotos(currentAlbumId);
             }
-            
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("ERROR: " + textStatus);
@@ -153,12 +150,14 @@ function showPhotoAlbums(albums) {
     $('.collapse').on('show.bs.collapse', function() {
         var id = $(this).attr('id');
         console.log(id);
+        currentAlbumId = id;
         loadPhotos(id);
         $('#icon-' + id).html('<i class="glyphicon glyphicon-minus"></i>');
     });
     $('.collapse').on('hide.bs.collapse', function() {
         var id = $(this).attr('id');
         console.log(id);
+        currentAlbumId = id;
         $('#icon-' + id).html('<i class="glyphicon glyphicon-plus"></i>');
         $("#" + id).empty();
     });
@@ -178,21 +177,75 @@ function loadPhotos(id) {
 }
 
 function showPhotos(id, photos) {
+    gPhotos = photos;
     var html = '<div id="links-' + id + '">' + '</div>';
     $("#" + id).html(html);
     for (i = 0; i < photos.length; ++i) {
         var photo = photos[i];
+        photosIndexes[photo['id']] = i;
         showPhoto(photo, id);
-    }
-    var links = [];
-    for (i = 0; i < photos.length; ++i) {
-        links.push(photos[i]["url"]);
     }
 }
 
+function loadContent(id) {
+    console.log('Load content');
+    console.log(id);
+    $.ajax({
+        type: "get",
+        url: "/api/user/" + username + "/photos/" + currentAlbumId + "/" + id,
+        success: function(data) {
+            console.log(data);
+            var json = $.parseJSON(data);
+            var valid = json['valid'];
+            if (!valid) {
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
+                return;
+            }  
+            if(valid) {
+                $("#num-comments").html(json['comments'].length);
+                showComments(json['comments']);
+            }
+        }
+    });
+}
+
+function showComments(comments) {
+    $("#comments-list").empty();
+    for (i = 0; i < comments.length; ++i) {
+        var comment = comments[i];
+        showComment(comment);
+    }
+}
+
+function showComment(comment) {
+    var comment = '<li class="list-group-item">' + 
+          '<div class="row">' + 
+            '<div class="col-xs-3 col-md-1">' + 
+            '<img src="http://placehold.it/50x50" class="img-responsive" alt="" />' + '</div>' + 
+            '<div class="col-xs-7 col-md-10">' + 
+              '<div class="comment-text">' + 
+                comment['content'] +
+              '</div>' + 
+              '<div class="mic-info">' + 
+                'By:' + '<a href="#">' + comment['firstName'] + ' ' + comment['lastName'] + '</a>' +  
+                    new Date(comment['timestamp'] * 100).toLocaleString() + 
+              '</div>' + 
+            '</div>' + 
+            '<div class="col-xs-2 col-md-1">' + 
+              '<button type="button" class="btn btn-primary btn-xs" title="Flag as inapproperiate">' + 
+              '<span class="fa fa-flag">' + '</span>' + 
+              '</button>' + 
+            '</div>' + 
+          '</div>' + 
+        '</li>';
+
+    $("#comments-list").append(comment);
+}
+
 function showPhoto(photo, id) {
-    var img = '<a href="' + photo["url"] + '" title="' + 
-        (photo["description"] ? photo["description"] : "") + '" data-gallery>' +
+    var img = '<a href="' + photo["url"] + "?" + photo['id'] + '" title="' + 
+        (photo["description"] ? photo["description"] : "") + '" id="p-' + photo['id'] +'">' +
     '<img src="' + photo["thumbnailUrl"] + '" class="img-responsive">' +
         '</a>';
     var html = '<div class="col-lg-3 col-md-6"><div class="thumbnail" id="photo-' + photo['id'] + 
@@ -230,6 +283,13 @@ function showPhoto(photo, id) {
             $("#photo-btn-" + photo['id']).show();
         }, function() {
             $("#photo-btn-" + photo['id']).hide();
+        }
+    );
+    $("#p-" + photo['id']).click(
+        function(e) {
+            e.preventDefault();
+            console.log("Clicked");
+            showModal(photo['description'], photo['url'], photo['id'], 0);
         }
     );
 }
@@ -292,5 +352,112 @@ function showPhotoAlbum(album) {
                 }
             }
         });
+    });
+}
+
+function showModal(title, pictureUrl, pictureId, index) {
+    if(title == null) {
+        title = '';
+    }
+    if(pictureUrl == null) {
+        pictureUrl = 'http://placehold.it/100x100';
+    }
+  var html = '<div id="photo">' + 
+  '<div class="modal fade" id="modal-pic">' + 
+    '<div class="modal-dialog modal-lg">' + 
+      '<div class="modal-content">' + 
+        '<div class="modal-header" id="modal-header">' +
+        '</div>' + 
+        '<div class="modal-body next" id="modal-body">' +
+            
+        '</div>' + 
+        '<div class="modal-footer">' + 
+          '<button type="button" class="btn btn-default pull-left prev" id="prev-pic">' + 
+          '<i class="glyphicon glyphicon-chevron-left">' + '</i>' + 
+          'Previous' +
+          '</button>' + 
+          '<button type="button" class="btn btn-primary next" id="next-pic">' + 
+          'Next' +
+          '<i class="glyphicon glyphicon-chevron-right">' + '</i>' + 
+          '</button>' + 
+        '</div>' +
+      '</div>' + 
+    '</div>' + 
+  '</div>' + 
+'</div>';
+
+    $("#modal-pic").remove();
+    $("body").append(html);
+    $("#modal-pic").modal();
+    fillModal(title, pictureUrl, pictureId, photosIndexes[pictureId]);
+}
+
+function fillModal(title, pictureUrl, pictureId, index) {
+    var header = '<button type="button" class="close" aria-hidden="true" data-dismiss="modal">' + '×' + 
+          '</button>' + 
+          '<h4 class="modal-title">' + title + '</h4>';
+    var body = '<img src="' + pictureUrl + '" class="img img-responsive">' +
+            '<div id="slides">' +
+          '<div class="panel panel-default widget">' + 
+            '<div class="panel-heading">' + 
+              '<span class="glyphicon glyphicon-comment">' + '</span>' + 
+              '<h3 class="panel-title">' + 
+              ' Comments ' + '</h3>' + 
+              '<span class="label label-info" id="num-comments">' + 
+              '</span>' + 
+              
+              '<span style="float: right;">' + 
+              '<button class="btn btn-success btn-xs" id="add-comment">' + 
+              '<span class="glyphicon glyphicon-plus">' + '</span>' + 
+              '</button>' + 
+              '</span>' + 
+            '</div>' + 
+            '<div id="new-comment" hidden>' + 
+              '<textarea class="form-control send-post" rows="3" placeholder="About"' + 
+                ' id="new-comment-txt">' + '</textarea>' + 
+              '<button type="button" class="btn btn-danger btn-sm" title="Cancel" id="comment-cancel">' + 
+              '<span class="glyphicon glyphicon-trash">' + '</span>' +  'Cancel' +
+              '</button>' + 
+              '<button type="button" class="btn btn-success btn-sm" title="Submit" id="comment-submit">' + 
+              '<span class="glyphicon glyphicon-ok">' + '</span>' +  'Submit' +
+              '</button>' + 
+            '</div>' + 
+            '<div class="panel-body">' + 
+              '<ul class="list-group" id="comments-list">' + 
+
+              '</ul>' + 
+            '</div>' + 
+          '</div>' + 
+        '</div>';
+
+    $("#modal-header").html(header);
+    $("#modal-body").html(body);
+    loadContent(pictureId);
+    $("#add-comment").click( function (e) {
+        $("#new-comment").show();
+        $("#new-comment-txt").focus();
+    });
+    $("#comment-cancel").click( function (e) {
+        $("#new-comment").hide();
+        $("#new-comment-text").val("");
+    });
+    $("#next-pic").click( function (e) {
+        if(index + 1 >= gPhotos.length) {
+            var nextIndex = 0;
+        } else {
+            var nextIndex = index + 1;
+        }
+        fillModal(gPhotos[nextIndex]['description'], gPhotos[nextIndex]['url'], 
+            gPhotos[nextIndex]['id'], nextIndex);
+    });
+
+    $("#prev-pic").click( function (e) {
+        if(index - 1 < 0) {
+            var nextIndex =gPhotos.length - 1;
+        } else {
+            var nextIndex = index - 1;
+        }
+        fillModal(gPhotos[nextIndex]['description'], gPhotos[nextIndex]['url'], 
+            gPhotos[nextIndex]['id'], nextIndex);
     });
 }

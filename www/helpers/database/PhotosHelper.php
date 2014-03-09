@@ -121,6 +121,26 @@
         }
 
         /**
+         * Get one photo of a particular user in a particular photo album.
+         * @param  integer $albumId The id of the album.
+         * @param  integer $photoId The id of the photo.
+         * @return array            An array with each row that matches. Data returned: 
+         *                          content, timestamp, first_name, middle_name, last_name, login, 
+         *                          profilePicture
+         */
+        public function getComments($albumId, $photoId) {
+            $sql = "SELECT content, comments.timestamp, first_name, middle_name, last_name, login, 
+                        profilePicture
+                    FROM photos, photo_albums, users, profile, comments
+                    WHERE photos.albumId = :albumId AND photo_albums.albumId = photos.albumId AND
+                        photoId = :photoId AND users.id = comments.id AND profile.userId = users.id
+                        AND comments.photo = :photoId";
+            $array = array(':albumId' => $albumId, ':photoId' => $photoId);
+            $result = $this->db->fetch($sql, $array);
+            return $result;
+        }
+
+        /**
          * Adds new photo to a particular album.
          * @param integer $albumId      The id of the album.
          * @param integer $timestamp    The timestamp the picture was uploaded.

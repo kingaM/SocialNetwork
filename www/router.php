@@ -438,6 +438,7 @@
             'photoId' => Zaphpa_Constants::PATTERN_DIGIT,
             'username' => Zaphpa_Constants::PATTERN_ALPHA
         ),
+        'get' => array('Photos', 'getComments'),
         'delete' => array('Photos', 'deletePhoto'),
         'file' => 'controllers/photos.php',
     ));

@@ -28,8 +28,10 @@
     'use strict';
 
     $.extend(Gallery.prototype.options, {
-        useBootstrapModal: true
+        useBootstrapModal: true,
+        emulateTouchEvents: false
     });
+    Gallery.prototype.options.emulateTouchEvents = false;
 
     var close = Gallery.prototype.close,
         imageFactory = Gallery.prototype.imageFactory,
@@ -67,6 +69,7 @@
         },
 
         imageFactory: function (obj, callback, factoryInterface) {
+            loadContent();
             return this.modalFactory(obj, callback, factoryInterface, imageFactory);
         },
 

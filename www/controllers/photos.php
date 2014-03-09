@@ -256,5 +256,33 @@
             $res->add(json_encode(array('valid' => true)));
             $res->send();
         }
+
+        public function getComments($req, $res) {
+            $username = $req->params['username'];
+            $albumId = $req->params['albumId'];
+            $photoId = $req->params['photoId'];
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId == -1) {
+                $res->add(json_encode(array('valid' => false, 'comments' => null)));
+                $res->send();
+            }
+            $photosDB = new PhotosHelper();
+            $comments = $photosDB->getComments($albumId, $photoId);
+            $json = array();
+            $firephp = FirePHP::getInstance(true);
+            $firephp->log($comments);
+            foreach ($comments as $comment) {
+                $json[] = array('content' => $comment['content'], 
+                    'timestamp' => $comment['timestamp'],
+                    'firstName' => $comment['first_name'], 
+                    'middleName' => $comment['middle_name'], 
+                    'lastName' => $comment['last_name'], 
+                    'username' => $comment['login'], 
+                    'profilePicture' => $comment['profilePicture']);
+            }
+            $res->add(json_encode(array('valid' => true, 'comments' => $json)));
+            $res->send();
+        }
     }
 ?>
