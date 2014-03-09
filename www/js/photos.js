@@ -3,6 +3,7 @@ var files;
 var currentAlbumId;
 var gPhotos = [];
 var photosIndexes = {};
+var currentUser = false;
 
 function content() {
     username = window.location.pathname.split( '/' )[2];
@@ -133,6 +134,7 @@ function getPhotoAlbums() {
             } else {
                 if(data['currentUser']) {
                     $("#edit-btn-group").show();
+                    currentUser = data['currentUser'];
                 } 
                 console.log(data);
                 showPhotoAlbums(data['albums']);
@@ -255,12 +257,12 @@ function showPhoto(photo, id) {
         (photo["description"] ? photo["description"] : "") + '" id="p-' + photo['id'] +'">' +
     '<img src="' + photo["thumbnailUrl"] + '" class="img-responsive">' +
         '</a>';
-    var html = '<div class="col-lg-3 col-md-6"><div class="thumbnail" id="photo-' + photo['id'] + 
-            '">' +
-      '<div class="caption">' +
-        '<button class="btn btn-danger btn-sm" id="photo-btn-' + photo['id'] + '" >' + 
+    var caption = '<button class="btn btn-danger btn-sm" id="photo-btn-' + photo['id'] + '" >' + 
             '<i class="glyphicon glyphicon-remove"></i>' + 
-        '</button>' +
+        '</button>';
+    var html = '<div class="col-lg-3 col-md-6"><div class="thumbnail" id="photo-' + photo['id'] + 
+            '">' + 
+      '<div class="caption">' + (currentUser ? caption : '') +
       '</div>' + img + '</div></div>';
     $("#links-" + id).append(html);
     $("#photo-btn-" + photo['id']).hide();
@@ -302,22 +304,27 @@ function showPhoto(photo, id) {
 }
 
 function showPhotoAlbum(album) {
-    var html = 
-            '<div class="panel panel-default">' +
-              '<div class="panel-heading">' +
-                '<a class="nohover" data-toggle="collapse" data-parent="#accordion" href="#' + 
-                    album['id'] + '">' +
-                    '<div class="flex">' +
-                    '<div class="col-lg-7 col-md-4">' +
-                '<h4 class="panel-title">' + album['name'] +
-                 '<br>' +
-                '<small>' + album['about'] + ' </small></h4></div>' +
-                '<div class="col-lg-2 col-md-5" >' +
+    var buttons = '<div class="col-lg-2 col-md-5" >' +
                     '<button class="btn btn-primary" id="upload-' + album['id'] + '">' + 
                     'Add Photo to Album' + '</button></div>' +
                 '<div class="col-lg-2 col-md-3" >' +
                     '<button class="btn btn-danger" id="delete-' + album['id'] + '">' + 
-                    'Delete Album' + '</button></div>' +
+                    'Delete Album' + '</button></div>';
+    if(!currentUser) {
+        buttons = '';
+    }
+    console.log(buttons);
+    var html = '<div class="panel panel-default">' +
+              '<div class="panel-heading">' +
+                '<a class="nohover" data-toggle="collapse" data-parent="#accordion" href="#' + 
+                    album['id'] + '">' +
+                    '<div class="flex">' +
+                    '<div class="col-lg-' + (currentUser ? '7' : '11') + 
+                        ' col-md-"' + (currentUser ? '4' : '11') +'>' +
+                '<h4 class="panel-title">' + album['name'] +
+                 '<br>' + 
+                '<small>' + album['about'] + ' </small></h4></div>' +
+                  buttons +
                 '<div class="col-lg-1 col-md-1" style="text-align:left;">' +
                     '<span class="pull-right" id="icon-' + album['id'] + '">' +
                     '<i class="glyphicon glyphicon-plus">' +'</i>' 
@@ -488,6 +495,8 @@ function fillModal(title, pictureUrl, pictureId, index) {
                 }  
                 if(valid) {
                     loadContent(pictureId);
+                    $("#new-comment").hide();
+                    $("#new-comment-txt").val("");
                 }
             }
         });

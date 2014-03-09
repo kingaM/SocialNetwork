@@ -198,6 +198,21 @@
             return $this->db->execute($sql, $array); 
         }
 
+        /**
+         * Checks if the album belongs to the user. 
+         * @param  integer $userId  The id of the user.
+         * @param  integer $albumId The id of the album.
+         * @return boolean          True if it is a valid pair, false otherwise.
+         */
+        public function isValidUsernameAlbumPair($userId, $albumId) {
+            $sql = "SELECT * FROM photo_albums WHERE albumId = :albumId AND user = :userId";
+            $array = array(':albumId' => $albumId, ':userId' => $userId); 
+            if(sizeof($this->db->fetch($sql, $array)) != 1) {
+                return false;
+            } 
+            return true;
+        }
+
     }
 
 ?>

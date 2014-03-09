@@ -142,7 +142,7 @@
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if ($userId == -1) {
+            if ($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
                 $res->add(json_encode(array('valid' => false, 'image' => NULL)));
                 $res->send();
             }
@@ -223,11 +223,12 @@
             $albumId = $req->params['id'];
             $usersDB = new UsersHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId !== $_SESSION['id']) {
+            $photosDB = new PhotosHelper();
+            if($userId !== $_SESSION['id'] ||
+                !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
-            $photosDB = new PhotosHelper();
             $photosToDelete = $photosDB->getPhotos($userId, $albumId);
             foreach ($photosToDelete as $photo) {
                 unlink(substr($photo['thumbnailUrl'], 1));
@@ -243,12 +244,13 @@
             $albumId = $req->params['albumId'];
             $photoId = $req->params['photoId'];
             $usersDB = new UsersHelper();
+            $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId !== $_SESSION['id']) {
+            if($userId !== $_SESSION['id'] || 
+                !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
-            $photosDB = new PhotosHelper();
             $photo = $photosDB->getPhoto($userId, $albumId, $photoId);
             unlink(substr($photo['thumbnailUrl'], 1));
             unlink(substr($photo['url'], 1));
@@ -262,16 +264,14 @@
             $albumId = $req->params['albumId'];
             $photoId = $req->params['photoId'];
             $usersDB = new UsersHelper();
+            $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId == -1) {
+            if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
                 $res->add(json_encode(array('valid' => false, 'comments' => null)));
                 $res->send();
             }
-            $photosDB = new PhotosHelper();
             $comments = $photosDB->getComments($albumId, $photoId);
             $json = array();
-            $firephp = FirePHP::getInstance(true);
-            $firephp->log($comments);
             foreach ($comments as $comment) {
                 $json[] = array('content' => $comment['content'], 
                     'timestamp' => $comment['timestamp'],
@@ -289,16 +289,14 @@
             $username = $req->params['username'];
             $albumId = $req->params['albumId'];
             $photoId = $req->params['photoId'];
-            $firephp = FirePHP::getInstance(true);
-            $firephp->log($req->data);
             $comment = $req->data['comment'];
             $usersDB = new UsersHelper();
+            $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId !== $_SESSION['id']) {
+            if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
-            $photosDB = new PhotosHelper();
             if($photosDB->addComment($_SESSION['id'], $photoId, $comment, time())) {
                 $res->add(json_encode(array('valid' => true)));
                 $res->send();
