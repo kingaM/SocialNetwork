@@ -89,18 +89,6 @@ CREATE TABLE IF NOT EXISTS `wall_posts` (
     FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS `comments` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `from` int(11) NOT NULL,
-    `wall_post` int(11) NOT NULL,
-    `content` VARCHAR(10000) NOT NULL DEFAULT 0,
-    `timestamp` int(11) NOT NULL,
-    `reported` BOOLEAN NOT NULL DEFAULT FALSE,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`wall_post`) REFERENCES `wall_posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS `blogs` (
     `blogId` INT NOT NULL AUTO_INCREMENT,
     `about` VARCHAR(10000) NOT NULL,
@@ -128,4 +116,38 @@ CREATE TABLE IF NOT EXISTS `posts_details` (
     `content` TEXT NOT NULL, 
     PRIMARY KEY (`postDetailId`),
     FOREIGN KEY (`postId`) REFERENCES `posts` (`postId`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `photo_albums` (
+    `albumId` INT NOT NULL AUTO_INCREMENT,
+    `about` VARCHAR(10000) NOT NULL,
+    `user` INT NOT NULL,
+    `name` VARCHAR(100) NOT NULL, 
+    PRIMARY KEY (`albumId`),
+    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `photos` (
+    `photoId` INT NOT NULL AUTO_INCREMENT,
+    `description` VARCHAR(1000), 
+    `timestamp` INT NOT NULL,
+    `albumId` INT NOT NULL, 
+    `url` VARCHAR(1000) NOT NULL,
+    `thumbnailUrl` VARCHAR(1000) NOT NULL,
+    PRIMARY KEY (`photoId`),
+    FOREIGN KEY (`albumId`) REFERENCES `photo_albums` (`albumId`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `comments` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `from` int(11) NOT NULL,
+    `wall_post` int(11),
+    `photo` int(11),
+    `content` VARCHAR(10000) NOT NULL DEFAULT 0,
+    `timestamp` int(11) NOT NULL,
+    `reported` BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`wall_post`) REFERENCES `wall_posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`photo`) REFERENCES `photos` (`photoId`) ON DELETE CASCADE ON UPDATE CASCADE
 );

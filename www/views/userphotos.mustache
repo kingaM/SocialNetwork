@@ -1,0 +1,74 @@
+<link href="/libs/jasny-bootstrap-3.1.0-dist/css/jasny-bootstrap.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="/css/photos.css">
+<script src="/libs/jasny-bootstrap-3.1.0-dist/js/jasny-bootstrap.min.js"></script>
+<script src="/js/photos.js"></script>
+<div class="row">
+  <div class="col-md-12">
+  <div id="error-unknown">
+  </div>
+</div>
+  <div class="col-md-12">
+    <div class="form-group pull-right " id="edit-btn-group" hidden>
+      <div class="btn-group">
+        <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="new-album-dropdown">
+        <span class="glyphicon glyphicon-plus"></span> Create New Photo Album
+        <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu pull-right" style="padding: 15px;min-width: 500px;">
+          <li>
+            <div class="row">
+              <div class="col-md-12">
+                <form class="form" role="form" method="post" accept-charset="UTF-8" id="new-album-form">
+                  <div class="form-group" id="form-group-name">
+                    <input type="text" class="form-control" id="name" placeholder="Album Name" required>
+                    <label class="control-label" for="name" id="control-label-name" hidden></label>
+                  </div>
+                  <div class="form-group">
+                    <textarea class="form-control" rows="3" placeholder="About" id="new-album" requried></textarea>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-default btn-block">Create Album</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Upload Photo</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-inline" role="form" id="image-form">
+          <div class="fileinput fileinput-new" data-provides="fileinput">
+            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+              <img data-src="holder.js/100%x100%" alt="...">
+            </div>
+            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+            <div>
+              <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
+              <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+            </div>
+          </div>
+        </form>
+        <textarea class="form-control" rows="3" placeholder="Description (optional)" id="image-description"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="upload-btn">Upload</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="panel-group" id="accordion">
+  </div>
+</div>
+</div>
+</div>

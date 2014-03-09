@@ -1,0 +1,6 @@
+# To keep the directory, but not the files in it. 
+
+*
+!31394135578.jpg
+!31394135655.jpg
+!.gitignore

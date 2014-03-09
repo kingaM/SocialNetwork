@@ -439,6 +439,52 @@
         'file' => 'controllers/admin.php',
     ));
 
+    // Photos
+    
+    $router->addRoute(array(
+        'path' => '/user/{username}/photos',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Photos', 'getAlbums'),
+        'file' => 'controllers/photos.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/photos',
+        'handlers' => array(
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Photos', 'getPhotoAlbums'),
+        'post' => array('Photos', 'addNewAlbum'),
+        'file' => 'controllers/photos.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/photos/{id}',
+        'handlers' => array(
+            'id' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Photos', 'getPhotos'),
+        'post' => array('Photos', 'addPhoto'),
+        'delete' => array('Photos', 'deleteAlbum'),
+        'file' => 'controllers/photos.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/photos/{albumId}/{photoId}',
+        'handlers' => array(
+            'albumId' => Zaphpa_Constants::PATTERN_DIGIT,
+            'photoId' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Photos', 'getComments'),
+        'delete' => array('Photos', 'deletePhoto'),
+        'post' => array('Photos', 'addComment'),
+        'file' => 'controllers/photos.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {

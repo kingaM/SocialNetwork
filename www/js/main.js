@@ -33,5 +33,5 @@ function displayModal(text) {
 
     $("#modal").remove();
     $("#content").append(html);
-    $("#modal").modal();
+    $(".modal").modal();
 }
