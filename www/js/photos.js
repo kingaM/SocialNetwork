@@ -43,7 +43,7 @@ function content() {
  * 7. Enalrged Photo - a user can click on a photo thumbnail to enlarge it. This shows a modal with 
  *    a bigger version of the photo as well as comments. In this view the user can add comments to 
  *    the photo.
- * 8. Comments -- functions that are relevant for making the comments visible and editable. Those 
+ * 8. Comments - functions that are relevant for making the comments visible and editable. Those 
  *    are shown in the enlarged photo modal.
  **/
 
@@ -127,11 +127,13 @@ function showPhotoAlbum(album) {
     $("#accordion").append(html);
     $("#upload-" + album['id']).click(function (e) {
         e.preventDefault();
+        e.stopPropagation();
         $('#myModal').modal('show');
         currentAlbumId = album['id'];
     });
     $("#delete-" + album['id']).click(function (e) {
         e.preventDefault();
+        e.stopPropagation();
         deleteAlbum(album['id']);
     });
 }

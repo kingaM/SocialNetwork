@@ -179,6 +179,9 @@
          * @return boolean          True if succeeded, false otherwise.
          */
         public function deletePhoto($userId, $albumId, $photoId) {
+            $tlh = new TimelineHelper();
+            $url = $this->getPhoto($userId, $albumId, $photoId)['url'];
+            $tlh->deletePost($url); 
             $sql = "DELETE FROM `photos` WHERE `albumId` = :albumId AND `photoId` = :photoId";
             $array = array(':albumId' => $albumId, ':photoId' => $photoId); 
             return $this->db->execute($sql, $array); 
