@@ -113,6 +113,28 @@
         }
 
         /**
+         * Deletes a user
+         * 
+         * @param  string $username
+         */
+        public function deleteUser($username) {
+            $this->db->execute("DELETE FROM users 
+                WHERE login=:username", 
+                array(':username' => $username));
+        }
+
+        /**
+         * Bans a user
+         * 
+         * @param  string $username
+         */
+        public function banUser($username) {
+            $this->db->execute("UPDATE users 
+                SET banned=1 WHERE login=:username", 
+                array(':username' => $username));
+        }
+
+        /**
          * Checks if the e-mail has been activated.
          * @param  string $hash The e-mail activation code
          * @return integer      -1 if an error occurs, 1 if it is activated, 0 if it isn't
@@ -324,6 +346,24 @@
         public function isAdmin($username) {
             $array = $this->db->fetch("SELECT * FROM users 
                 WHERE login=:username AND admin=1", 
+                array(':username' => $username));
+            if(sizeof($array) != 0) {
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * Checks if a user is banned
+         * 
+         * @param  string $username
+         * 
+         * @return boolean
+         */
+        public function isBanned($username) {
+            $array = $this->db->fetch("SELECT * FROM users 
+                WHERE login=:username AND banned=1", 
                 array(':username' => $username));
             if(sizeof($array) != 0) {
                 return true;

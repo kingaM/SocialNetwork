@@ -406,6 +406,18 @@
         'file' => 'controllers/admin.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/api/user/{username}',
+        'delete' => array('Admin', 'deleteUser'),
+        'file' => 'controllers/admin.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/ban',
+        'delete' => array('Admin', 'banUser'),
+        'file' => 'controllers/admin.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {

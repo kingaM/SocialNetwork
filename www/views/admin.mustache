@@ -1,1 +1,18 @@
-<h1>Admin</h1>
+<script src="/js/admin.js"></script>
+<div class="containter col-md-10">
+    <div id="userControls" class="row">
+        <h1>User Controls</h1>
+
+        <form id="searchForm" class="form-inline">
+            <div id="search1" class="col-md-4"></div>
+            <script src="/helpers/autocompleter.js"></script>
+            <script>easyIncludeAutoComplete("search1");</script>
+            <button type="submit" class="btn btn-primary ">Find User</button>
+        </form>
+        <br>
+    </div>
+
+    <div id="reportedPosts" class="row">
+        <h1>Reported Posts</h1>
+    </div>
+</div>

@@ -22,5 +22,19 @@
             $res->add($m->render('main', array('title' => 'Admin', 'content' => $content)));
             $res->send();
         }
+
+        public function deleteUser($req, $res) {
+            $username = $req->params['username'];
+            $db = new UsersHelper();
+            $db->deleteUser($username);
+            $res->send();
+        }
+
+        public function banUser($req, $res) {
+            $username = $req->params['username'];
+            $db = new UsersHelper();
+            $db->banUser($username);
+            $res->send();
+        }
     }
 ?>

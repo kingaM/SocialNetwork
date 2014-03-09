@@ -18,11 +18,18 @@
         	$id = $db->verifyUser($username, $password);
 
         	if($id != -1) {
+
+                if($db->isBanned($username)) {
+                    $message = "Your account has been banned.";
+                    $res->add(json_encode(array('valid' => false, 'match' => true, 'ban' => true)));
+                    $res->send(); 
+                }
+
         		$_SESSION['username'] = $username;
         		$_SESSION['id'] = $id;
                 $res->add(json_encode(array('valid' => true)));
         	} else {
-                $res->add(json_encode(array('valid' => false)));
+                $res->add(json_encode(array('valid' => false, 'match' => false, 'ban' => false)));
         	}
             $res->send();  
         } 

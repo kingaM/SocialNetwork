@@ -22,12 +22,16 @@ function setLogin() {
         url: "/api/login",
         data: values,
         success: function(response) {
-                   var valid = $.parseJSON(response)['valid'];
+                   var json = $.parseJSON(response);
+                   var valid = json['valid'];
                    if(valid) {
                         window.location.href = "./";
                    } else {
-                        showError("error-login", "The username and/or password are not valid." +
-                            " Please try again.")
+                        if(!json['match'])
+                            showError("error-login", "Invalid username and/or password. " + 
+                                "Please try again.");
+                        if(json['ban'])
+                            showError("error-login", "Your account is banned.");
                         $("#login-password").val("");
                    }
                 },
