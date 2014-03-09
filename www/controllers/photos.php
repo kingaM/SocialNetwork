@@ -3,7 +3,6 @@
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/PhotosHelper.php');
     require_once('libs/ImageManipulator.php');
-    require_once('libs/FirePHPCore/FirePHP.class.php');  
 
     class Photos {
 
@@ -13,14 +12,6 @@
             require_once('mustache_conf.php');
             $content = $m->render('404', array('page' => $uri));
             return $m->render('main', array('title' => '404', 'content' => $content));
-        }
-
-        private function checkUsernameAndPhotoAlbum($username, $blogName, $usersDB, $photosDB) {
-            $id = $usersDB->getIdFromUsername($username);
-            if($id == -1 || $photosDB->getBlogId($id, $blogName) == -1) {
-                return -1;
-            }
-            return $id;
         }
 
         public function getAlbums($req, $res) {
@@ -131,8 +122,6 @@
             }
             $username = $req->params['username'];
             $albumId = $req->params['id'];
-            $firephp = FirePHP::getInstance(true);
-            $firephp->log($req->data);
             $data = $req->data;
             $data["description"] = trim($data["description"]);
             $data["description"] = strip_tags($data["description"]);
@@ -196,10 +185,8 @@
                     $manipulator = new ImageManipulator($file['tmp_name']);
                     $pictureName = 'uploads/album_pics/thumbnail/' . $_SESSION['id'] . $timestamp .
                        $fileExtension;
-                    $firephp = FirePHP::getInstance(true);
                     $height = $manipulator->getHeight();
                     $width = $manipulator->getWidth();
-                    $firephp->log($width . " " . $height);
                     if ($height <= $width) {
                         $width  = round(200 / $height * $width);
                         $height = 200;
@@ -207,7 +194,6 @@
                         $height = round(200 / $width * $height);
                         $width = 200;
                     }
-                    $firephp->log($width . " " . $height);
                     $manipulator = $manipulator->resample($width, $height, false);
                     $manipulator = $manipulator->crop(0, 0, 200, 200);
                     $manipulator->save($pictureName);
@@ -290,11 +276,18 @@
             $albumId = $req->params['albumId'];
             $photoId = $req->params['photoId'];
             $comment = $req->data['comment'];
+            $comment = trim($comment);
+            $comment = strip_tags($comment);
+            if($comment == "") {
+                $comment = null;
+            } 
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
-                $res->add(json_encode(array('valid' => false)));
+            if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId) ||
+                $comment == null) {
+                $res->add(json_encode(array('valid' => false, 'emptyComment' => 
+                    ($comment == null))));
                 $res->send();
             }
             if($photosDB->addComment($_SESSION['id'], $photoId, $comment, time())) {

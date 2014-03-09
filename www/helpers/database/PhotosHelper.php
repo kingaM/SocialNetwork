@@ -133,8 +133,8 @@
                         profilePicture
                     FROM photos, photo_albums, users, profile, comments
                     WHERE photos.albumId = :albumId AND photo_albums.albumId = photos.albumId AND
-                        photoId = :photoId AND users.id = comments.from AND profile.userId = users.id
-                        AND comments.photo = :photoId";
+                        photoId = :photoId AND users.id = comments.from AND 
+                        profile.userId = users.id AND comments.photo = :photoId";
             $array = array(':albumId' => $albumId, ':photoId' => $photoId);
             $result = $this->db->fetch($sql, $array);
             return $result;
