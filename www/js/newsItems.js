@@ -28,7 +28,20 @@ function addComment(id, content) {
     });
 }
 
-function renderReply(titleLink, title, date, time, text) {
+function reportComment(id) {
+    $.ajax({
+        url: "/api/comments/" + id + "/report",
+        type: "POST",
+        data: {},
+
+        success: function(response) {
+            $("#report_" + id).text("Reported");
+            $("#report_" + id).fadeTo("fast", .5).removeAttr("href");
+        }
+    });
+}
+
+function renderReply(titleLink, title, date, time, text, commentID) {
     var reply = '<article class="search-result row container-fluid">' + 
         '<div class="panel panel-default">' + 
             '<div class="container-fluid">' + 
@@ -44,6 +57,13 @@ function renderReply(titleLink, title, date, time, text) {
                 '</div>' + 
             '</div>' + 
             '<span class="clearfix borda"></span>' + 
+            '<div class="container-fluid">' + 
+                '<div class="pull-right">' + 
+                    '<i class="glyphicon glyphicon-flag"></i>' + 
+                    '<span> <a href="javascript:reportComment(' + commentID + 
+                        ')" id="report_' + commentID + '">Report</a></span>' + 
+                '</div>' + 
+            '</div>'
         '</div>' + 
     '</article>';
     return reply;
@@ -103,7 +123,8 @@ function showPosts(data) {
             date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
             var titleLink = "/user/" + comment['login'];
             var name = comment['fromName'];
-            var commentHTML = renderReply(titleLink, name, date, time, content);
+            var commentID = comment['id'];
+            var commentHTML = renderReply(titleLink, name, date, time, content, commentID);
             $("#replies_" + id).append(commentHTML);
         };
     };

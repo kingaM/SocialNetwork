@@ -1,6 +1,7 @@
 <?php
     
     require_once('helpers/database/UsersHelper.php');
+    require_once('helpers/database/AdminHelper.php');
 
     class Admin {
 
@@ -36,5 +37,37 @@
             $db->banUser($username);
             $res->send();
         }
+
+        public function getReportedComments($req, $res) {
+            $db = new AdminHelper();
+            $comments = $db->getReportedComments();
+            $res->add(json_encode($comments));
+            $res->send();
+        }
+
+        public function ignoreReport($req, $res) {
+            $id = $req->params['id'];
+            $db = new AdminHelper();
+            $db->ignoreReport($id);
+            $res->send();
+        }
+
+        public function deleteComment($req, $res) {
+            $id = $req->params['id'];
+            $db = new AdminHelper();
+            $db->deleteComment($id);
+            $res->send();
+        }
+    }
+
+    class Report {
+
+        public function reportComment($req, $res) {
+            $id = $req->params['id'];
+            $db = new AdminHelper();
+            $db->reportComment($id);
+            $res->send();
+        }
+
     }
 ?>

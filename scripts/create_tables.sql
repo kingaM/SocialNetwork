@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
     `wall_post` int(11) NOT NULL,
     `content` VARCHAR(10000) NOT NULL DEFAULT 0,
     `timestamp` int(11) NOT NULL,
+    `reported` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`wall_post`) REFERENCES `wall_posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

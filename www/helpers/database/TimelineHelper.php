@@ -87,35 +87,7 @@
             if(count($postIDs) === 0)
                 return $posts;
 
-            $inSet = implode(",", $postIDs);
-
-            $result = $this->db->fetch("SELECT c.id, c.wall_post, c.content, c.timestamp, u.login,
-                (CASE WHEN u.middle_name IS NULL THEN 
-                        CONCAT(u.first_name, ' ', u.last_name) 
-                    ELSE 
-                        CONCAT(u.first_name, ' ', u.middle_name, ' ', u.last_name) 
-                END) as fromName
-                FROM comments as c, users as u
-                WHERE u.ID=c.from AND wall_post IN ($inSet)",
-                Array());
-
-            foreach ($result as $r) {
-                $wallPostID = $r['wall_post'];
-                $comment = array(   'id' => $r['id'],
-                                    'content' => $r['content'],
-                                    'timestamp' => $r['timestamp'],
-                                    'login' => $r['login'],
-                                    'fromName' => $r['fromName']);
-                foreach ($posts as &$post) {
-                    if($post['id'] === $wallPostID) {
-                        $comments = &$post['comments'];
-                        $comments[] = $comment;
-                        break;
-                    }
-                }
-            }
-
-            return $posts;
+            return $this->getComments($postIDs, $posts);
         }
 
         /**
@@ -202,9 +174,20 @@
             if(count($postIDs) === 0)
                 return $posts;
 
+            return $this->getComments($postIDs, $posts);
+        }
+
+        /**
+         * Gets comments for an array of wall posts
+         *
+         * @param String $user The user to get the newsfeed for
+         *
+         */
+        private function getComments($postIDs, $posts) {
             $inSet = implode(",", $postIDs);
 
             $result = $this->db->fetch("SELECT c.id, c.wall_post, c.content, c.timestamp, u.login,
+                c.reported,
                 (CASE WHEN u.middle_name IS NULL THEN 
                         CONCAT(u.first_name, ' ', u.last_name) 
                     ELSE 
@@ -220,6 +203,7 @@
                                     'content' => $r['content'],
                                     'timestamp' => $r['timestamp'],
                                     'login' => $r['login'],
+                                    'reported' => $r['reported'],
                                     'fromName' => $r['fromName']);
                 foreach ($posts as &$post) {
                     if($post['id'] === $wallPostID) {
@@ -232,7 +216,6 @@
 
             return $posts;
         }
-
     }
 
 ?>

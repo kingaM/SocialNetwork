@@ -418,6 +418,27 @@
         'file' => 'controllers/admin.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/api/comments',
+        'get' => array('Admin', 'getReportedComments'),
+        'file' => 'controllers/admin.php',
+    ));
+
+    // Comments
+
+    $router->addRoute(array(
+        'path' => '/api/comments/{id}/report',
+        'post' => array('Report', 'reportComment'),
+        'delete' => array('Admin', 'ignoreReport'),
+        'file' => 'controllers/admin.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/comments/{id}',
+        'delete' => array('Admin', 'deleteComment'),
+        'file' => 'controllers/admin.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {
