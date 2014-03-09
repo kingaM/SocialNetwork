@@ -122,11 +122,11 @@
          * @param  integer $photoId The id of the photo.
          * @return array            An array with each row that matches. Data returned: 
          *                          content, timestamp, first_name, middle_name, last_name, login, 
-         *                          profilePicture
+         *                          profilePicture, id
          */
         public function getComments($albumId, $photoId) {
             $sql = "SELECT content, comments.timestamp, first_name, middle_name, last_name, login, 
-                        profilePicture
+                        profilePicture, comments.id, reported
                     FROM photos, photo_albums, users, profile, comments
                     WHERE photos.albumId = :albumId AND photo_albums.albumId = photos.albumId AND
                         photoId = :photoId AND users.id = comments.from AND 

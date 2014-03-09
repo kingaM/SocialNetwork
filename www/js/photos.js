@@ -516,6 +516,8 @@ function showComment(comment) {
     } else {
         var profilePicture = comment['profilePicture'];
     }
+    var reported = comment['reported'];
+    var id = comment['id'];
     var comment = '<li class="list-group-item">' + 
           '<div class="row">' + 
             '<div class="col-xs-3 col-md-1">' + 
@@ -532,7 +534,8 @@ function showComment(comment) {
               '</div>' + 
             '</div>' + 
             '<div class="col-xs-2 col-md-1">' + 
-              '<button type="button" class="btn btn-primary btn-xs" title="Flag as inapproperiate">' + 
+              '<button type="button" class="btn btn-primary btn-xs" title="Flag as inappropriate"' + 
+              ' onclick="reportComment(' + id + ');" id="report_' + id + '">' + 
               '<span class="fa fa-flag">' + '</span>' + 
               '</button>' + 
             '</div>' + 
@@ -540,6 +543,9 @@ function showComment(comment) {
         '</li>';
 
     $("#comments-list").append(comment);
+
+    if(reported == 1)
+        $("#report_" + id).fadeTo("fast", .5).removeAttr("onclick");
 }
 
 function addComment(albumId, pictureId) {
@@ -566,6 +572,18 @@ function addComment(albumId, pictureId) {
                 $("#new-comment").hide();
                 $("#new-comment-txt").val("");
             }
+        }
+    });
+}
+
+function reportComment(id) {
+    $.ajax({
+        url: "/api/comments/" + id + "/report",
+        type: "POST",
+        data: {},
+
+        success: function(response) {
+            $("#report_" + id).fadeTo("fast", .5).removeAttr("onclick");
         }
     });
 }

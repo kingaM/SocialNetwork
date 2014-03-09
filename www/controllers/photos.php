@@ -265,7 +265,9 @@
                     'middleName' => $comment['middle_name'], 
                     'lastName' => $comment['last_name'], 
                     'username' => $comment['login'], 
-                    'profilePicture' => $comment['profilePicture']);
+                    'profilePicture' => $comment['profilePicture'],
+                    'reported' => $comment['reported'],
+                    'id' => $comment['id']);
             }
             $res->add(json_encode(array('valid' => true, 'comments' => $json)));
             $res->send();
