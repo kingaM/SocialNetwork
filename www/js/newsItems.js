@@ -62,9 +62,13 @@ function showPosts(data) {
         var time = date.getHours() + ":" + date.getMinutes();
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
         var id = post['id'];
-
         var title;
-        if(post['type'] != "friend") {
+        var content = post['content'];
+        if(post['type'] == "image") {
+            title = "<a href='/user/" + post['to'] + "'>" + post['toName'] + "</a>" + 
+                " <small>added a new photo:</small>";
+            content = '<img src="' + post['content'] + ' " class="img-responsive">';
+        } else if(post['type'] != "friend") {
             title = "<a href='/user/" + post['from'] + "'>" + post['fromName'] + "</a>";
             if(post['from'] != post['to'])
                 title += " <span class='glyphicon glyphicon-chevron-right'></span> " + 
@@ -82,7 +86,7 @@ function showPosts(data) {
             date: date,
             time: time,
             title: title,
-            text: post['content'],
+            text: content,
             numOfReplies: post['comments'].length
         };
         var output = Mustache.render(newsItemTemplate, view);

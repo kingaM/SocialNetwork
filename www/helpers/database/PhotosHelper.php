@@ -1,6 +1,7 @@
 <?php
     
     require_once('helpers/database/database.php');
+    require_once('helpers/database/TimelineHelper.php');
 
     /**
      * A helper that has bassic database functions acting on basic User infomation. 
@@ -40,11 +41,6 @@
                 VALUES (:userId, :name, :about)";
             $array = array(':userId' => $userId, ':name' => $name, 
                 ':about' => $about);
-            // $tlh = new TimelineHelper();
-            // $content = "Created a new blog, <a href='/user/".$_SESSION['username'].
-            //             "/blogs/$url/pages/1'>$name</a>";
-            // $tlh->addPost($_SESSION['username'], $_SESSION['username'], $content, "blog");
-
             return $this->db->execute($sql, $array);
         }
 
@@ -154,7 +150,13 @@
                     VALUES (:albumId, :timestamp, :description, :url, :thumbnailUrl)";
             $array = array(':albumId' => $albumId, ':timestamp' => $timestamp, 
                 ':description' => $description, ':url' => $url, ':thumbnailUrl' => $thumbnailUrl); 
-            return $this->db->execute($sql, $array);     
+            $result = $this->db->execute($sql, $array);    
+            if($result) {
+                $tlh = new TimelineHelper();
+                $content = $url;
+                $tlh->addPost($_SESSION['username'], $_SESSION['username'], $content, "image"); 
+            }
+            return $result;
         }
 
         /**
