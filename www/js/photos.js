@@ -219,16 +219,23 @@ function showComments(comments) {
 }
 
 function showComment(comment) {
+    if(comment['profilePicture'] == null) {
+        var profilePicture = 'http://placehold.it/50x50';
+    } else {
+        var profilePicture = comment['profilePicture'];
+    }
     var comment = '<li class="list-group-item">' + 
           '<div class="row">' + 
             '<div class="col-xs-3 col-md-1">' + 
-            '<img src="http://placehold.it/50x50" class="img-responsive" alt="" />' + '</div>' + 
+                '<img src="' + profilePicture + '" class="img-responsive" alt="" />' + 
+            '</div>' + 
             '<div class="col-xs-7 col-md-10">' + 
               '<div class="comment-text">' + 
                 comment['content'] +
               '</div>' + 
               '<div class="mic-info">' + 
-                'By:' + '<a href="#">' + comment['firstName'] + ' ' + comment['lastName'] + '</a>' +  
+                'By:' + '<a href="#">' + comment['firstName'] + ' ' + comment['lastName'] + 
+                    '</a> ' +  
                     new Date(comment['timestamp'] * 100).toLocaleString() + 
               '</div>' + 
             '</div>' + 
@@ -305,7 +312,7 @@ function showPhotoAlbum(album) {
                 '<h4 class="panel-title">' + album['name'] +
                  '<br>' +
                 '<small>' + album['about'] + ' </small></h4></div>' +
-                '<div class="col-lg-2 col-md-4" >' +
+                '<div class="col-lg-2 col-md-5" >' +
                     '<button class="btn btn-primary" id="upload-' + album['id'] + '">' + 
                     'Add Photo to Album' + '</button></div>' +
                 '<div class="col-lg-2 col-md-3" >' +
@@ -356,12 +363,6 @@ function showPhotoAlbum(album) {
 }
 
 function showModal(title, pictureUrl, pictureId, index) {
-    if(title == null) {
-        title = '';
-    }
-    if(pictureUrl == null) {
-        pictureUrl = 'http://placehold.it/100x100';
-    }
   var html = '<div id="photo">' + 
   '<div class="modal fade" id="modal-pic">' + 
     '<div class="modal-dialog modal-lg">' + 
@@ -393,7 +394,14 @@ function showModal(title, pictureUrl, pictureId, index) {
 }
 
 function fillModal(title, pictureUrl, pictureId, index) {
-    var header = '<button type="button" class="close" aria-hidden="true" data-dismiss="modal">' + '×' + 
+    if(title == null) {
+        title = '';
+    }
+    if(pictureUrl == null) {
+        pictureUrl = 'http://placehold.it/100x100';
+    }
+    var header = '<button type="button" class="close" aria-hidden="true" data-dismiss="modal">' + 
+            '×' + 
           '</button>' + 
           '<h4 class="modal-title">' + title + '</h4>';
     var body = '<img src="' + pictureUrl + '" class="img img-responsive">' +
@@ -439,7 +447,7 @@ function fillModal(title, pictureUrl, pictureId, index) {
     });
     $("#comment-cancel").click( function (e) {
         $("#new-comment").hide();
-        $("#new-comment-text").val("");
+        $("#new-comment-txt").val("");
     });
     $("#next-pic").click( function (e) {
         if(index + 1 >= gPhotos.length) {
@@ -459,5 +467,29 @@ function fillModal(title, pictureUrl, pictureId, index) {
         }
         fillModal(gPhotos[nextIndex]['description'], gPhotos[nextIndex]['url'], 
             gPhotos[nextIndex]['id'], nextIndex);
+    });
+    $("#comment-submit").click(function (e) {
+        e.preventDefault();
+        var values = {};
+        values['comment'] =  $("#new-comment-txt").val();
+        console.log(values);
+        $.ajax({
+            type: "post",
+            url: "/api/user/" + username + "/photos/" + currentAlbumId + "/" + pictureId,
+            data: values,
+            success: function(data) {
+                console.log(data);
+                var json = $.parseJSON(data);
+                var valid = json['valid'];
+                if (!valid) {
+                    showError("error-unknown", "Something went wrong, but we don't know what." +
+                        "Please try again later.");
+                    return;
+                }  
+                if(valid) {
+                    loadContent(pictureId);
+                }
+            }
+        });
     });
 }

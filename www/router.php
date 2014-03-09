@@ -440,6 +440,7 @@
         ),
         'get' => array('Photos', 'getComments'),
         'delete' => array('Photos', 'deletePhoto'),
+        'post' => array('Photos', 'addComment'),
         'file' => 'controllers/photos.php',
     ));
 

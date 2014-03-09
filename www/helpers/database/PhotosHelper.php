@@ -133,7 +133,7 @@
                         profilePicture
                     FROM photos, photo_albums, users, profile, comments
                     WHERE photos.albumId = :albumId AND photo_albums.albumId = photos.albumId AND
-                        photoId = :photoId AND users.id = comments.id AND profile.userId = users.id
+                        photoId = :photoId AND users.id = comments.from AND profile.userId = users.id
                         AND comments.photo = :photoId";
             $array = array(':albumId' => $albumId, ':photoId' => $photoId);
             $result = $this->db->fetch($sql, $array);
@@ -179,6 +179,22 @@
         public function deletePhoto($userId, $albumId, $photoId) {
             $sql = "DELETE FROM `photos` WHERE `albumId` = :albumId AND `photoId` = :photoId";
             $array = array(':albumId' => $albumId, ':photoId' => $photoId); 
+            return $this->db->execute($sql, $array); 
+        }
+
+        /**
+         * Adds comment to a particular photo.
+         * @param  integer $userId    The id of the user.
+         * @param  integer $photoId   The id of the photo.
+         * @param  string  $comment   The content of the comment.
+         * @param  integer $timestemp The time when the comment was created.
+         * @return boolean            True if succeeded, false otherwise.
+         */
+        public function addComment($userId, $photoId, $comment, $timestamp) {
+            $sql = "INSERT INTO `comments` (`from`, `wall_post`, `photo`, `content`, `timestamp`) 
+                VALUES (:userId, NULL, :photoId, :comment, :timestamp)";
+            $array = array(':userId' => $userId, ':photoId' => $photoId, ':comment' => $comment, 
+                ':timestamp' => $timestamp); 
             return $this->db->execute($sql, $array); 
         }
 

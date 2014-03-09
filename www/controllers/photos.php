@@ -284,5 +284,28 @@
             $res->add(json_encode(array('valid' => true, 'comments' => $json)));
             $res->send();
         }
+
+        public function addComment($req, $res) {
+            $username = $req->params['username'];
+            $albumId = $req->params['albumId'];
+            $photoId = $req->params['photoId'];
+            $firephp = FirePHP::getInstance(true);
+            $firephp->log($req->data);
+            $comment = $req->data['comment'];
+            $usersDB = new UsersHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId !== $_SESSION['id']) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+            $photosDB = new PhotosHelper();
+            if($photosDB->addComment($_SESSION['id'], $photoId, $comment, time())) {
+                $res->add(json_encode(array('valid' => true)));
+                $res->send();
+            } else {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+        }
     }
 ?>
