@@ -81,7 +81,7 @@ function showCircles(circles) {
         $("#circlesList").append(listItem);
 
         $('#circleTable_' + cName).dataTable( {
-            "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
             "sPaginationType": "bootstrap",
             "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
             "iDisplayLength": 5,
@@ -198,7 +198,7 @@ function deleteFromCircle(username, circleName) {
 
 function createRequestsTable() {
     $('#requestsTable').dataTable( {
-        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "sPaginationType": "bootstrap",
         "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
         "iDisplayLength": 5,

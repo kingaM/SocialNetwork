@@ -1,70 +1,86 @@
 <script src="/js/friends.js"></script>
 <script src="/js/friends_friendsTable.js"></script>
 
-<ul class="nav nav-tabs">
-  <li class="active" id="friendsTab"><a href="#" style="outline:0;">Friends</a></li>
-  <li id="requestsTab"><a href="#" style="outline:0;">Requests <span class="badge" id="numOfFriendReqs"></span></a></li>
-  <li id="circlesTab"><a href="#" style="outline:0;">Circles</a></li>
-</ul>
+<div class="row">
+	<div class="col-md-12">
 
-<div id="friends">
-    <div id="add_friends" class="row">
-        <h2>Add Friend</h2>
-
-        <form id="addForm" class="form-inline">
-            <div id="search1" class="col-md-4"></div>
-            <script src="/helpers/autocompleter.js"></script>
-            <script>easyIncludeAutoComplete("search1");</script>
-            <button type="submit" class="btn btn-primary ">Add</button>
-        </form>
-    </div>
-
-    <div id="current_friends" class="row">
-        <h2>Current Friends</h2>
-    </div>
-</div>
-
-<div id="pending_friends">
-    <h2>Friend Requests</h2>
-    <div class="table-responsive">
-        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable text-center" id="requestsTable">
-            <thead>
-                <tr>
-                    <th class="text-center">Photo</th>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">Request sent</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-</div>
-
-<div id="circles">
-    <div class="row">
-        <h2>New Circle</h2>
-        <form id="newCircle" class="form-inline">
-            <div class="form-group col-md-4" id="addCircleGroup">
-                <input type="text" class="form-control" placeholder="Circle Name">
-                <button type="submit" class="btn btn-primary">Create</button>
-            </div>
-        </form>
-    </div>
-    <div class="row">
-        <h2>Add to Circles</h2>
-        <form id="addToCircle" class="form-inline">
-            <select class="form-control" id="selectCircles"></select>
-            <div id="search2" class="col-md-4"></div>
-            <script src="/helpers/autocompleter.js"></script>
-            <script>easyIncludeAutoComplete("search2");</script>
-            <button type="submit" class="btn btn-primary">Add</button>
-        </form>
-    </div>
-    <div class="row">
-        <h2>Circles</h2>
-        <div class="panel-group" id="circlesList"></div>
-    </div>
-
-
+		<ul class="nav nav-tabs">
+		  <li class="active" id="friendsTab"><a href="#" style="outline:0;">Friends</a></li>
+		  <li id="requestsTab"><a href="#" style="outline:0;">Requests <span class="badge" id="numOfFriendReqs"></span></a></li>
+		  <li id="circlesTab"><a href="#" style="outline:0;">Circles</a></li>
+		</ul>
+		
+		<div id="friends">
+		    <div id="add_friends" class="row">
+				<div class="col-md-6">			    
+			        <h2>Add Friend</h2>
+			
+			        <form id="addForm" class="form-inline">
+			            <div id="search1" style="width:70%; float: left; margin-right: 14px;"></div>
+			            <script src="/helpers/autocompleter.js"></script>
+			            <script>easyIncludeAutoComplete("search1");</script>
+			            <button type="submit" class="btn btn-primary ">Add</button>
+			        </form>
+				</div>
+		    </div>
+		
+		    <div class="row">
+		    	<div class="col-md-12" id="current_friends">
+			        <h2>Current Friends</h2>
+		    	</div>
+		    </div>
+		</div>
+		
+		<div id="pending_friends">
+		    <h2>Friend Requests</h2>
+		    <div class="table-responsive">
+		        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable text-center" id="requestsTable">
+		            <thead>
+		                <tr>
+		                    <th class="text-center">Photo</th>
+		                    <th class="text-center">Name</th>
+		                    <th class="text-center">Request sent</th>
+		                    <th></th>
+		                </tr>
+		            </thead>
+		            <tbody></tbody>
+		        </table>
+		    </div>
+		</div>
+		
+		<div id="circles">
+		    <div class="row">
+			    <div class="col-md-12">		    
+			        <h2>New Circle</h2>
+			        <form id="newCircle" class="form-inline">
+			            <div class="form-group" id="addCircleGroup">
+			                <input type="text" class="form-control" placeholder="Circle Name">
+			                <button type="submit" class="btn btn-primary">Create</button>
+			            </div>
+			        </form>
+			    </div>
+		    </div>
+		    <div class="row">
+				<div class="col-md-12">			    	
+			        <h2>Add to Circles</h2>
+			        <form id="addToCircle" class="form-inline">
+			            <select class="form-control" id="selectCircles"></select>
+			            <div id="search2" style="width:70%; float: left; margin-right: 5px;"></div>
+			            <script src="/helpers/autocompleter.js"></script>
+			            <script>easyIncludeAutoComplete("search2");</script>
+			            <button type="submit" class="btn btn-primary">Add</button>
+			        </form>
+				</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-12">		    	
+			        <h2>Circles</h2>
+			        <div class="panel-group" id="circlesList"></div>
+		    	</div>
+		    </div>
+		
+		
+		</div>
+		
+	</div>
 </div>

@@ -6,6 +6,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{{title}}</title>
 		
+		<!-- Font -->
+		<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,500,700' rel='stylesheet' type='text/css'>
+		
 		<!-- Bootstrap -->
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/css/main.css" rel="stylesheet">
@@ -34,25 +37,19 @@
 		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="#">Social Network</a>
+					<h1><a class="navbar-brand" href="/">Social Network</a></h1>
+					<a href="/messages"><span class="glyphicon glyphicon-inbox"></span></a>
+					<a href="/settings"><span class="glyphicon glyphicon-cog"></span></a>
 				</div>
 			</div>
 		</div>
 		<div class="container-fluid" style="margin-top: 70px;">
 			<div class="row">
-				<div class="col-sm-3 col-md-2 sidebar">
-					<ul class="nav nav-sidebar">
-						<li class="active"><a href="/">Home</a></li>
-						<li><a href="/friends">Friends</a></li>
-						<li><a href="/photos">Photos</a></li>
-						<li><a href="/blog">Blog</a></li>
-						<li><a href="/login">Login</a></li>
-						<li><a href="/logout">Logout</a></li>
-					</ul>
-				</div>
-				<div class="col-sm-9 col-md-10 main">
+				<div class="col-lg-2 col-md-1"></div>
+				<div class="col-lg-8 col-md-10 main">
 					<div id="content">{{{content}}}</div>
 				</div>
+				<div class="col-lg-2 col-md-1"></div>
 			</div>
 		</div>
 	</body>
