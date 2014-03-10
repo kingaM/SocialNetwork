@@ -1,10 +1,5 @@
-var newsItemTemplate;
 function setupNewsItems() {
-    $.ajaxSetup({async:false});
-    $.get('/views/home_newsItem.mustache', function(template) {
-        newsItemTemplate = template;
-    });
-    $.ajaxSetup({async:true});
+
 }
 
 function addComment(id, content) {
@@ -100,16 +95,10 @@ function showPosts(data) {
                 title = "<a href='/user/" + post['to'] + "'>" + post['toName'] + "</a>";
         };
 
-        var view = {
-            wallPostID: id,
-            imgURL: "http://i.imgur.com/r8R1C6B.png",
-            date: date,
-            time: time,
-            title: title,
-            text: content,
-            numOfReplies: post['comments'].length
-        };
-        var output = Mustache.render(newsItemTemplate, view);
+        var wallPostID =  id;
+        var imgURL =  "http://i.imgur.com/r8R1C6B.png";
+        var numOfReplies =  post['comments'].length;
+        var output = renderNewsItem(imgURL, date, time, title, content, wallPostID, numOfReplies);
         $("#newsItems").append(output);
 
         $("#replyForm_" + id).submit(id, function(e){
@@ -152,4 +141,72 @@ function addPost(content, username) {
             getPosts();
         }
     });
+}
+
+function renderNewsItem(imgURL, date, time, title, text, wallPostID, numOfReplies) {
+    var html = '<section class="container-fluid">' + 
+        '<article class="search-result row">' + 
+            '<div class="col-xs-12 col-sm-12 col-md-3">' + 
+                '<a href="#" class="thumbnail"><img src="'+imgURL+'" style="max-height:120px;"/></a>' + 
+            '</div>' + 
+            '<div class="col-xs-12 col-sm-12 col-md-2">' + 
+                '<ul class="meta-search">' + 
+                    '<li><i class="glyphicon glyphicon-calendar"></i><span>' + date + '</span></li>' + 
+                    '<li><i class="glyphicon glyphicon-time"></i><span>' + time + '</span></li>' + 
+                '</ul>' + 
+            '</div>' + 
+            '<div class="col-xs-12 col-sm-12 col-md-7 excerpet">' + 
+                '<h3>' + title + '</h3>' + 
+                '<p>' + text + '</p>                        ' + 
+                    '<div class="container-fluid">' + 
+                    '<div class="row">' + 
+                        '<div id="replies">' + 
+                            '<div class="panel-group">' + 
+                                '<h4 class="panel-title">' + 
+                                    '<a data-toggle="collapse" data-parent="#accordion" ' + 
+                                        'href="#collapseReplies_' + wallPostID + '">' + 
+                                      'Replies' + 
+                                    '</a>' + 
+                                    '<span class="badge">' + numOfReplies + '</span>' + 
+                                '</h4>' + 
+                                '<div id="collapseReplies_' + wallPostID + 
+                                    '" class="panel-collapse collapse">' + 
+                                  '<div class="panel-body" id="replies_' + wallPostID + '">' + 
+                                  '</div>' + 
+                                '</div>' + 
+                            '</div>' + 
+                        '</div>' + 
+                        '<div class="container-fluid">' + 
+                            '<div class="panel-body">' + 
+                                '<button class="btn btn-primary pull-right" type="submit" ' + 
+                                    'id="replyToggle_' + wallPostID + '" ' + 
+                                    'onclick="$(\'#replyToggle_' + wallPostID + 
+                                        '\').hide();$(\'#replyForm_' + wallPostID + '\').show();">' + 
+                                    'Reply' + 
+                                '</button>' + 
+                                '<form accept-charset="UTF-8" action="" method="POST" id="replyForm_' + 
+                                    wallPostID + '" style="display:none;">' + 
+                                    '<textarea class="form-control" name="message" ' + 
+                                        'placeholder="Type in your message" rows="2" ' + 
+                                        'style="margin-bottom:10px;">' + 
+                                    '</textarea>' + 
+                                    '<button class="btn btn-primary pull-right" type="submit">' + 
+                                        'Reply' + 
+                                    '</button>' + 
+                                    '<button type="button" class="btn btn-danger pull-left" ' + 
+                                        'onclick="$(\'#replyToggle_' + wallPostID + '\').show();' + 
+                                            '$(\'#replyForm_' + wallPostID + '\')[0].reset();' + 
+                                            '$(\'#replyForm_' + wallPostID + '\').hide();">' + 
+                                        '<span class="glyphicon glyphicon-remove"></span>' + 
+                                    '</button>' + 
+                                '</form>' + 
+                            '</div>' + 
+                        '</div>' + 
+                    '</div>' + 
+                '</div>' + 
+            '</div>' + 
+            '<span class="clearfix borda"></span>' + 
+        '</article>' + 
+    '</section>';
+    return html;
 }

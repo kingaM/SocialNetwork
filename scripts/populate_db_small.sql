@@ -20,7 +20,8 @@ VALUES
         null),
     (2, null, null, null, null, null, null),
 	(3, 'Female', 593106000, 'A young woman studying in Cambridge', 'England', 'English',
-        null);
+        null),
+    (4, null, null, null, null, null, null);
 
 INSERT INTO friendships(user1, user2, status, startTimestamp)
 VALUES
