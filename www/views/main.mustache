@@ -40,6 +40,14 @@
 					<h1><a class="navbar-brand" href="/">Social Network</a></h1>
 					<a href="/messages"><span class="glyphicon glyphicon-inbox"></span></a>
 					<a href="/settings"><span class="glyphicon glyphicon-cog"></span></a>
+					<a href="/user/" id="profile-link"><span class="glyphicon glyphicon-user"></span></a>
+					<script>
+					    $.getJSON( "/api/currentUser", function(data) {
+					        sessionUser = data["username"];
+					        $( "#profile-link" ).attr( "href", "/user/" + sessionUser );
+					        
+					    });
+					</script>
 				</div>
 			</div>
 		</div>
