@@ -22,6 +22,7 @@ a.nohover:hover {
     height: 200px;
 }
 .widget {
+    margin-top: 20px;
     text-align:left;
 }
 .widget .panel-body { 

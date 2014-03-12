@@ -88,12 +88,19 @@ function showPhotoAlbums(albums) {
 }
 
 function showPhotoAlbum(album) {
-    var buttons = '<div class="col-lg-2 col-md-5" >' +
-                    '<button class="btn btn-primary" id="upload-' + album['id'] + '">' + 
-                    'Add Photo to Album' + '</button></div>' +
-                '<div class="col-lg-2 col-md-3" >' +
-                    '<button class="btn btn-danger" id="delete-' + album['id'] + '">' + 
-                    'Delete Album' + '</button></div>';
+    var buttons = '<div class="col-lg-6 col-md-8">' +
+                    '<form class="form-inline pull-right" role="form">' +
+                        '<div class="form-group">' +
+                            '<button class="btn btn-primary" id="upload-' + album['id'] + '"' + 
+                                'style="margin-right: 5px;">' + 
+                                'Add Photo to Album' + '</button>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                            '<button class="btn btn-danger" id="delete-' + album['id'] + '">' + 
+                                'Delete Album' + '</button>' +
+                        '</div>' +
+                    '</form>' +
+                  '</div>';
     if(!currentUser) {
         buttons = '';
     }
@@ -102,8 +109,8 @@ function showPhotoAlbum(album) {
                 '<a class="nohover" data-toggle="collapse" data-parent="#accordion" href="#' + 
                     album['id'] + '">' +
                     '<div class="flex">' +
-                    '<div class="col-lg-' + (currentUser ? '7' : '11') + 
-                        ' col-md-"' + (currentUser ? '4' : '11') +'>' +
+                    '<div class="col-lg-' + (currentUser ? '6' : '11') + 
+                        ' col-md-' + (currentUser ? '4' : '11') +'">' +
                 '<h4 class="panel-title">' + album['name'] +
                  '<br>' + 
                 '<small>' + album['about'] + ' </small></h4></div>' +
@@ -360,7 +367,7 @@ function showModal(title, pictureUrl, pictureId, index) {
                 
             '</div>' + 
             '<div class="modal-footer">' + 
-              '<button type="button" class="btn btn-default pull-left prev" id="prev-pic">' + 
+              '<button type="button" class="btn btn-primary pull-left prev" id="prev-pic">' + 
               '<i class="glyphicon glyphicon-chevron-left">' + '</i>' + 
               'Previous' +
               '</button>' + 
@@ -391,7 +398,7 @@ function fillModal(title, pictureUrl, pictureId, index) {
             '×' + 
           '</button>' + 
           '<h4 class="modal-title">' + title + '</h4>';
-    var body = '<img src="' + pictureUrl + '" class="img img-responsive">' +
+    var body = '<img src="' + pictureUrl + '" class="img img-responsive center-block">' +
             '<div id="slides">' +
           '<div class="panel panel-default widget">' + 
             '<div class="panel-heading">' + 
@@ -528,14 +535,15 @@ function showComment(comment) {
                 comment['content'] +
               '</div>' + 
               '<div class="mic-info">' + 
-                'By:' + '<a href="#">' + comment['firstName'] + ' ' + comment['lastName'] + 
+                'By:' + '<a href="/user/' + comment['username'] + '">' + comment['firstName'] + 
+                    ' ' + comment['lastName'] + 
                     '</a> ' +  
-                    new Date(comment['timestamp'] * 100).toLocaleString() + 
+                    new Date(comment['timestamp'] * 1000).toLocaleString() + 
               '</div>' + 
             '</div>' + 
             '<div class="col-xs-2 col-md-1">' + 
               '<button type="button" class="btn btn-primary btn-xs" title="Flag as inappropriate"' + 
-              ' onclick="reportComment(' + id + ');" id="report_' + id + '">' + 
+                ' style = "float: right;" id="report-' + id + '">' + 
               '<span class="fa fa-flag">' + '</span>' + 
               '</button>' + 
             '</div>' + 
@@ -544,8 +552,14 @@ function showComment(comment) {
 
     $("#comments-list").append(comment);
 
-    if(reported == 1)
-        $("#report_" + id).fadeTo("fast", .5).removeAttr("onclick");
+    if(reported == 1) {
+        $("#report-" + id).fadeTo("fast", .5);
+    } else {
+        $("#report-" + id).click(function (e) {
+            e.preventDefault();
+            reportComment(id);
+        })
+    }
 }
 
 function addComment(albumId, pictureId) {
@@ -583,7 +597,8 @@ function reportComment(id) {
         data: {},
 
         success: function(response) {
-            $("#report_" + id).fadeTo("fast", .5).removeAttr("onclick");
+            $("#report-" + id).fadeTo("fast", .5);
+            $("#report-" + id).unbind('click');
         }
     });
 }
