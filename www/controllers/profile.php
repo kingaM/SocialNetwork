@@ -52,6 +52,8 @@
                     'about' => $userInfo['about'],
                     'email' => $userInfo['email'],
                     'username' => $userInfo['login'],
+                    'banned' => $userInfo['banned'],
+                    'admin' => $userInfo['admin'],
                     'profilePicture' => $userInfo['profilePicture']
                     )
                 )));

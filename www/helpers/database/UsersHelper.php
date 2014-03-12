@@ -135,6 +135,17 @@
         }
 
         /**
+         * Unbans a user
+         * 
+         * @param  string $username
+         */
+        public function unbanUser($username) {
+            $this->db->execute("UPDATE users 
+                SET banned=0 WHERE login=:username", 
+                array(':username' => $username));
+        }
+
+        /**
          * Checks if the e-mail has been activated.
          * @param  string $hash The e-mail activation code
          * @return integer      -1 if an error occurs, 1 if it is activated, 0 if it isn't
@@ -172,7 +183,7 @@
          */
         public function getUser($id) {
             $sql = "SELECT id, first_name, middle_name, last_name, gender, dob, about, locations, 
-                languages, email, login, profilePicture
+                languages, email, login, profilePicture, banned, admin
                 FROM users, profile
                 WHERE id = :id AND activated = 1
                 AND id = userId";
