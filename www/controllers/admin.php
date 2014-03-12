@@ -38,6 +38,13 @@
             $res->send();
         }
 
+        public function unbanUser($req, $res) {
+            $username = $req->params['username'];
+            $db = new UsersHelper();
+            $db->unbanUser($username);
+            $res->send();
+        }
+
         public function getReportedComments($req, $res) {
             $db = new AdminHelper();
             $comments = $db->getReportedComments();

@@ -414,7 +414,8 @@
 
     $router->addRoute(array(
         'path' => '/api/user/{username}/ban',
-        'delete' => array('Admin', 'banUser'),
+        'post' => array('Admin', 'banUser'),
+        'delete' => array('Admin', 'unbanUser'),
         'file' => 'controllers/admin.php',
     ));
 

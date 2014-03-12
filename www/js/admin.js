@@ -29,7 +29,13 @@ function getUser(username) {
         var date = new Date(user['dob']*1000);
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
 
-        showUser(name, image, user['username'], date, user['email']);
+        var status = "Regular User";
+        if(user['banned'] == 1)
+            status = "Banned";
+        if(user['admin'] == 1)
+            status = "Admin";
+
+        showUser(name, image, user['username'], date, user['email'], status);
     });
 }
 
@@ -46,16 +52,26 @@ function deleteUser(username) {
 function banUser(username) {
     $.ajax({
         url: "/api/user/" + username + "/ban",
+        type: "POST",
+        success: function(result) {
+            getUser(username);
+        }
+    });
+}
+
+function unbanUser(username) {
+    $.ajax({
+        url: "/api/user/" + username + "/ban",
         type: "DELETE",
         success: function(result) {
-            $('#userInfo').remove();
+            getUser(username);
         }
     });
 }
 
 function banUserFromComment(username, commentID) {
     banUser(username);
-    deleteComment(commentID);
+    //deleteComment(commentID);
 }
 
 function resetPassword(username) {
@@ -82,11 +98,21 @@ function ignoreReport(id) {
     });
 }
 
-function showUser(name, image, username, dob, email) {
+function showUser(name, image, username, dob, email, status) {
 
     $('#userInfo').remove();
 
-    var html =  '<div id="userInfo" class="col-md-5">' + 
+    var banButton;
+
+    if(status == "Banned")
+        banButton = '<button class="btn btn-success pull-right" onclick="unbanUser(\'' + 
+                        username + '\');">Unban</button>';
+    else
+        banButton = '<button class="btn btn-danger pull-right" onclick="banUser(\'' + 
+                        username + '\');">Ban</button>';
+
+
+    var html =  '<div id="userInfo" class="col-md-10 col-md-offset-1">' + 
                     '<div class="row-fluid">' + 
                         '<div>' + 
                             '<div class="panel panel-primary">' + 
@@ -114,6 +140,10 @@ function showUser(name, image, username, dob, email) {
                                                         '<td>Email:</td>' + 
                                                         '<td>' + email + '</td>' + 
                                                     '</tr>' + 
+                                                    '<tr>' + 
+                                                        '<td>Status:</td>' + 
+                                                        '<td>' + status + '</td>' + 
+                                                    '</tr>' + 
                                                     '<tr><td></td><td></td></tr>' + 
                                                 '</tbody>' + 
                                             '</table>' + 
@@ -123,8 +153,7 @@ function showUser(name, image, username, dob, email) {
                                 '<div class="panel-footer">' + 
                                     '<button class="btn btn-danger pull-right" onclick="deleteUser(\'' + 
                                                 username + '\');">Delete</button> ' + 
-                                    '<button class="btn btn-danger pull-right" onclick="banUser(\'' + 
-                                                username + '\');">Ban</button>' + 
+                                    banButton +
                                     '<div>' + 
                                         '<div class="input-group">' + 
                                             '<input type="text" class="form-control" id="newPass">' + 
