@@ -65,6 +65,16 @@
             $db->deleteComment($id);
             $res->send();
         }
+
+        public function changePassword($req, $res) {
+            $username = $req->params['username'];
+            $password = $req->data['password'];
+            $db = new UsersHelper();
+            $id = $db->getIdFromUsername($username);
+            if($id !== -1)
+                $db->updatePassword($id, $password);
+            $res->send();
+        }
     }
 
     class Report {

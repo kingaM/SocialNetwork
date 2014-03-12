@@ -420,6 +420,12 @@
     ));
 
     $router->addRoute(array(
+        'path' => '/api/user/{username}/changePassword',
+        'post' => array('Admin', 'changePassword'),
+        'file' => 'controllers/admin.php',
+    ));
+
+    $router->addRoute(array(
         'path' => '/api/comments',
         'get' => array('Admin', 'getReportedComments'),
         'file' => 'controllers/admin.php',

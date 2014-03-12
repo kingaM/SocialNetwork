@@ -119,6 +119,11 @@ function showPosts(data) {
             var commentID = comment['id'];
             var commentHTML = renderReply(titleLink, name, date, time, content, commentID);
             $("#replies_" + id).append(commentHTML);
+
+            if(comment['reported'] == 1) {
+                $("#report_" + commentID).text("Reported");
+                $("#report_" + commentID).fadeTo("fast", .5).removeAttr("href");
+            };
         };
     };
 }
@@ -167,7 +172,7 @@ function renderNewsItem(imgURL, date, time, title, text, wallPostID, numOfReplie
                                         'href="#collapseReplies_' + wallPostID + '">' + 
                                       'Replies' + 
                                     '</a>' + 
-                                    '<span class="badge">' + numOfReplies + '</span>' + 
+                                    ' <span class="badge">' + numOfReplies + '</span>' + 
                                 '</h4>' + 
                                 '<div id="collapseReplies_' + wallPostID + 
                                     '" class="panel-collapse collapse">' + 

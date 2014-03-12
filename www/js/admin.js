@@ -74,8 +74,15 @@ function banUserFromComment(username, commentID) {
     //deleteComment(commentID);
 }
 
-function resetPassword(username) {
-
+function resetPassword(username, password) {
+    $.ajax({
+        url: "/api/user/" + username + "/changePassword",
+        type: "POST",
+        data: {password: password},
+        success: function(result) {
+            getUser(username);
+        }
+    });
 }
 
 function deleteComment(id) {
@@ -105,10 +112,10 @@ function showUser(name, image, username, dob, email, status) {
     var banButton;
 
     if(status == "Banned")
-        banButton = '<button class="btn btn-success pull-right" onclick="unbanUser(\'' + 
+        banButton = '<button class="btn btn-success" onclick="unbanUser(\'' + 
                         username + '\');">Unban</button>';
     else
-        banButton = '<button class="btn btn-danger pull-right" onclick="banUser(\'' + 
+        banButton = '<button class="btn btn-danger" onclick="banUser(\'' + 
                         username + '\');">Ban</button>';
 
 
@@ -151,17 +158,20 @@ function showUser(name, image, username, dob, email, status) {
                                     '</div>' + 
                                 '</div>' + 
                                 '<div class="panel-footer">' + 
-                                    '<button class="btn btn-danger pull-right" onclick="deleteUser(\'' + 
-                                                username + '\');">Delete</button> ' + 
-                                    banButton +
-                                    '<div>' + 
-                                        '<div class="input-group">' + 
-                                            '<input type="text" class="form-control" id="newPass">' + 
+                                    '<div class="pull-right">' + 
+                                        '<button class="btn btn-danger" onclick="deleteUser(\'' + 
+                                                    username + '\');">Delete</button> ' + 
+                                        banButton +
+                                    '</div>' + 
+                                    '<div class="input-group">' + 
+                                        '<form id="newPass">' + 
+                                            '<input type="text" class="form-control">' + 
                                               '<span class="input-group-btn">' + 
                                                      '<button class="btn btn-warning">' + 
                                                      'New Password</button>' + 
                                               '</span>' + 
-                                        '</div>' + 
+                                              '</input>' + 
+                                        '</form>' + 
                                     '</div>' + 
                                 '</div>' + 
                             '</div>' + 
@@ -170,6 +180,11 @@ function showUser(name, image, username, dob, email, status) {
                 '</div>';
 
     $('#userControls').append(html);
+
+    $("#newPass").submit(function(e){
+        e.preventDefault();
+        resetPassword(username, $("#newPass :input").val());
+    });
 }
 
 function showReportedComments(comments) {
