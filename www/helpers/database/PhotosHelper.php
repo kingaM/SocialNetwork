@@ -28,6 +28,23 @@
         }
 
         /**
+         * Gets a photo album of the user.
+         * @param  integer $id      The id of the user
+         * @param  integer $albumId The id of the album
+         * @return Array            An array containing name and about of the album.
+         */
+        public function getPhotoAlbum($id, $albumId) {
+            $sql = "SELECT name, about, privacy FROM photo_albums WHERE user = :id
+                AND albumId = :albumId";
+            $array = array(':id' => $id, ':albumId' => $albumId);
+            $result = $this->db->fetch($sql, $array);
+            if(sizeof($result) == 1) {
+                return $result[0];
+            }
+            return NULL;
+        }
+
+        /**
          * Adds a album.
          * 
          * @param  integer $userId  The id of the user.

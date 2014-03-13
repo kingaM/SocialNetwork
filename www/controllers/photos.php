@@ -73,9 +73,24 @@
                 $res->add(json_encode($json));
                 $res->send();
             }
+
+            $data = $req->data;
+            foreach ($data as $key => $value) {
+                $data[$key] = trim($data[$key]);
+                $data[$key] = strip_tags($data[$key]);
+                if($data[$key] == "") {
+                    $data[$key] = null;
+                } 
+            }
+
             $text = $req->data['text'];
             $name = $req->data['name'];
             $privacy = $req->data['privacy'];
+
+            if($text == null || $name == null || $privacy == null) {
+                $res->add(json_encode($json));
+                $res->send();
+            }
             
             if($photosDB->addAlbum($userId, $name, $text, $privacy)) {
                 $json['valid'] = true;
@@ -90,8 +105,10 @@
             $username = $req->params['username'];
             $id = $req->params['id'];
             $usersDB = new UsersHelper();
+            $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId == -1) {
+            if($userId == -1 || 
+                !$this->isVisibleAlbum($_SESSION['id'], $userId, $id, $photosDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
                     'photos' => NULL)));
                 $res->send();
@@ -101,7 +118,6 @@
             } else {
                 $currentUser = false;
             }
-            $photosDB = new PhotosHelper();
             $posts = $photosDB->getPhotos($userId, $id);
             if(sizeof($posts) < 0) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
@@ -138,7 +154,8 @@
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if ($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
+            if ($userId !== $_SESSION['id'] || 
+                !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
                 $res->add(json_encode(array('valid' => false, 'image' => NULL)));
                 $res->send();
             }
@@ -259,7 +276,8 @@
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
+            if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId) ||
+                !$this->isVisibleAlbum($_SESSION['id'], $userId, $albumId, $photosDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'comments' => null)));
                 $res->send();
             }
@@ -294,7 +312,8 @@
             $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
             if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId) ||
-                $comment == null) {
+                $comment == null ||
+                !$this->isVisibleAlbum($_SESSION['id'], $userId, $albumId, $photosDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'emptyComment' => 
                     ($comment == null))));
                 $res->send();
@@ -306,6 +325,20 @@
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
+        }
+
+        private function isVisibleAlbum($currentUser, $userAlbum, $albumId, $photosDB, $usersDB) {
+            $friendsDB = new FriendsHelper();
+            $album = $photosDB->getPhotoAlbum($userAlbum, $albumId);
+            $isAdmin = $usersDB->isAdmin($_SESSION['username']);
+            if($album == NULL) {
+                return false;
+            }
+            $relationship = $friendsDB->getRelationship($currentUser, $userAlbum);
+            if($relationship <= $album['privacy'] || $isAdmin) {
+                return true;
+            }
+            return false;
         }
     }
 ?>
