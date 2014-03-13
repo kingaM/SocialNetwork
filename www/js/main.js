@@ -1,6 +1,41 @@
 $(document).ready(function() {
     // Main page JS here
+    
+    
+	easyIncludeAutoComplete("top-search");
+	$("#top-center #top-search .input-group").addClass( "input-group-sm" );
+	
+	
+	$.ajaxSetup({async:false});
+
+	$.getJSON( "/api/currentUser", function(data) {
+	    var sessionUser = data["username"];
+	    $( "#profile-link" ).attr( "href", "/user/" + sessionUser );
+	    
+	    $.getJSON( "/api/user/" + sessionUser + "/profile/image", function(data) {
+
+	    
+	    var imgUrl = data["image"];
+	
+		if(imgUrl != null) {
+		
+		    $( "#photo-top" ).attr( "src", imgUrl );
+	    }
+	    });
+	});
+    
+    $.ajaxSetup({async:true});
+    
+    $('#top-search .btn').click(function(){
+		var goToUser = $("#searchUsers_top-search").val();
+		window.location = "/user/" + goToUser;
+	});
+    
+    
     content();
+    
+
+    
 });
 
 /**
@@ -35,3 +70,6 @@ function displayModal(text) {
     $("#content").append(html);
     $(".modal").modal();
 }
+
+
+
