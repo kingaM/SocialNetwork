@@ -82,6 +82,105 @@
                 $res->send();
             }
         }
+
+        public function exportData($req, $res) {
+
+            $info = array(
+                'profile' => $this->exportProfile(),
+                'friends' => $this->exportFriends(),
+                'messages' => $this->exportMessages(),
+                );
+
+            $xml = new SimpleXMLElement('<data/>');
+            $node = $xml->addChild($_SESSION['username']);
+            $this->array_to_xml($info, $node);
+            header('Content-type: text/xml');
+            echo $xml->asXML();
+        }
+
+        // source: http://stackoverflow.com/a/17430859/1276327
+        private function array_to_xml($array, &$xml) {
+            foreach($array as $key => $value) {
+                if(is_array($value)) {
+                    if(!is_numeric($key)){
+                        $subnode = $xml->addChild("$key");
+                        $this->array_to_xml($value, $subnode);
+                    } else {
+                        $this->array_to_xml($value, $xml);
+                    }
+                } else {
+                    $xml->addChild("$key","$value");
+                }
+            }
+        }
+
+        private function exportProfile() {
+            $id = $_SESSION['id'];
+            $db = new UsersHelper();
+            $profile = $db->getUser($id);
+            $profile = array('firstName' => $profile['first_name'],
+                        'middleName' => ($profile['middle_name'] ? $profile['middle_name'] : ''),
+                        'lastName' => $profile['last_name'],
+                        'gender' => $profile['gender'],
+                        'dob' => $profile['dob'],
+                        'locations' => $profile['locations'],
+                        'languages' => $profile['languages'],
+                        'about' => $profile['about'],
+                        'email' => $profile['email'],
+                        'username' => $profile['login'],
+                    );
+            return $profile;
+        }
+
+        private function exportFriends() {
+            $username = $_SESSION['username'];
+            include_once('helpers/database/FriendsHelper.php');
+            $db = new FriendsHelper();
+            $xmlFriends = array();
+            $friends = $db->getFriends($username);
+            foreach ($friends as $friend) {
+               $xmlFriends[] = array('friend' => $friend);
+            }
+            return $xmlFriends;
+        }
+
+        private function exportMessages() {
+
+            include_once('helpers/database/MessagesHelper.php');
+
+            $id = $_SESSION['id'];
+
+            $db = new MessagesHelper();
+            $xmlMessages = array();
+            $conversations = $db->getReciepients($id);
+            foreach ($conversations as $conversation) {
+
+                $conversation = array(
+                    'name' => $conversation['name'],
+                    'login' => $conversation['login'],
+                    'id' => $conversation['id'],
+                    'messages' => array(),
+                    );
+
+                if(strpos($conversation['name'],'Circle:') !== false)
+                    $messages = $db->getMessagesCircle($id, $conversation['id']);
+                else
+                    $messages = $db->getMessagesUser($id, $conversation['id']);
+
+                foreach ($messages as $message) {
+                    $message = array(
+                        'message' => $message['content'], 
+                        'from' => $message['from'], 
+                        'timestamp' => $message['timestamp'],
+                        );
+                    $conversation['messages'][] = $message;
+                }
+
+                $xmlMessages[] = array('conversation' => $conversation);
+            }
+            return $xmlMessages;
+        }
+
     }
 
 ?>

@@ -137,6 +137,12 @@
         'file' => 'controllers/settings.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/settings/export',
+        'get' => array('Settings', 'exportData'),
+        'file' => 'controllers/settings.php',
+    ));
+
     // Friends
 
     $router->addRoute(array(

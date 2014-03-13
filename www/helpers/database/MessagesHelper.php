@@ -119,6 +119,10 @@
                                 WHEN 'C' THEN CONCAT(owner, '_', name)
                                 ELSE login 
                                 END AS login,
+                            CASE `type`
+                                WHEN 'C' THEN circles.id 
+                                ELSE users.id 
+                                END as id,
                             content, timestamp
                         FROM messages, users, circles
                         WHERE ((`from` = :from AND `to_user` IS NOT NULL
