@@ -21,7 +21,7 @@
          *                     contains name and about of each albums.
          */
         public function getPhotoAlbums($id) {
-            $sql = "SELECT albumId, name, about FROM photo_albums WHERE user = :id";
+            $sql = "SELECT albumId, name, about, privacy FROM photo_albums WHERE user = :id";
             $array = array(':id' => $id);
             $result = $this->db->fetch($sql, $array);
             return $result;
@@ -30,17 +30,18 @@
         /**
          * Adds a album.
          * 
-         * @param  integer $userId The id of the user.
-         * @param  string  $name   The name of the album.
-         * @param  string  $about  A short description of the album.
+         * @param  integer $userId  The id of the user.
+         * @param  string  $name    The name of the album.
+         * @param  string  $about   A short description of the album.
+         * @param  integer $privacy The visibility level of the album.
          * 
          * @return boolean         Indicates if the insert succeeded or not.
          */
-        public function addAlbum($userId, $name, $about) {
-            $sql = "INSERT INTO photo_albums(`user`, `name`, `about`)
-                VALUES (:userId, :name, :about)";
+        public function addAlbum($userId, $name, $about, $privacy) {
+            $sql = "INSERT INTO photo_albums(`user`, `name`, `about`, `privacy`)
+                VALUES (:userId, :name, :about, :privacy)";
             $array = array(':userId' => $userId, ':name' => $name, 
-                ':about' => $about);
+                ':about' => $about, ':privacy' => $privacy);
             return $this->db->execute($sql, $array);
         }
 
@@ -181,7 +182,8 @@
          */
         public function deletePhoto($userId, $albumId, $photoId) {
             $tlh = new TimelineHelper();
-            $url = $this->getPhoto($userId, $albumId, $photoId)['url'];
+            $photo = $this->getPhoto($userId, $albumId, $photoId);
+            $url = $photo['url'];
             $tlh->deletePost($url); 
             $sql = "DELETE FROM `photos` WHERE `albumId` = :albumId AND `photoId` = :photoId";
             $array = array(':albumId' => $albumId, ':photoId' => $photoId); 

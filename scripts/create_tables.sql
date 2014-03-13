@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `activated` BOOLEAN NOT NULL DEFAULT FALSE,
     `admin` BOOLEAN NOT NULL DEFAULT FALSE,
     `banned` BOOLEAN NOT NULL DEFAULT FALSE,
-    `profilePrivacy` INT NOT NULL DEFAULT 2,
+    `profilePrivacy` INT NOT NULL DEFAULT 3,
     UNIQUE (`login`),
     UNIQUE (`email`),
     UNIQUE (`hash`),
@@ -132,8 +132,11 @@ CREATE TABLE IF NOT EXISTS `photo_albums` (
     `about` VARCHAR(10000) NOT NULL,
     `user` INT NOT NULL,
     `name` VARCHAR(100) NOT NULL, 
+    `privacy` INT NOT NULL DEFAULT 3,
     PRIMARY KEY (`albumId`),
-    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`privacy`) REFERENCES `privacy_options` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `photos` (

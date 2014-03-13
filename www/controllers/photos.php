@@ -2,6 +2,7 @@
 
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/PhotosHelper.php');
+    include_once('helpers/database/FriendsHelper.php');
     require_once('libs/ImageManipulator.php');
 
     class Photos {
@@ -39,18 +40,23 @@
                     'user' => NULL)));
                 $res->send();
             }
+            $friendsDB = new FriendsHelper();
+            $relationship = $friendsDB->getRelationship($_SESSION['id'], $userId);
             if($userId === $_SESSION['id']) {
                 $currentUser = true;
             } else {
                 $currentUser = false;
             }
             $albums = $photosDB->getPhotoAlbums($userId);
+            $isAdmin = $usersDB->isAdmin($_SESSION['username']);
             $jsonAlbums = array();
             foreach ($albums as $album) {
-                $jsonAlbums[] = array(
-                    'id' => $album['albumId'],
-                    'name' => $album['name'],
-                    'about' => $album['about']);
+                if($relationship <= $album['privacy'] || $isAdmin) {
+                    $jsonAlbums[] = array(
+                        'id' => $album['albumId'],
+                        'name' => $album['name'],
+                        'about' => $album['about']);
+                }
             }
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
                 'albums' => $jsonAlbums)));
@@ -69,8 +75,9 @@
             }
             $text = $req->data['text'];
             $name = $req->data['name'];
+            $privacy = $req->data['privacy'];
             
-            if($photosDB->addAlbum($userId, $name, $text)) {
+            if($photosDB->addAlbum($userId, $name, $text, $privacy)) {
                 $json['valid'] = true;
             } else {
                 $json['valid'] = false;

@@ -7,6 +7,7 @@ var currentUser = false;
 
 function content() {
     username = window.location.pathname.split( '/' )[2];
+    addPrivacySelector("privacy-selector", "3");
     getPhotoAlbums();
     setupDropdown();
 
@@ -157,23 +158,27 @@ function setupDropdown() {
         e.stopPropagation();
         var albumAbout = $("#new-album").val();
         var name = $("#name").val();
+        var privacy = $("#privacy-options-privacy-selector").val();
         clearLabels();
-        addAlbum(name, albumAbout);
+        addAlbum(name, albumAbout, privacy);
     });
     $('body').click(function(e) {
         clearDropdown();
     });
 }
 
-function addAlbum(name, text) {
+function addAlbum(name, text, privacy) {
     var values = {};
     values["text"] = text;
     values["name"] = name;
+    values["privacy"] = privacy;
+    console.log(values);
     $.ajax({
         type: "post",
         url: "/api/user/" + username + "/photos",
         data: values,
         success: function(data) {
+            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
             if (!valid) {
