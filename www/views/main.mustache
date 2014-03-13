@@ -30,24 +30,32 @@
 	    <script src="/js/bootstrap.min.js"></script>
 	    
 	    <!-- Manual Scripts -->
+		<script src="/helpers/autocompleter.js"></script>
 		<script type="text/javascript" src="/../js/main.js"></script>
 
 	</head>
 	<body>
 		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<h1><a class="navbar-brand" href="/">Social Network</a></h1>
-					<a href="/messages"><span class="glyphicon glyphicon-inbox"></span></a>
-					<a href="/settings"><span class="glyphicon glyphicon-cog"></span></a>
-					<a href="/user/" id="profile-link"><span class="glyphicon glyphicon-user"></span></a>
-					<script>
-					    $.getJSON( "/api/currentUser", function(data) {
-					        sessionUser = data["username"];
-					        $( "#profile-link" ).attr( "href", "/user/" + sessionUser );
-					        
-					    });
-					</script>
+			<div class="container-fluid" >
+				<div class="navbar-header" >
+					<div id="top-left" class="col-md-3">
+						<h1><a class="navbar-brand" href="/">Social Network</a></h1>
+						<a href="/messages"><span class="glyphicon glyphicon-inbox"></span></a>
+						<a href="/ble" id="profile-link"><span class="glyphicon glyphicon-user"></span></a>							
+					</div>
+					<div id="top-center" class="col-md-6">
+						<div id="top-search" style="top: 10px; position: relative;"></div>
+					</div>	
+					<div id="top-right" class="col-md-3" style="text-align:right;">
+						<div style="top: 10px; position: relative">
+							<a href="/settings"><span class="glyphicon glyphicon-cog"></span></a>
+							<a href="/logout"><span class="glyphicon glyphicon-off"></span></a>
+							<img src="http://i.imgur.com/r8R1C6B.png" width="30" height="30" id="photo-top">
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					
+
 				</div>
 			</div>
 		</div>
