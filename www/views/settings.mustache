@@ -1,5 +1,7 @@
 <link rel="stylesheet" type="text/css" href="/css/settings.css">
+<script src="/helpers/privacySelector.js"></script>
 <script src="/js/settings.js"></script>
+
 <div class="container-fluid">
     <div id="error-unknown">
     </div>
@@ -109,6 +111,23 @@
                 </td>
                 <td id="email-edit-btn"><button type="button" class="btn btn-default">Edit</button></td>
                 <td id="email-submit-btn" hidden>
+                    <div class="form">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default custom-submit-btn">Submit</button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default custom-cancel-btn">Cancel</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><h4> Profile Visibility </h4></td>
+                <td id="privacy-selector">
+                    
+                </td>
+                <td id="privacy-edit-btn"><button type="button" class="btn btn-default">Edit</button></td>
+                <td id="privacy-submit-btn" hidden>
                     <div class="form">
                         <div class="form-group">
                             <button type="button" class="btn btn-default custom-submit-btn">Submit</button>

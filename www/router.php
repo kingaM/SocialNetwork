@@ -15,7 +15,7 @@
         die();
     }
 
-    // Don't let logged in usres register or login again.
+    // Don't let logged in users register or login again.
     if((isset($_SESSION['id']) && preg_match($only_loggedout, $_SERVER['REQUEST_URI'])) ||
         (isset($_SESSION['id']) && $_SESSION['id'] == -1)) {
         header('Location: /');
@@ -134,6 +134,12 @@
     $router->addRoute(array(
         'path' => 'api/settings/email',
         'post' => array('Settings', 'updateEmail'),
+        'file' => 'controllers/settings.php',
+    ));
+
+     $router->addRoute(array(
+        'path' => 'api/settings/profilePrivacy',
+        'post' => array('Settings', 'updateProfilePrivacy'),
         'file' => 'controllers/settings.php',
     ));
 

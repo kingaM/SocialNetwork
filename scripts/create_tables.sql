@@ -2,6 +2,12 @@ CREATE DATABASE IF NOT EXISTS SocialNetwork;
 
 USE SocialNetwork;
 
+CREATE TABLE IF NOT EXISTS `privacy_options` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `option` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
 CREATE TABLE IF NOT EXISTS `users` (
     `ID` INT NOT NULL AUTO_INCREMENT,
     `first_name` VARCHAR(50) NOT NULL, 
@@ -14,10 +20,13 @@ CREATE TABLE IF NOT EXISTS `users` (
     `activated` BOOLEAN NOT NULL DEFAULT FALSE,
     `admin` BOOLEAN NOT NULL DEFAULT FALSE,
     `banned` BOOLEAN NOT NULL DEFAULT FALSE,
+    `profilePrivacy` INT NOT NULL DEFAULT 2,
     UNIQUE (`login`),
     UNIQUE (`email`),
     UNIQUE (`hash`),
-    PRIMARY KEY(`ID`)
+    PRIMARY KEY(`ID`),
+    FOREIGN KEY (`profilePrivacy`) REFERENCES `privacy_options` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 # TODO: Enable multiple locations and languages as a seperate table. Create a table with all 

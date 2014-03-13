@@ -68,17 +68,33 @@
                     'validEmail' => $validEmail, 'unique' => $unique, 'succeded' => false)));
                 $res->send();
             }
-            $valid = $userDB->updateUsername($_SESSION['id'], $username);
-            if(!$valid) {
-                $res->add(json_encode(array('valid' => true, 'succeded' => false)));
-                $res->send();
-            }
             $valid = $userDB->updateEmail($_SESSION['id'], $email);
             if(!$valid) {
                 $res->add(json_encode(array('valid' => false, 'succeded' => false)));
                 $res->send();
             } else {
                 $res->add(json_encode(array('valid' => true, 'succeded' => true)));
+                $res->send();
+            }
+        }
+
+        public function updateProfilePrivacy($req, $res) {
+            $privacy = $req->data['privacy'];
+            $userDB = new UsersHelper();
+            // TODO: 7 is hard coded value and assumes that there are only 6 different privacy
+            // settings. This should be checked dynamically with the database.
+            $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
+                && intval($privacy) > 0 && intval($privacy) < 7;
+            if(!$valid) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            }
+            $valid = $userDB->updateProfilePrivacy($_SESSION['id'], $privacy);
+            if(!$valid) {
+                $res->add(json_encode(array('valid' => false)));
+                $res->send();
+            } else {
+                $res->add(json_encode(array('valid' => true)));
                 $res->send();
             }
         }

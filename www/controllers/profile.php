@@ -1,7 +1,9 @@
 <?php
 
     include_once('helpers/database/UsersHelper.php');
+    include_once('helpers/database/FriendsHelper.php');
     require_once('libs/ImageManipulator.php');
+    require_once('libs/FirePHPCore/FirePHP.class.php'); 
 
     class Profile {
         public function getProfile($req, $res) {
@@ -41,8 +43,12 @@
             } else {
                 $currentUser = false;
             }
-            $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
-                'user' => array('firstName' => $userInfo['first_name'],
+            $friendsDB = new FriendsHelper();
+            $firephp = FirePHP::getInstance(true);
+            $firephp->log($friendsDB->getRelationship($_SESSION['id'], $userId));
+            if($friendsDB->getRelationship($_SESSION['id'], $userId) <= 
+                $userInfo['profilePrivacy'] || $userDb->isAdmin($_SESSION['username'])) {
+                $user = array('firstName' => $userInfo['first_name'],
                     'middleName' => ($userInfo['middle_name'] ? $userInfo['middle_name'] : ''),
                     'lastName' => $userInfo['last_name'],
                     'gender' => $userInfo['gender'],
@@ -54,9 +60,28 @@
                     'username' => $userInfo['login'],
                     'banned' => $userInfo['banned'],
                     'admin' => $userInfo['admin'],
-                    'profilePicture' => $userInfo['profilePicture']
-                    )
-                )));
+                    'profilePicture' => $userInfo['profilePicture'],
+                    'profilePrivacy' => $userInfo['profilePrivacy'],
+                    'privacyOption' => $userInfo['privacyOption']);
+            } else {
+                $user = array('firstName' => $userInfo['first_name'],
+                    'middleName' => ($userInfo['middle_name'] ? $userInfo['middle_name'] : ''),
+                    'lastName' => $userInfo['last_name'],
+                    'gender' => null,
+                    'dob' => null,
+                    'locations' => null,
+                    'languages' => null,
+                    'about' => null,
+                    'email' => null,
+                    'username' => $userInfo['login'],
+                    'banned' => $userInfo['banned'],
+                    'admin' => $userInfo['admin'],
+                    'profilePicture' => null,
+                    'profilePrivacy' => null,
+                    'privacyOption' => null);
+            }
+            $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
+                'user' => $user)));
                 $res->send();
         }
 

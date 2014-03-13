@@ -40,7 +40,8 @@
          *
          */
         public function deleteComment($id) {
-            $this->db->execute("DELETE FROM comments WHERE reported=1 AND id=:id", Array(':id' => $id));
+            $this->db->execute("DELETE FROM comments WHERE reported=1 AND id=:id", 
+                Array(':id' => $id));
         }
 
         /**

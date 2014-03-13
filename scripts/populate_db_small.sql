@@ -1,5 +1,13 @@
 USE SocialNetwork;
 
+INSERT INTO privacy_options(`option`)
+VALUES
+    ('Only Me'),
+    ('Circles'),
+    ('Friends'),
+    ('Friends of Friends'),
+    ('Public');
+
 INSERT INTO users(first_name, middle_name, last_name, email, login, password, hash, activated)
 VALUES
 	('John', 'Adam', 'Smith', 'jsmith@gmail.com', 'johnsmith', SHA1('shortpassword'), 
@@ -9,7 +17,8 @@ VALUES
 	('Test', NULL, 'User', 'fake@gmail.com', 'test', SHA1('test'),
 		SHA1('fake@gmail.com1391362036'), 1);
 
-INSERT INTO users(first_name, middle_name, last_name, email, login, password, hash, activated, admin)
+INSERT INTO users(first_name, middle_name, last_name, email, login, password, hash, activated, 
+    admin)
 VALUES
     ('Site', NULL, 'Admin', 'admin@example.com', 'admin', SHA1('admin'),
         SHA1('admin@example.com1391362036'), 1, 1);

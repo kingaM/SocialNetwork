@@ -179,14 +179,16 @@
          * 
          * @return array     The array of all the data about the user, array fields:
          *         id, first_name, middle_name, last_name, gender, dob, about, locations, languages,
-         *         email or null if the id is not valid. 
+         *         email, login, profilePicture, banned, admin, profilePrivacy, privacyOption or 
+         *         null if the id is not valid. 
          */
         public function getUser($id) {
-            $sql = "SELECT id, first_name, middle_name, last_name, gender, dob, about, locations, 
-                languages, email, login, profilePicture, banned, admin
-                FROM users, profile
-                WHERE id = :id AND activated = 1
-                AND id = userId";
+            $sql = "SELECT users.id AS id, first_name, middle_name, last_name, gender, dob, about, locations, 
+                languages, email, login, profilePicture, banned, admin, profilePrivacy,
+                privacy_options.option AS privacyOption
+                FROM users, profile, privacy_options
+                WHERE users.id = :id AND activated = 1
+                AND users.id = userId AND profilePrivacy = privacy_options.id";
             $result = $this->db->fetch($sql, array(':id' => $id));
             if(sizeof($result) != 1) {
                 return NULL;
@@ -266,6 +268,22 @@
                 SET email = :email
                 WHERE id = :id";
             $array = array(':id' => $id, ':email' => $email);
+            return $this->db->execute($sql, $array);
+        }
+
+        /**
+         * Updates user's profile privacy settings.
+         *     
+         * @param  integer $id       The unique id of the user. Cannot be null.
+         * @param  string  $privacy  The new privacy settings of the user.
+         *
+         * @return boolean True if the update succeeded, false otherwise.
+         */
+        public function updateProfilePrivacy($id, $privacy) {
+            $sql = "UPDATE users
+                SET profilePrivacy = :privacy
+                WHERE id = :id";
+            $array = array(':id' => $id, ':privacy' => $privacy);
             return $this->db->execute($sql, $array);
         }
 
