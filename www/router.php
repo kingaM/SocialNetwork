@@ -498,6 +498,17 @@
         'file' => 'controllers/photos.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/photos/{albumId}/photo/{photoId}',
+        'handlers' => array(
+            'albumId' => Zaphpa_Constants::PATTERN_DIGIT,
+            'photoId' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Photos', 'getPhoto'),
+        'file' => 'controllers/photos.php',
+    ));
+
     try {
         $router->route();
     } catch (Zaphpa_InvalidPathException $ex) {

@@ -40,18 +40,6 @@
         }
 
         /**
-         * Deletes a image wall post.
-         * Note: Will work only on image posts, it is relying on the fact that the content of the
-         *       post is unique. 
-         *
-         * @param String $content The content of the post
-         */
-        public function deletePost($content) {
-            $sql = "DELETE FROM `wall_posts` WHERE `content` = :content AND `type` = 'image'";
-            $this->db->execute($sql, Array(':content' => $content));
-        }
-
-        /**
          * Gets wall posts
          *
          * @param String $username The username of the wall owner

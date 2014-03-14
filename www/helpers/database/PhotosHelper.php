@@ -170,9 +170,11 @@
             $array = array(':albumId' => $albumId, ':timestamp' => $timestamp, 
                 ':description' => $description, ':url' => $url, ':thumbnailUrl' => $thumbnailUrl); 
             $result = $this->db->execute($sql, $array);    
+            $id = $this->db->getLastId();
             if($result) {
                 $tlh = new TimelineHelper();
-                $content = $url;
+                $content = '/api/user/' . $_SESSION['username'] . '/photos/' . $albumId . '/photo/' .
+                    $id;
                 $tlh->addPost($_SESSION['username'], $_SESSION['username'], $content, "image"); 
             }
             return $result;
@@ -198,10 +200,6 @@
          * @return boolean          True if succeeded, false otherwise.
          */
         public function deletePhoto($userId, $albumId, $photoId) {
-            $tlh = new TimelineHelper();
-            $photo = $this->getPhoto($userId, $albumId, $photoId);
-            $url = $photo['url'];
-            $tlh->deletePost($url); 
             $sql = "DELETE FROM `photos` WHERE `albumId` = :albumId AND `photoId` = :photoId";
             $array = array(':albumId' => $albumId, ':photoId' => $photoId); 
             return $this->db->execute($sql, $array); 

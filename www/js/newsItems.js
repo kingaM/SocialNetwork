@@ -82,7 +82,19 @@ function showPosts(data) {
         if(post['type'] == "image") {
             title = "<a href='/user/" + post['to'] + "'>" + post['toName'] + "</a>" + 
                 " <small>added a new photo:</small>";
-            content = '<img src="' + post['content'] + ' " class="img-responsive">';
+            var url = null;
+            $.ajaxSetup({async:false});
+            $.getJSON(post['content'], 
+                function(data) {
+                    if(data['photo'] != null) {
+                        url = data['photo']['url'];
+                    }
+            });
+            $.ajaxSetup({async:true});
+            if(url == null) {
+                continue;
+            }
+            content = '<img src="' + url + ' " class="img-responsive">';
         } else if(post['type'] != "friend") {
             title = "<a href='/user/" + post['from'] + "'>" + post['fromName'] + "</a>";
             if(post['from'] != post['to'])
