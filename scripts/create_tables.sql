@@ -104,9 +104,12 @@ CREATE TABLE IF NOT EXISTS `blogs` (
     `user` INT NOT NULL,
     `name` VARCHAR(100) NOT NULL, 
     `url` VARCHAR(100) NOT NULL, 
+    `privacy` INT NOT NULL DEFAULT 3,
     UNIQUE(`user`, `url`),
     PRIMARY KEY (`blogId`),
-    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`privacy`) REFERENCES `privacy_options` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `posts` (

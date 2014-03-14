@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="/css/userblogs.css">
+<script src="/helpers/privacySelector.js"></script>
 <script src="/js/userblogs.js"></script>
 <div class="row">
   <div id="error-unknown">
@@ -24,7 +25,11 @@
                     <label class="control-label" for="url" id="control-label-url" hidden></label>
                   </div>
                   <div class="form-group">
-                    <textarea class="form-control send-post" rows="3" placeholder="About" id="new-post" requried></textarea>
+                    <label class="control-label" for="album-privacy">Visibility: </label>
+                    <div id="privacy-selector"></div>
+                  </div>
+                  <div class="form-group">
+                    <textarea class="form-control send-post" rows="3" placeholder="About" id="new-post" required></textarea>
                   </div>
                   <div class="form-group">
                     <button type="submit" class="btn btn-default btn-block">Send</button>

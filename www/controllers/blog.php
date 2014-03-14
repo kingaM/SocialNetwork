@@ -2,6 +2,8 @@
 
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/BlogsHelper.php');
+    include_once('helpers/database/FriendsHelper.php');
+    require_once('libs/FirePHPCore/FirePHP.class.php');
 
     class Blog {
 
@@ -42,7 +44,7 @@
             $username = $req->params['username'];
             $blogName = $req->params['blogName'];
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
-            if($userId == -1) {
+            if($userId !== $_SESSION['id']) {
                 $res->add($this->show404());
                 $res->send();
             }
@@ -56,6 +58,7 @@
             $username = $req->params['username'];
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
+            $friendsDB = new FriendsHelper();
             $userId = $usersDB->getIdFromUsername($username);
             if($userId == -1) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
@@ -67,13 +70,19 @@
             } else {
                 $currentUser = false;
             }
+            $firephp = FirePHP::getInstance(true);
+            $relationship = $friendsDB->getRelationship($_SESSION['id'], $userId);
+            $firephp->log($relationship);
+            $isAdmin = $usersDB->isAdmin($_SESSION['username']);
             $blogs = $blogsDB->getBlogs($userId);
             $jsonBlogs = array();
             foreach ($blogs as $blog) {
-                $jsonBlogs[] = array(
-                    'name' => $blog['name'],
-                    'about' => $blog['about'],
-                    'url' => $blog['url']);
+                if($relationship <= $blog['privacy'] || $isAdmin) {
+                    $jsonBlogs[] = array(
+                        'name' => $blog['name'],
+                        'about' => $blog['about'],
+                        'url' => $blog['url']);
+                }
             }
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
                 'blogs' => $jsonBlogs)));
@@ -82,9 +91,13 @@
 
 
         public function getBlogPosts($req, $res) {
-            $usersDB = new UsersHelper();
             $username = $req->params['username'];
-            if(!$usersDB->checkUsernameExists($username)) {
+            $blogName = $req->params['blogName'];
+            $blogsDB = new BlogsHelper();
+            $usersDB = new UsersHelper();
+            $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
+            if($userId == -1 ||
+                !$this->isVisibleBlog($_SESSION['id'], $userId, $blogName, $blogsDB, $usersDB)) {
                 $res->add($this->show404());
                 $res->send();
             }
@@ -100,7 +113,8 @@
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
-            if($userId == -1) {
+            if($userId == -1 || 
+                !$this->isVisibleBlog($_SESSION['id'], $userId, $blogName, $blogsDB, $usersDB)) {
                 $res->add($this->show404());
                 $res->send();
             }
@@ -116,7 +130,8 @@
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
-            if($userId == -1) {
+            if($userId == -1 || 
+                !$this->isVisibleBlog($_SESSION['id'], $userId, $blogName, $blogsDB, $usersDB)) {
                 $res->add($this->show404());
                 $res->send();
             }
@@ -158,17 +173,37 @@
                 $res->add(json_encode($json));
                 $res->send();
             }
-            $text = $req->data['text'];
-            $name = $req->data['name'];
-            $url = $req->data['url'];
-            
+
+            $data = $req->data;
+            foreach ($data as $key => $value) {
+                $data[$key] = trim($data[$key]);
+                $data[$key] = strip_tags($data[$key]);
+                if($data[$key] == "") {
+                    $data[$key] = null;
+                } 
+            }
+
+            $text = $data['text'];
+            $name = $data['name'];
+            $url = $data['url'];
+            $privacy = $data['privacy'];
+
+            // TODO: 7 is hard coded value and assumes that there are only 6 different privacy
+            // settings. This should be checked dynamically with the database.
+            $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
+                && intval($privacy) > 0 && intval($privacy) < 7;
+
+            if(!$valid || $text == null || $name == null || $url == null || $privacy == null) {
+                $res->add(json_encode($json));
+                $res->send();
+            }
             if(!ctype_alnum($url)) {
                 $json['valid'] = true;
             } else if(!$blogsDB->checkBlogUrlUnique($userId, $url)) {
                 $json['valid'] = true;
                 $json['alphanumeric'] = true;
             } else {
-                if($blogsDB->addBlog($userId, $name, $url, $text)) {
+                if($blogsDB->addBlog($userId, $name, $url, $text, $privacy)) {
                     $json['valid'] = true;
                     $json['alphanumeric'] = true;
                     $json['unique'] = true;
@@ -188,7 +223,8 @@
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
-            if($userId == -1) {
+            if($userId == -1 || 
+                !$this->isVisibleBlog($_SESSION['id'], $userId, $blogName, $blogsDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
                     'posts' => NULL)));
                 $res->send();
@@ -217,7 +253,8 @@
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
-            if($userId == -1) {
+            if($userId == -1 || 
+                !$this->isVisibleBlog($_SESSION['id'], $userId, $blogName, $blogsDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
                     'posts' => NULL)));
                 $res->send();
@@ -253,7 +290,8 @@
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
-            if($userId == -1) {
+            if($userId == -1 ||
+                !$this->isVisibleBlog($_SESSION['id'], $userId, $blogName, $blogsDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
                     'posts' => NULL)));
                 $res->send();
@@ -284,7 +322,8 @@
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
-            if($userId == -1) {
+            if($userId == -1 ||
+                !$this->isVisibleBlog($_SESSION['id'], $userId, $blogName, $blogsDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'posts' => NULL)));
                 $res->send();
             }
@@ -300,7 +339,8 @@
             $blogsDB = new BlogsHelper();
             $usersDB = new UsersHelper();
             $userId = $this->checkUsernameAndBlogname($username, $blogName, $usersDB, $blogsDB);
-            if($userId == -1) {
+            if($userId == -1 ||
+                !$this->isVisibleBlog($_SESSION['id'], $userId, $blogName, $blogsDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'posts' => NULL)));
                 $res->send();
             }
@@ -330,6 +370,20 @@
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
                 'posts' => $jsonPosts)));
             $res->send();
+        }
+
+        private function isVisibleBlog($currentUser, $userBlog, $blogUrl, $blogsDB, $usersDB) {
+            $friendsDB = new FriendsHelper();
+            $blog = $blogsDB->getBlogInfo($userBlog, $blogUrl);
+            if($blog == NULL) {
+                return false;
+            }
+            $isAdmin = $usersDB->isAdmin($_SESSION['username']);
+            $relationship = $friendsDB->getRelationship($currentUser, $userBlog);
+            if($relationship <= $blog['privacy'] || $isAdmin) {
+                return true;
+            }
+            return false;
         }
     }
 ?>

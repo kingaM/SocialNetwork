@@ -86,8 +86,11 @@
             $text = $req->data['text'];
             $name = $req->data['name'];
             $privacy = $req->data['privacy'];
-
-            if($text == null || $name == null || $privacy == null) {
+            // TODO: 7 is hard coded value and assumes that there are only 6 different privacy
+            // settings. This should be checked dynamically with the database.
+            $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
+                && intval($privacy) > 0 && intval($privacy) < 7;
+            if($text == null || $name == null || $privacy == null || !$valic) {
                 $res->add(json_encode($json));
                 $res->send();
             }

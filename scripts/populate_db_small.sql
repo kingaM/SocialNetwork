@@ -59,10 +59,10 @@ VALUES
     (3, NULL, 1, 'C', 'Message to Circle', 1391362436),
     (2, NULL, 1, 'C', 'Message to Circle', 1391362436);
 
-INSERT INTO blogs(`user`, `name`, `url`, `about`)
+INSERT INTO blogs(`user`, `name`, `url`, `about`, `privacy`)
 VALUES 
-    (3, 'Cooking', 'cooking', 'A simple cooking blog.'),
-    (3, 'Personal', 'personal', 'My personal life :)');
+    (3, 'Cooking', 'cooking', 'A simple cooking blog.', 3),
+    (3, 'Personal', 'personal', 'My personal life :)', 1);
 
 INSERT INTO posts(`blogId`, `title`, `timestamp`)
 VALUES
