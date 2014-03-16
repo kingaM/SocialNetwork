@@ -31,3 +31,11 @@ font-family: 'Ubuntu', sans-serif;
 .navbar-inverse .glyphicon {
 	margin-right: 10px;
 }
+
+#userControls #userInfo .panel-footer .input-group #newPass .form-control {
+width: 55%;
+}
+
+#userControls #userInfo .panel-footer .input-group {
+width: 65%;
+}
