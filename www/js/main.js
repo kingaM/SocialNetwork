@@ -30,6 +30,14 @@ $(document).ready(function() {
 		var goToUser = $("#searchUsers_top-search").val();
 		window.location = "/user/" + goToUser;
 	});
+	
+	$("#searchUsers_top-search").bind("keypress", function(event) {
+	    if(event.which == 13) {
+		    event.preventDefault();
+	        var goToUser = $("#searchUsers_top-search").val();
+			window.location = "/user/" + goToUser;
+	    }
+	});
     
     
     content();
