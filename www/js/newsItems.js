@@ -108,9 +108,19 @@ function showPosts(data) {
         };
 
         var wallPostID =  id;
-        var imgURL =  "http://i.imgur.com/r8R1C6B.png";
         var numOfReplies =  post['comments'].length;
         var toUser = post['to'];
+        var imgURL =  "http://i.imgur.com/r8R1C6B.png";
+
+        $.ajaxSetup({async:false});
+        $.getJSON('/api/user/' + toUser + '/profile/image', function(data) {
+            if(!data['valid'])
+                return;
+            if(data['image'])
+                imgURL = data['image'];
+        });
+        $.ajaxSetup({async:true});
+
         var output = renderNewsItem(imgURL, date, time, title, content, wallPostID, numOfReplies, 
             toUser);
         $("#newsItems").append(output);

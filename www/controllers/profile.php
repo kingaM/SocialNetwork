@@ -47,7 +47,7 @@
             $firephp = FirePHP::getInstance(true);
             $firephp->log($friendsDB->getRelationship($_SESSION['id'], $userId));
             if($friendsDB->getRelationship($_SESSION['id'], $userId) <= 
-                $userInfo['profilePrivacy'] || $userDb->isAdmin($_SESSION['username'])) {
+                $userInfo['profilePrivacy'] || $usersDB->isAdmin($_SESSION['username'])) {
                 $user = array('firstName' => $userInfo['first_name'],
                     'middleName' => ($userInfo['middle_name'] ? $userInfo['middle_name'] : ''),
                     'lastName' => $userInfo['last_name'],
@@ -144,7 +144,7 @@
                 $res->send();
             }
             $url = $usersDB->getPictureUrl($userId);
-            $res->add(json_encode(array('valid' => false, 'image' => $url)));
+            $res->add(json_encode(array('valid' => true, 'image' => $url)));
             $res->send();
         }
 

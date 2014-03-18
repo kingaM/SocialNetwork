@@ -84,8 +84,19 @@ function showFriends (friends, requests) {
         var loginString = '"' + login + '"';
         var date = new Date(friends[i]['startTimestamp']*1000);
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
-        var image = "<img src='" + "http://i.imgur.com/r8R1C6B.png" + "' style='max-height:100px;'></img>";
-        var name = "<a href='/user/" + login + "/profile'>" + friends[i]['name'] + "</a>";
+
+        var image = "http://i.imgur.com/r8R1C6B.png"
+        $.ajaxSetup({async:false});
+        $.getJSON('/api/user/' + login + '/profile/image', function(data) {
+            if(!data['valid'])
+                return;
+            if(data['image'])
+                image = data['image'];
+        });
+        $.ajaxSetup({async:true});
+
+        image = "<img src='" + image + "' style='max-height:100px;'></img>";
+        var name = "<a href='/user/" + login + "'>" + friends[i]['name'] + "</a>";
         var action;
         if ($.inArray(login, sessionUserFriends) >= 0) {
             var currUsername = window.location.pathname.split( '/' )[2];

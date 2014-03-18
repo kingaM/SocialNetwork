@@ -3,6 +3,8 @@
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/MessagesHelper.php');
     include_once('helpers/database/FriendsHelper.php');
+    include_once('helpers/database/TimelineHelper.php');
+    include_once('helpers/database/BlogsHelper.php');
 
     class Settings {
         public function getSettings($req, $res) {
@@ -86,6 +88,8 @@
                 'profile' => $this->exportProfile(),
                 'friends' => $this->exportFriends(),
                 'messages' => $this->exportMessages(),
+                'timeline' => $this->exportTimeline(),
+                'blogs' => $this->exportBlogs(),
                 );
 
             $xml = new SimpleXMLElement('<data/>');
@@ -143,8 +147,6 @@
 
         private function exportMessages() {
 
-            
-
             $id = $_SESSION['id'];
 
             $db = new MessagesHelper();
@@ -176,6 +178,58 @@
                 $xmlMessages[] = array('conversation' => $conversation);
             }
             return $xmlMessages;
+        }
+
+        private function exportTimeLine() {
+            $username = $_SESSION['username'];
+            $db = new TimelineHelper();
+            $posts = $db->getPosts($username);
+            $xmlPosts = array();
+            foreach ($posts as $post) {
+                $xmlComments = array();
+                $comments = $post['comments'];
+                foreach ($comments as $comment) {
+                    $xmlComments[] = array('comment' => $comment);
+                }
+                $post['comments'] = $xmlComments;
+                $xmlPosts[] = array('post' => $post);
+            }
+            return $xmlPosts;
+        }
+
+        private function exportBlogs() {
+            
+            $xmlBlogs = array();
+
+            $id = $_SESSION['id'];
+            $db = new BlogsHelper();
+            $blogs = $db->getBlogs($id);
+
+            foreach ($blogs as $blog) {
+                $blog = array(
+                    'name' => $blog['name'],
+                    'about' => $blog['about'],
+                    'url' => $blog['url'],
+                    );
+
+                $blogPosts = array();
+
+                $posts = $db->getAllBlogPosts($id, $blog['url']);
+
+                foreach ($posts as $post) {
+                    $post = array(
+                        'postId' => $post['postId'],
+                        'title' => $post['title'],
+                        'timestamp' => $post['timestamp'],
+                        'content' => $post['content'],
+                        );
+                    $blogPosts[] = array('blogPost' => $post);
+                }
+
+                $blog['blogPosts'] = $blogPosts;
+                $xmlBlogs[] = array('blog' => $blog);
+            }
+            return $xmlBlogs;
         }
 
         public function updateProfilePrivacy($req, $res) {
