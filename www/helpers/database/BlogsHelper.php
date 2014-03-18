@@ -66,6 +66,23 @@
         }
 
         /**
+         * Gets all blog posts from a blog
+         * @param  integer $userId The id of the user.
+         * @param  string  $url    The url of the blog.
+         * @return Array           An array with all the posts and information about them.
+         */
+        public function getAllBlogPosts($userId, $url) {
+            $sql = "SELECT posts.postId, posts.title, timestamp, content 
+                    FROM posts, posts_details, blogs
+                    WHERE blogs.url = :url AND blogs.blogId = posts.blogId AND 
+                        posts.postId = posts_details.postId AND blogs.user = :userId
+                    ORDER BY timestamp DESC";
+            $array = array(':url' => $url, ':userId' => $userId);
+            $result = $this->db->fetch($sql, $array);
+            return $result;
+        }
+
+        /**
          * Searches through blog posts and returns 2 blog posts from a blog, 
          * depening on which page you are on.
          * 
