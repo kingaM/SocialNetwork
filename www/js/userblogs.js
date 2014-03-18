@@ -2,6 +2,7 @@ var username = 'username';
 
 function content() {
     username = window.location.pathname.split( '/' )[2];
+    addPrivacySelector("privacy-selector", "3");
     getUserBlogs();
     setupDropdown();
 }
@@ -15,22 +16,24 @@ function setupDropdown() {
         var postText = $("#new-post").val();
         var name = $("#name").val();
         var url = $("#url").val();
+        var privacy = $("#privacy-options-privacy-selector").val();
         clearLabels();
         if(!validateAlphanumeric(url)) {
             showErrorDropdown('url', 'The identifier is not alphanumeric.');
         }
-        postBlog(name, url, postText);
+        postBlog(name, url, postText, privacy);
     });
     $('body').click(function(e) {
         clearDropdown();
     });
 }
 
-function postBlog(name, url, text) {
+function postBlog(name, url, text, privacy) {
     var values = {};
     values["text"] = text;
     values["name"] = name;
     values["url"] = url;
+    values["privacy"] = privacy;
     $.ajax({
         type: "post",
         url: "/api/user/" + username + "/blogs",

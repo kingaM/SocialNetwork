@@ -82,7 +82,19 @@ function showPosts(data) {
         if(post['type'] == "image") {
             title = "<a href='/user/" + post['to'] + "'>" + post['toName'] + "</a>" + 
                 " <small>added a new photo:</small>";
-            content = '<img src="' + post['content'] + ' " class="img-responsive">';
+            var url = null;
+            $.ajaxSetup({async:false});
+            $.getJSON(post['content'], 
+                function(data) {
+                    if(data['photo'] != null) {
+                        url = data['photo']['url'];
+                    }
+            });
+            $.ajaxSetup({async:true});
+            if(url == null) {
+                continue;
+            }
+            content = '<img src="' + url + ' " class="img-responsive">';
         } else if(post['type'] != "friend") {
             title = "<a href='/user/" + post['from'] + "'>" + post['fromName'] + "</a>";
             if(post['from'] != post['to'])
@@ -98,8 +110,63 @@ function showPosts(data) {
         var wallPostID =  id;
         var imgURL =  "http://i.imgur.com/r8R1C6B.png";
         var numOfReplies =  post['comments'].length;
-        var output = renderNewsItem(imgURL, date, time, title, content, wallPostID, numOfReplies);
+        var toUser = post['to'];
+        var output = renderNewsItem(imgURL, date, time, title, content, wallPostID, numOfReplies, 
+            toUser);
         $("#newsItems").append(output);
+
+        if(sessionUser == toUser) {
+            var privacy;
+            switch (post['privacy']) {
+            case "1":
+                privacy = "Me Only";
+                break;
+            case "2":
+                privacy = "Circles";
+                break;
+            case "3":
+                privacy = "Friends";
+                break;
+            case "4":
+                privacy = "Friends of Friends";
+                break;
+            default:
+                privacy = "Everyone";
+                break;
+            } 
+            $('#select_' + wallPostID).val(privacy);
+
+            $('#select_' + wallPostID).change(wallPostID, function(e){
+
+                var privacy;
+                switch ($('#select_' + e.data).val()) {
+                case "Me Only":
+                    privacy = 1;
+                    break;
+                case "Circles":
+                    privacy = 2;
+                    break;
+                case "Friends":
+                    privacy = 3;
+                    break;
+                case "Friends of Friends":
+                    privacy = 4;
+                    break;
+                default:
+                    privacy = 5;
+                    break;
+                }
+
+                $.ajax({
+                    url: "/api/posts/" + e.data + "/privacy",
+                    type: "POST",
+                    data: {privacyLevel: privacy},
+                    success: function(response) {
+                    }
+                });
+            });
+
+        };
 
         $("#replyForm_" + id).submit(id, function(e){
             e.preventDefault();
@@ -148,7 +215,21 @@ function addPost(content, username) {
     });
 }
 
-function renderNewsItem(imgURL, date, time, title, text, wallPostID, numOfReplies) {
+function renderNewsItem(imgURL, date, time, title, text, wallPostID, numOfReplies, toUser) {
+
+    var privacyOptions = "";
+
+    if(sessionUser == toUser) {
+        privacyOptions = 'Privacy' + 
+                                '<select id="select_' + wallPostID + '"class="form-control">' + 
+                                    '<option>Me Only</option>' + 
+                                    '<option>Circles</option>' + 
+                                    '<option>Friends</option>' + 
+                                    '<option>Friends of Friends</option>' + 
+                                    '<option>Everyone</option>' + 
+                                '</select>';
+    };
+
     var html = '<section class="container-fluid">' + 
         '<article class="search-result row">' + 
             '<div class="col-xs-12 col-sm-12 col-md-3">' + 
@@ -158,7 +239,7 @@ function renderNewsItem(imgURL, date, time, title, text, wallPostID, numOfReplie
                 '<ul class="meta-search">' + 
                     '<li><i class="glyphicon glyphicon-calendar"></i><span>' + date + '</span></li>' + 
                     '<li><i class="glyphicon glyphicon-time"></i><span>' + time + '</span></li>' + 
-                '</ul>' + 
+                '</ul>' + privacyOptions + 
             '</div>' + 
             '<div class="col-xs-12 col-sm-12 col-md-7 excerpet">' + 
                 '<h3>' + title + '</h3>' + 

@@ -1,5 +1,7 @@
 var username = '';
 var email = '';
+var privacy = '';
+var privacyNice = '';
 
 function content() {
     getUserInfo();
@@ -34,6 +36,13 @@ function setEditBtns() {
         $("#email").hide();
         $("#email-submit-btn").show();
         $("#email-edit-btn").hide();
+    });
+    $("#privacy-edit-btn").click(function(e) {
+        e.preventDefault();
+        hideAndClearAll();
+        addPrivacySelector("privacy-selector", privacy);
+        $("#privacy-submit-btn").show();
+        $("#privacy-edit-btn").hide();
     });
 }
 
@@ -180,6 +189,30 @@ function setSubmitBtns() {
             }
         }); 
     });
+    $("#privacy-submit-btn .custom-submit-btn").click(function(e) {
+        hideAllErrors();
+        e.preventDefault();
+        var values = {};
+        values['privacy'] = $("#privacy-options-privacy-selector").val();
+        $.ajax({
+            type: "post",
+            url: "/api/settings/profilePrivacy",
+            data: values,
+            success: function(data) {
+                console.log(data);
+                hideAllErrors();
+                var json = $.parseJSON(data);
+                var valid = json['valid'];
+                if(valid) {
+                    hideAndClearAll();
+                    getUserInfo();
+                } else {
+                    showError("error-unknown", "Something went wrong, when trying to change your" +
+                        "privacy settings. Please try again later.");
+                }
+            }
+        }); 
+    });
 }
 
 function setCancelBtns() {
@@ -205,8 +238,11 @@ function getUserInfo() {
 function showInfo(user) {
     username = user['username'];
     email = user['email'];
+    privacy = user['profilePrivacy'];
+    privacyNice = user['privacyOption'];
     $("#username").html("<h4>" + user['username'] + "</h4>");
     $("#email").html("<h4>" + user['email'] + "</h4>");
+    $("#privacy-selector").html("<h4>" + privacyNice + "</h4>");
 }
 
 function hideAndClearAll() {
@@ -218,6 +254,7 @@ function hideAndClearAll() {
     $("#username").show();
     $("#password").show();
     $("#email").show();
+    $("#privacy-selector").html("<h4>" + privacyNice + "</h4>");
     // Clear all the input values
     $("#new-username").val("");
     $("#password-username").val("");
@@ -234,6 +271,8 @@ function hideAndClearAll() {
     $("#email-edit-btn").show();
     $("#password-submit-btn").hide();
     $("#password-edit-btn").show();
+    $("#privacy-submit-btn").hide();
+    $("#privacy-edit-btn").show();
     hideAllErrors();
 }
 
@@ -254,13 +293,4 @@ function hideAllErrors() {
     $("#form-group-new-email").removeClass("has-error");
     $("#form-group-email-retype").removeClass("has-error");
     $("#form-group-email-password").removeClass("has-error");
-}
-
-function showError() {
-    $("#error-unknown").html("<div class=\"alert alert-danger alert-dismissable\">" +
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
-        "aria-hidden=\"true\">&times;</button>" +
-        "<strong>Error:</strong> Something went wrong, but we don't know what." +
-        "Please try again later." + 
-        "</div>");
 }

@@ -3,6 +3,14 @@
     require_once('helpers/database/database.php');
     require_once('helpers/database/TimelineHelper.php');
 
+    abstract class Relationship {
+        const ME = 1;
+        const CIRCLES = 2;
+        const FRIENDS = 3;
+        const FOF = 4;
+        const ALL = 5;
+    }
+
     /**
      * A helper that has database functions related to the Friends feature of the site. 
      */
@@ -395,5 +403,89 @@
                 Array(':username' => $username, ':owner' => $owner, ':cName' => $circleName));
         }
 
+        /**
+         * Returns a value specifying the relationship between two people.
+         * 
+         * @param  integer $currentUser The id of the current user.
+         * @param  integer $otherUser   The id of the other user.
+         * 
+         * @return Relationship         A constant from class Relationship, representing the
+         *                              relationship.
+         */
+        public function getRelationship($currentUser, $otherUser) {
+            if ($currentUser == $otherUser) {
+                return Relationship::ME;
+            } else if ($this->isInCircle($currentUser, $otherUser)) {
+                return Relationship::CIRCLES;
+            } else if($this->isFriend($currentUser, $otherUser)) {
+                return Relationship::FRIENDS;
+            } else if($this->isFriendsOfFriend($currentUser, $otherUser)) {
+                return Relationship::FRIENDS;
+            } else {
+                return Relationship::ALL;
+            }
+        }
+
+        /**
+         * Checks if the users are within a "Friends of Friends" zone.
+         *
+         * @param  integer $user1 The currently logged in user.
+         * @param  integer $user2 The other user.
+         *
+         * @return boolean True if the two are "Friends of Friends", false otherwise.
+         */
+        public function isFriendsOfFriend($user1, $user2) {
+            $friendIDs = array();
+            $result = $this->db->fetch("(SELECT u.ID 
+                FROM friendships as f, users as u
+                WHERE ((f.user1=:user AND NOT u.ID=:user AND f.user2=u.ID) 
+                    OR (f.user2=:user AND NOT u.ID=:user AND f.user1=u.ID)) 
+                AND status = 1)",
+                Array(':user' => $user1));
+            foreach ($result as $r) {
+                $friendIDs[] = $r['ID'];
+            }
+
+            $inSet = implode(",", $friendIDs);
+            
+            $result = $this->db->fetch("
+                SELECT * FROM (
+                    SELECT login
+                    FROM friendships as f, users as u
+                    WHERE ((f.user1 IN ($inSet) AND NOT u.ID IN ($inSet) AND f.user2=u.ID) 
+                        OR (f.user2 IN ($inSet) AND NOT u.ID IN ($inSet) AND f.user1=u.ID))
+                    AND status = 1 
+                    AND NOT u.ID=:user1 AND f.user1 = :user1 AND f.user2 = :user2) AS fof
+                WHERE login = :user2",
+                Array(':user1' => $user1, ':user2' => $user2));
+
+            if(sizeof($result) == 1) {
+                return true;
+            } else {
+                return false;
+            }
+         
+        }
+
+        /**
+         * Checks if the user is in a circle.
+         *
+         * @param  integer $user1 The currently logged in user.
+         * @param  integer $user2 The other user.
+         *
+         * @return boolean True if the the user is in the current user's circle, false otherwise.
+         */
+        public function isInCircle($currentUser, $otherUser) {
+            $result = $this->db->fetch("SELECT u.id
+                FROM users as u, circles as c, circle_memberships as cm
+                WHERE cm.circle=c.id AND cm.user=u.id
+                AND c.owner=:user AND u.id = :otherUser",
+                Array(':user' => $currentUser, ':otherUser' => $otherUser));
+
+            if(sizeof($result) == 1) {
+                return true;
+            }
+            return false;
+        }
     }
 ?>

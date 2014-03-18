@@ -21,7 +21,7 @@
          *                     name, about and url of each blog.
          */
         public function getBlogs($id) {
-            $sql = "SELECT name, about, url FROM blogs WHERE user = :id";
+            $sql = "SELECT name, about, url, privacy FROM blogs WHERE user = :id";
             $array = array(':id' => $id);
             $result = $this->db->fetch($sql, $array);
             return $result;
@@ -35,7 +35,8 @@
          *                      error.
          */
         public function getBlogInfo($id, $url) {
-            $sql = "SELECT name, about, url FROM blogs WHERE user = :id AND blogs.url = :url";
+            $sql = "SELECT name, about, url, privacy FROM blogs WHERE user = :id 
+                AND blogs.url = :url";
             $array = array(':id' => $id, ':url' => $url);
             $result = $this->db->fetch($sql, $array);
             if(sizeof($result) != 1) {
@@ -195,11 +196,11 @@
          * @param  string  $about  A short description of the blog.
          * @return boolean         Indicates if the insert succeeded or not.
          */
-        public function addBlog($userId, $name, $url, $about) {
-            $sql = "INSERT INTO blogs(`user`, `name`, `url`, `about`)
-                VALUES (:userId, :name, :url, :about)";
+        public function addBlog($userId, $name, $url, $about, $privacy) {
+            $sql = "INSERT INTO blogs(`user`, `name`, `url`, `about`, `privacy`)
+                VALUES (:userId, :name, :url, :about, :privacy)";
             $array = array(':userId' => $userId, ':name' => $name, ':url' => $url, 
-                ':about' => $about);
+                ':about' => $about, ':privacy' => $privacy);
 
             $tlh = new TimelineHelper();
             $content = "Created a new blog, <a href='/user/".$_SESSION['username'].

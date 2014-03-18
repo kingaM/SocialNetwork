@@ -2,6 +2,12 @@ CREATE DATABASE IF NOT EXISTS SocialNetwork;
 
 USE SocialNetwork;
 
+CREATE TABLE IF NOT EXISTS `privacy_options` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `option` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
 CREATE TABLE IF NOT EXISTS `users` (
     `ID` INT NOT NULL AUTO_INCREMENT,
     `first_name` VARCHAR(50) NOT NULL, 
@@ -14,10 +20,16 @@ CREATE TABLE IF NOT EXISTS `users` (
     `activated` BOOLEAN NOT NULL DEFAULT FALSE,
     `admin` BOOLEAN NOT NULL DEFAULT FALSE,
     `banned` BOOLEAN NOT NULL DEFAULT FALSE,
+    `profilePrivacy` INT NOT NULL DEFAULT 3,
+    `wallPrivacy` INT NOT NULL DEFAULT 4,
     UNIQUE (`login`),
     UNIQUE (`email`),
     UNIQUE (`hash`),
-    PRIMARY KEY(`ID`)
+    PRIMARY KEY(`ID`),
+    FOREIGN KEY (`profilePrivacy`) REFERENCES `privacy_options` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`wallPrivacy`) REFERENCES `privacy_options` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 # TODO: Enable multiple locations and languages as a seperate table. Create a table with all 
@@ -84,9 +96,11 @@ CREATE TABLE IF NOT EXISTS `wall_posts` (
     `timestamp` int(11) NOT NULL,
     `type` VARCHAR(11) NOT NULL,
     `lastTouched` int(11) NOT NULL,
+    `privacy` INT NOT NULL DEFAULT 3,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`to`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`privacy`) REFERENCES `privacy_options` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `blogs` (
@@ -95,9 +109,12 @@ CREATE TABLE IF NOT EXISTS `blogs` (
     `user` INT NOT NULL,
     `name` VARCHAR(100) NOT NULL, 
     `url` VARCHAR(100) NOT NULL, 
+    `privacy` INT NOT NULL DEFAULT 3,
     UNIQUE(`user`, `url`),
     PRIMARY KEY (`blogId`),
-    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`privacy`) REFERENCES `privacy_options` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `posts` (
@@ -123,8 +140,11 @@ CREATE TABLE IF NOT EXISTS `photo_albums` (
     `about` VARCHAR(10000) NOT NULL,
     `user` INT NOT NULL,
     `name` VARCHAR(100) NOT NULL, 
+    `privacy` INT NOT NULL DEFAULT 3,
     PRIMARY KEY (`albumId`),
-    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`privacy`) REFERENCES `privacy_options` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `photos` (

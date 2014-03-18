@@ -141,6 +141,12 @@
         'file' => 'controllers/settings.php',
     ));
 
+     $router->addRoute(array(
+        'path' => 'api/settings/profilePrivacy',
+        'post' => array('Settings', 'updateProfilePrivacy'),
+        'file' => 'controllers/settings.php',
+    ));
+
     // Friends
 
     $router->addRoute(array(
@@ -272,6 +278,15 @@
             'postID' => Zaphpa_Constants::PATTERN_DIGIT
         ),
         'post' => array('Timeline', 'addComment'),
+        'file' => 'controllers/timeline.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/posts/{postID}/privacy',
+        'handlers' => array(
+            'postID' => Zaphpa_Constants::PATTERN_DIGIT
+        ),
+        'post' => array('Timeline', 'changePrivacy'),
         'file' => 'controllers/timeline.php',
     ));
 
@@ -493,6 +508,17 @@
         'get' => array('Photos', 'getComments'),
         'delete' => array('Photos', 'deletePhoto'),
         'post' => array('Photos', 'addComment'),
+        'file' => 'controllers/photos.php',
+    ));
+
+    $router->addRoute(array(
+        'path' => '/api/user/{username}/photos/{albumId}/photo/{photoId}',
+        'handlers' => array(
+            'albumId' => Zaphpa_Constants::PATTERN_DIGIT,
+            'photoId' => Zaphpa_Constants::PATTERN_DIGIT,
+            'username' => Zaphpa_Constants::PATTERN_ALPHA
+        ),
+        'get' => array('Photos', 'getPhoto'),
         'file' => 'controllers/photos.php',
     ));
 

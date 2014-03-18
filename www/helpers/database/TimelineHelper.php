@@ -31,8 +31,9 @@
                 throw new Exception("Content too long - 10,000 character limit");
 
             $result = $this->db->execute("INSERT INTO wall_posts(`to`, `from`, content, `timestamp`, 
-                `type`, `lastTouched`)
-                SELECT toUser.ID as `to`, fromUser.ID as `from`, :content, :time, :type, :time 
+                `type`, `lastTouched`, `privacy`)
+                SELECT toUser.ID as `to`, fromUser.ID as `from`, :content, :time, :type, :time, 
+                toUser.wallPrivacy 
                 FROM users as toUser, users as fromUser 
                 WHERE toUser.login=:toUser AND fromUser.login=:fromUser",
                 Array(':toUser' => $to, ':fromUser' => $from, ':content' => $content, 
@@ -40,15 +41,23 @@
         }
 
         /**
-         * Deletes a image wall post.
-         * Note: Will work only on image posts, it is relying on the fact that the content of the
-         *       post is unique. 
+         * Changes privacy of a wall post
          *
-         * @param String $content The content of the post
+         * @param String $postID
+         * @param String $privacy The enum of the new privacy level
+         *
          */
-        public function deletePost($content) {
-            $sql = "DELETE FROM `wall_posts` WHERE `content` = :content AND `type` = 'image'";
-            $this->db->execute($sql, Array(':content' => $content));
+        public function changePrivacy($postID, $privacy) {
+
+            $result = $this->db->fetch("SELECT `to` FROM wall_posts WHERE id=:postID", 
+                Array(':postID' => $postID));
+
+            if(sizeof($result) == 0 || $result[0]['to'] !== $_SESSION['id']) {
+                return;
+            }
+
+            $this->db->execute("UPDATE wall_posts SET privacy=:privacy WHERE id=:postID",
+                Array(':postID' => $postID, ':privacy' => $privacy));
         }
 
         /**
@@ -58,6 +67,9 @@
          *
          */
         public function getPosts($username) {
+
+            require_once('helpers/database/FriendsHelper.php');
+            require_once('helpers/database/UsersHelper.php');
 
             // TODO: Find a nice way to do all of this in 1 statement
             $posts = array();
@@ -74,7 +86,7 @@
                     ELSE 
                         CONCAT(fromUser.first_name, ' ', fromUser.middle_name, ' ', fromUser.last_name) 
                 END) as fromName,
-                toUser.login as toLogin, fromUser.login as fromLogin
+                toUser.login as toLogin, fromUser.login as fromLogin, wp.privacy
                 FROM wall_posts as wp, users as toUser, users as fromUser
                 WHERE ((wp.to=toUser.id AND wp.from=fromUser.id) 
                     OR (wp.from=toUser.id AND wp.to=fromUser.id AND wp.type='friend'))
@@ -82,18 +94,26 @@
                 ORDER BY `lastTouched` DESC",
                 Array(':username' => $username));
 
+            $fh = new FriendsHelper();
+            $uh = new UsersHelper();
+            $relation = $fh->getRelationship($_SESSION['id'], $uh->getIdFromUsername($username));
+
             foreach ($result as $r) {
-                $post = array(  'id' => $r['id'],
-                                'to' => $r['toLogin'],
-                                'from' => $r['fromLogin'],
-                                'toName' => $r['toName'],
-                                'fromName' => $r['fromName'],
-                                'content' => $r['content'],
-                                'timestamp' => $r['timestamp'],
-                                'type' => $r['type'],
-                                'comments' => array());
-                $posts[] = $post;
-                $postIDs[] = $r['id'];
+                if($relation <= $r['privacy'] || $uh->isAdmin($_SESSION['username'])) {
+                    $post = array(  'id' => $r['id'],
+                                    'to' => $r['toLogin'],
+                                    'from' => $r['fromLogin'],
+                                    'toName' => $r['toName'],
+                                    'fromName' => $r['fromName'],
+                                    'content' => $r['content'],
+                                    'timestamp' => $r['timestamp'],
+                                    'type' => $r['type'],
+                                    'comments' => array());
+                    if($_SESSION['username'] === $username)
+                        $post['privacy'] = $r['privacy'];
+                    $posts[] = $post;
+                    $postIDs[] = $r['id'];
+                }
             }
 
             if(count($postIDs) === 0)
@@ -137,6 +157,7 @@
         public function getNewsFeed($user) {
             // TODO: Fix this terrible efficiency!
             require_once('helpers/database/FriendsHelper.php');
+            require_once('helpers/database/UsersHelper.php');
             $fh = new FriendsHelper();
             $friends = $fh->getFriends($user);
             
@@ -162,25 +183,33 @@
                     ELSE 
                         CONCAT(fromUser.first_name, ' ', fromUser.middle_name, ' ', fromUser.last_name) 
                 END) as fromName,
-                toUser.login as toLogin, fromUser.login as fromLogin
+                toUser.login as toLogin, fromUser.login as fromLogin, wp.privacy
                 FROM wall_posts as wp, users as toUser, users as fromUser
                 WHERE wp.to=toUser.id AND wp.from=fromUser.id
                 AND toUser.login IN ($inSet)
                 ORDER BY `lastTouched` DESC",
                 Array());
 
+            $uh = new UsersHelper();
+
             foreach ($result as $r) {
-                $post = array(  'id' => $r['id'],
-                                'to' => $r['toLogin'],
-                                'from' => $r['fromLogin'],
-                                'toName' => $r['toName'],
-                                'fromName' => $r['fromName'],
-                                'content' => $r['content'],
-                                'timestamp' => $r['timestamp'],
-                                'type' => $r['type'],
-                                'comments' => array());
-                $posts[] = $post;
-                $postIDs[] = $r['id'];
+                $relation = $fh->getRelationship($_SESSION['id'], 
+                    $uh->getIdFromUsername($r['toLogin']));
+                if($relation <= $r['privacy'] || $uh->isAdmin($_SESSION['username'])) {
+                    $post = array(  'id' => $r['id'],
+                                    'to' => $r['toLogin'],
+                                    'from' => $r['fromLogin'],
+                                    'toName' => $r['toName'],
+                                    'fromName' => $r['fromName'],
+                                    'content' => $r['content'],
+                                    'timestamp' => $r['timestamp'],
+                                    'type' => $r['type'],
+                                    'comments' => array());
+                    if($_SESSION['username'] === $r['toLogin'])
+                        $post['privacy'] = $r['privacy'];
+                    $posts[] = $post;
+                    $postIDs[] = $r['id'];
+                }
             }
 
             if(count($postIDs) === 0)
@@ -229,5 +258,6 @@
             return $posts;
         }
     }
+
 
 ?>

@@ -2,6 +2,7 @@
 
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/PhotosHelper.php');
+    include_once('helpers/database/FriendsHelper.php');
     require_once('libs/ImageManipulator.php');
 
     class Photos {
@@ -39,18 +40,23 @@
                     'user' => NULL)));
                 $res->send();
             }
+            $friendsDB = new FriendsHelper();
+            $relationship = $friendsDB->getRelationship($_SESSION['id'], $userId);
             if($userId === $_SESSION['id']) {
                 $currentUser = true;
             } else {
                 $currentUser = false;
             }
             $albums = $photosDB->getPhotoAlbums($userId);
+            $isAdmin = $usersDB->isAdmin($_SESSION['username']);
             $jsonAlbums = array();
             foreach ($albums as $album) {
-                $jsonAlbums[] = array(
-                    'id' => $album['albumId'],
-                    'name' => $album['name'],
-                    'about' => $album['about']);
+                if($relationship <= $album['privacy'] || $isAdmin) {
+                    $jsonAlbums[] = array(
+                        'id' => $album['albumId'],
+                        'name' => $album['name'],
+                        'about' => $album['about']);
+                }
             }
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
                 'albums' => $jsonAlbums)));
@@ -67,10 +73,29 @@
                 $res->add(json_encode($json));
                 $res->send();
             }
+
+            $data = $req->data;
+            foreach ($data as $key => $value) {
+                $data[$key] = trim($data[$key]);
+                $data[$key] = strip_tags($data[$key]);
+                if($data[$key] == "") {
+                    $data[$key] = null;
+                } 
+            }
+
             $text = $req->data['text'];
             $name = $req->data['name'];
+            $privacy = $req->data['privacy'];
+            // TODO: 7 is hard coded value and assumes that there are only 6 different privacy
+            // settings. This should be checked dynamically with the database.
+            $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
+                && intval($privacy) > 0 && intval($privacy) < 7;
+            if($text == null || $name == null || $privacy == null || !$valic) {
+                $res->add(json_encode($json));
+                $res->send();
+            }
             
-            if($photosDB->addAlbum($userId, $name, $text)) {
+            if($photosDB->addAlbum($userId, $name, $text, $privacy)) {
                 $json['valid'] = true;
             } else {
                 $json['valid'] = false;
@@ -83,8 +108,10 @@
             $username = $req->params['username'];
             $id = $req->params['id'];
             $usersDB = new UsersHelper();
+            $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId == -1) {
+            if($userId == -1 || 
+                !$this->isVisibleAlbum($_SESSION['id'], $userId, $id, $photosDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
                     'photos' => NULL)));
                 $res->send();
@@ -94,7 +121,6 @@
             } else {
                 $currentUser = false;
             }
-            $photosDB = new PhotosHelper();
             $posts = $photosDB->getPhotos($userId, $id);
             if(sizeof($posts) < 0) {
                 $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
@@ -115,6 +141,41 @@
             $res->send();
         }
 
+        public function getPhoto($req, $res) {
+            $username = $req->params['username'];
+            $id = $req->params['albumId'];
+            $photoId = $req->params['photoId'];
+            $usersDB = new UsersHelper();
+            $photosDB = new PhotosHelper();
+            $userId = $usersDB->getIdFromUsername($username);
+            if($userId == -1 || 
+                !$this->isVisibleAlbum($_SESSION['id'], $userId, $id, $photosDB, $usersDB)) {
+                $res->add(json_encode(array('valid' => false, 'currentUser' => false, 
+                    'photo' => NULL)));
+                $res->send();
+            }
+            if($userId === $_SESSION['id']) {
+                $currentUser = true;
+            } else {
+                $currentUser = false;
+            }
+            $photo = $photosDB->getPhoto($userId, $id, $photoId);
+            if($photo == -1) {
+                $res->add(json_encode(array('valid' => false, 'currentUser' => $currentUser, 
+                    'photo' => NULL)));
+                $res->send();
+            }
+            $jsonPosts = array(
+                    'id' => $photo['photoId'],
+                    'description' => $photo['description'],
+                    'timestamp' => $photo['timestamp'],
+                    'url' => $photo['url'], 
+                    'thumbnailUrl' => $photo['thumbnailUrl']);
+            $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
+                'photo' => $jsonPosts)));
+            $res->send();
+        }
+
         public function addPhoto($req, $res) {
             if(sizeof($_FILES) != 1) {
                 $res->add(json_encode(array('valid' => false)));
@@ -131,7 +192,8 @@
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if ($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
+            if ($userId !== $_SESSION['id'] || 
+                !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
                 $res->add(json_encode(array('valid' => false, 'image' => NULL)));
                 $res->send();
             }
@@ -252,7 +314,8 @@
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId)) {
+            if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId) ||
+                !$this->isVisibleAlbum($_SESSION['id'], $userId, $albumId, $photosDB, $usersDB)) {
                 $res->add(json_encode(array('valid' => false, 'comments' => null)));
                 $res->send();
             }
@@ -285,9 +348,12 @@
             } 
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
+            $friendsDB = new FriendsHelper();
             $userId = $usersDB->getIdFromUsername($username);
             if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId) ||
-                $comment == null) {
+                $comment == null ||
+                !$this->isVisibleAlbum($_SESSION['id'], $userId, $albumId, $photosDB, $usersDB) ||
+                !$friendsDB->isFriend($_SESSION['id'], $userId)) {
                 $res->add(json_encode(array('valid' => false, 'emptyComment' => 
                     ($comment == null))));
                 $res->send();
@@ -299,6 +365,20 @@
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
+        }
+
+        private function isVisibleAlbum($currentUser, $userAlbum, $albumId, $photosDB, $usersDB) {
+            $friendsDB = new FriendsHelper();
+            $album = $photosDB->getPhotoAlbum($userAlbum, $albumId);
+            if($album == NULL) {
+                return false;
+            }            
+            $isAdmin = $usersDB->isAdmin($_SESSION['username']);
+            $relationship = $friendsDB->getRelationship($currentUser, $userAlbum);
+            if($relationship <= $album['privacy'] || $isAdmin) {
+                return true;
+            }
+            return false;
         }
     }
 ?>
