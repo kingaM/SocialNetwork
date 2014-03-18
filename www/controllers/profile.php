@@ -144,7 +144,7 @@
                 $res->send();
             }
             $url = $usersDB->getPictureUrl($userId);
-            $res->add(json_encode(array('valid' => false, 'image' => $url)));
+            $res->add(json_encode(array('valid' => true, 'image' => $url)));
             $res->send();
         }
 
