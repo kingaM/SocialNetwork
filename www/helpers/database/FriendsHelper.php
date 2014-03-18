@@ -446,6 +446,9 @@
                 $friendIDs[] = $r['ID'];
             }
 
+            if(sizeof($friendIDs) < 1)
+                return array();
+
             $inSet = implode(",", $friendIDs);
             
             $result = $this->db->fetch("
