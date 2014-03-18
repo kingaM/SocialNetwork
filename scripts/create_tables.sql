@@ -21,11 +21,14 @@ CREATE TABLE IF NOT EXISTS `users` (
     `admin` BOOLEAN NOT NULL DEFAULT FALSE,
     `banned` BOOLEAN NOT NULL DEFAULT FALSE,
     `profilePrivacy` INT NOT NULL DEFAULT 3,
+    `wallPrivacy` INT NOT NULL DEFAULT 4,
     UNIQUE (`login`),
     UNIQUE (`email`),
     UNIQUE (`hash`),
     PRIMARY KEY(`ID`),
     FOREIGN KEY (`profilePrivacy`) REFERENCES `privacy_options` (`id`) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`wallPrivacy`) REFERENCES `privacy_options` (`id`) 
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -93,9 +96,11 @@ CREATE TABLE IF NOT EXISTS `wall_posts` (
     `timestamp` int(11) NOT NULL,
     `type` VARCHAR(11) NOT NULL,
     `lastTouched` int(11) NOT NULL,
+    `privacy` INT NOT NULL DEFAULT 3,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`to`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`from`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`privacy`) REFERENCES `privacy_options` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `blogs` (

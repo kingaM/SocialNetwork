@@ -1,3 +1,5 @@
+var sessionUser;
+
 $(document).ready(function() {
     // Main page JS here
     
@@ -9,7 +11,7 @@ $(document).ready(function() {
 	$.ajaxSetup({async:false});
 
 	$.getJSON( "/api/currentUser", function(data) {
-	    var sessionUser = data["username"];
+	    sessionUser = data["username"];
 	    $( "#profile-link" ).attr( "href", "/user/" + sessionUser );
 	    
 	    $.getJSON( "/api/user/" + sessionUser + "/profile/image", function(data) {

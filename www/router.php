@@ -277,6 +277,15 @@
         'file' => 'controllers/timeline.php',
     ));
 
+    $router->addRoute(array(
+        'path' => '/api/posts/{postID}/privacy',
+        'handlers' => array(
+            'postID' => Zaphpa_Constants::PATTERN_DIGIT
+        ),
+        'post' => array('Timeline', 'changePrivacy'),
+        'file' => 'controllers/timeline.php',
+    ));
+
     // Blog
     
     $router->addRoute(array(

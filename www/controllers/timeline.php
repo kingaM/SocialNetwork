@@ -60,5 +60,15 @@
             $res->add(json_encode($posts));
             $res->send();
         }
+
+        public function changePrivacy($req, $res) {
+            $postID = $req->params['postID'];
+            $privacy = $req->data['privacyLevel'];
+            if($privacy > 5 || $privacy < 0)
+                return;
+            $db = new TimelineHelper();
+            // Note, check for ability to change this is done in the DB method
+            $db->changePrivacy($postID, $privacy);
+        }
     }
 ?>
