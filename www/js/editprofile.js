@@ -111,7 +111,12 @@ function showInfo(user) {
     $("#languages").html(user["languages"]);
     $("#gender").html(user["gender"]);
     $("#email").html(user["email"]);
-    $("#about").html(user["about"].replace(/\n/g, "<br/>"));
+    var about = user["about"];
+    if(about != null) {
+        $("#about").html(user["about"].replace(/\n/g, "<br/>"));
+    } else {
+        $("#about").html("");
+    }
     $("#profile-pic").attr("src", profilePicture);
 }
 
@@ -124,7 +129,7 @@ function editInfo(user) {
         "<div class=\"col-md-4 nopadding\"><input type=\"text\" class=\"form-control\" value=\"" 
         + user["lastName"] +  "\" id=\"last-name-txt\" ></div>");
     $("#places-lived").html("<input type=\"text\" class=\"form-control\" value=\"" + 
-        user["locations"] +  "\" id=\"locations-txt\" >");
+        (user["locations"] == null ? "" : user["locations"]) +  "\" id=\"locations-txt\" >");
     $("#dob").html("<input type=\"text\" class=\"span2 form-control\" id=\"dob-txt\"" + 
         "format=\"dd-mm-yyyy\" data-date=\"\">");
     var dob = user["dob"];
@@ -136,7 +141,7 @@ function editInfo(user) {
     $('#dob-txt').datepicker();
     $('#dob-txt').datepicker('setValue', dob);
     $("#languages").html("<input type=\"text\" class=\"form-control\" value=\"" + 
-        user["locations"] +  "\" id=\"languages-txt\" >");
+        (user["languages"] == null ? "" : user["languages"]) +  "\" id=\"languages-txt\" >");
     $("#gender").html("<select class=\"form-control\" value=\"" + 
         user["gender"] +  "\" id=\"gender-txt\" >" +
         "<option value=\"\">N/A</option>" +
@@ -145,7 +150,7 @@ function editInfo(user) {
     $("#gender-txt option:contains(\"" + user["gender"] +"\")").prop("selected", true);
     $("#email").html(user["email"]);
     $("#about").html("<textarea rows=\"3\" class=\"form-control\" id=\"about-txt\" >" + 
-        user["about"] +  "</textarea >");
+        (user["about"] == null ? "" : user["about"]) +  "</textarea >");
 
     $("#edit-btn-group").hide();
     $("#submit-btn-group").show();

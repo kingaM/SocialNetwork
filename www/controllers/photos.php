@@ -3,7 +3,8 @@
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/PhotosHelper.php');
     include_once('helpers/database/FriendsHelper.php');
-    require_once('libs/ImageManipulator.php');
+    require_once('libs/ImageManipulator.php');           
+
 
     class Photos {
 
@@ -90,7 +91,7 @@
             // settings. This should be checked dynamically with the database.
             $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
                 && intval($privacy) > 0 && intval($privacy) < 7;
-            if($text == null || $name == null || $privacy == null || !$valic) {
+            if($text == null || $name == null || $privacy == null || !$valid) {
                 $res->add(json_encode($json));
                 $res->send();
             }
@@ -351,9 +352,9 @@
             $friendsDB = new FriendsHelper();
             $userId = $usersDB->getIdFromUsername($username);
             if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId) ||
-                $comment == null ||
+                $comment == null || 
                 !$this->isVisibleAlbum($_SESSION['id'], $userId, $albumId, $photosDB, $usersDB) ||
-                !$friendsDB->isFriend($_SESSION['id'], $userId)) {
+                (!$userId == $_SESSION['id'] && !$friendsDB->isFriend($_SESSION['id'], $userId))) {
                 $res->add(json_encode(array('valid' => false, 'emptyComment' => 
                     ($comment == null))));
                 $res->send();
@@ -372,7 +373,10 @@
             $album = $photosDB->getPhotoAlbum($userAlbum, $albumId);
             if($album == NULL) {
                 return false;
-            }            
+            }    
+            if ($currentUser == $userAlbum) {
+                return true;
+            }        
             $isAdmin = $usersDB->isAdmin($_SESSION['username']);
             $relationship = $friendsDB->getRelationship($currentUser, $userAlbum);
             if($relationship <= $album['privacy'] || $isAdmin) {

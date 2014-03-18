@@ -20,8 +20,9 @@ function setupDropdown() {
         clearLabels();
         if(!validateAlphanumeric(url)) {
             showErrorDropdown('url', 'The identifier is not alphanumeric.');
-        }
-        postBlog(name, url, postText, privacy);
+        } else {
+            postBlog(name, url, postText, privacy);
+        } 
     });
     $('body').click(function(e) {
         clearDropdown();
@@ -54,7 +55,7 @@ function postBlog(name, url, text, privacy) {
             } 
             if (!unique) {
                 showErrorDropdown("url", "The identifier you have chosen is not unique");
-            }
+            } 
         }
     });
 }

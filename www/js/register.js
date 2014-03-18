@@ -110,6 +110,14 @@ function setSubmitBtn() {
                         "Please try again later.");
                 } else {
                     showSuccess();
+                    $("#firstname").val("");
+                    $("#middlename").val("");
+                    $("#lastname").val("");
+                    $("#username").val("");
+                    $("#password").val("");
+                    $("#email").val("");
+                    $("#password-retype").val("");
+                    $("#email-retype").val("");
                 }
             }
         });
@@ -128,14 +136,6 @@ function clearErrors() {
     $("#email-error").hide();
     $("#email-retype-error").hide();
 
-}
-
-function showError(id, text) {
-    $("#" + id).html("<div class=\"alert alert-danger alert-dismissable\">" +
-        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
-        "aria-hidden=\"true\">&times;</button>" +
-        "<strong>Error:</strong>" + text +
-        "</div>");
 }
 
 function showSuccess() {

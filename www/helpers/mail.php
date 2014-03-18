@@ -12,17 +12,17 @@ class Mail {
      */
     public static function sendMail($to,$subject,$body) {
         require 'libs/class.phpmailer.php';
-        $from = "comp3013.social.network@gmail.com";
+        $from = "malnotifier.fbhackathon@yahoo.co.uk";
         date_default_timezone_set('Etc/UTC');
         $mail = new PHPMailer();
         $mail->IsSMTP(true); 
         $mail->SMTPAuth   = true; 
         $mail->Mailer = "smtp";
-        $mail->Host= "tls://smtp.gmail.com";
+        $mail->Host= "tls://smtp.mail.yahoo.com";
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;  
-        $mail->Username = "comp3013.social.network@gmail.com"; 
-        $mail->Password = "socialnetwork"; 
+        $mail->Username = "malnotifier.fbhackathon@yahoo.co.uk"; 
+        $mail->Password = "FBHackathon1"; 
         $mail->SetFrom($from, 'SocialNetwork Team');
         $mail->AddReplyTo($from,'SocialNetwork Team');
         $mail->Subject = $subject;
