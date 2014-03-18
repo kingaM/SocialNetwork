@@ -6,18 +6,16 @@
     session_start();
 
     $public_pages = '#^(/api)?(/login|/register)$|^/activate/#';
-    $only_loggedout = '#^(/api)?(/login|/register)$|^/activate/#';
 
-    // Don't let unlogged users enter anything but the register and login pages. (And api methods)
+    // Don't let anonymous users use anything but the register and login pages/api
     if((!isset($_SESSION['id']) && !preg_match($public_pages, $_SERVER['REQUEST_URI'])) ||
         (isset($_SESSION['id']) && $_SESSION['id'] == -1)) {
         header('Location: /login');
         die();
     }
 
-    // Don't let logged in usres register or login again.
-    if((isset($_SESSION['id']) && preg_match($only_loggedout, $_SERVER['REQUEST_URI'])) ||
-        (isset($_SESSION['id']) && $_SESSION['id'] == -1)) {
+    // Don't let logged in users register or log in again
+    if(isset($_SESSION['id']) && preg_match($public_pages, $_SERVER['REQUEST_URI'])) {
         header('Location: /');
         die();
     }
