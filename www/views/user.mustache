@@ -1,8 +1,29 @@
+<script type="text/javascript">
+
+function getUserInfo() {
+    $.getJSON( "/api/user/" + window.location.pathname.split( '/' )[2] + "/profile", 
+        function(data) {
+            if(!data['valid']) {
+                showError("error-unknown", "Something went wrong, but we don't know what." +
+                    "Please try again later.");
+            } else {
+                $("#navbar-main-username").html(data['user']['firstName'] + " " + 
+                    data['user']["lastName"]);
+            }
+    });
+}
+
+
+</script>
+
 <div class="containter col-md-12">
 <div class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <p class="navbar-brand">{{username}}</p>
+            <p class="navbar-brand" id="navbar-main-username">{{username}}</p>
+            <script type="text/javascript">
+                getUserInfo();
+            </script>
         </div>    
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
