@@ -74,7 +74,10 @@ function showPosts(data) {
     for (var i = 0; i < posts.length; i++) {
         var post = posts[i];
         var date = new Date(post['timestamp']*1000);
-        var time = date.getHours() + ":" + date.getMinutes();
+        var mins = date.getMinutes();
+        if(mins < 10)
+            mins = "0" + mins;
+        var time = date.getHours() + ":" + mins;
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
         var id = post['id'];
         var title;

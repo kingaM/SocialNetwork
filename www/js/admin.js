@@ -118,6 +118,8 @@ function showUser(name, image, username, dob, email, status) {
         banButton = '<button class="btn btn-danger" onclick="banUser(\'' + 
                         username + '\');">Ban</button>';
 
+    var name = '<a href="/user/' + username + '">' + name + '</a>';
+
 
     var html =  '<div id="userInfo" class="col-md-10 col-md-offset-1">' + 
                     '<div class="row-fluid">' + 

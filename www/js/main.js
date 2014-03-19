@@ -8,6 +8,12 @@ $(document).ready(function() {
 	$("#top-center #top-search .input-group").addClass( "input-group-sm" );
 	
 	$( ".top-hide" ).hide();
+	
+	$( "#top-admin-link" ).hide();
+	$.getJSON( "/api/comments", function(data) {
+		$( "#top-admin-link" ).show();
+	});
+	
 	$.ajaxSetup({async:false});
 
 	$.getJSON( "/api/currentUser", function(data) {

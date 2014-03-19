@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `admin` BOOLEAN NOT NULL DEFAULT FALSE,
     `banned` BOOLEAN NOT NULL DEFAULT FALSE,
     `profilePrivacy` INT NOT NULL DEFAULT 3,
-    `wallPrivacy` INT NOT NULL DEFAULT 4,
+    `wallPrivacy` INT NOT NULL DEFAULT 3,
     UNIQUE (`login`),
     UNIQUE (`email`),
     UNIQUE (`hash`),
