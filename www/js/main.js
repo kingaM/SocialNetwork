@@ -7,7 +7,7 @@ $(document).ready(function() {
 	easyIncludeAutoComplete("top-search");
 	$("#top-center #top-search .input-group").addClass( "input-group-sm" );
 	
-	
+	$( ".top-hide" ).hide();
 	$.ajaxSetup({async:false});
 
 	$.getJSON( "/api/currentUser", function(data) {
@@ -16,7 +16,7 @@ $(document).ready(function() {
 	    
 	    $.getJSON( "/api/user/" + sessionUser + "/profile/image", function(data) {
 
-	    
+	    $( ".top-hide" ).show();
 	    var imgUrl = data["image"];
 	
 		if(imgUrl != null) {
