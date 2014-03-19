@@ -178,9 +178,6 @@
             foreach ($data as $key => $value) {
                 $data[$key] = trim($data[$key]);
                 $data[$key] = strip_tags($data[$key]);
-                if($data[$key] == "") {
-                    $data[$key] = null;
-                } 
             }
 
             $text = $data['text'];
@@ -193,7 +190,7 @@
             $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
                 && intval($privacy) > 0 && intval($privacy) < 7;
 
-            if(!$valid || $text == null || $name == null || $url == null || $privacy == null) {
+            if(!$valid || empty($text) || empty($name)) || empty($url)) || empty($privacy))) {
                 $res->add(json_encode($json));
                 $res->send();
             }

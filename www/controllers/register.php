@@ -24,9 +24,6 @@
             foreach ($data as $key => $value) {
                 $data[$key] = trim($data[$key]);
                 $data[$key] = strip_tags($data[$key]);
-                if($data[$key] == "") {
-                    $data[$key] = null;
-                } 
             }
 
         	$username = $req->data['username'];
@@ -95,7 +92,7 @@
         }
 
         private function sendVerificationEmail($firstname, $email, $hash) {
-            $activationURL = $_SERVER['SERVER_NAME'] . '/activate/' . sha1($hash) . '/';  
+            $activationURL = 'http://' . $_SERVER['SERVER_NAME'] . '/activate/' . sha1($hash) . '/';  
             $subject = 'SocialNetwork Activation';
             $body = 'Hi ' . $firstname . ",<br>" .
                 'Thank you for registering with us. To complete the registration please go to ' .

@@ -89,7 +89,7 @@
             $username = $req->params['username'];
             $usersDB = new UsersHelper();
             $userId = $usersDB->getIdFromUsername($username);
-            if(!$usersDB->checkUsernameExists($username) || $userId !== $_SESSION['id']) {
+            if($userId !== $_SESSION['id']) {
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
             }
@@ -97,9 +97,10 @@
             foreach ($data as $key => $value) {
                 $data[$key] = trim($data[$key]);
                 $data[$key] = strip_tags($data[$key]);
-                if($data[$key] == "") {
-                    $data[$key] = null;
-                } 
+            }
+            if(empty($data['firstName']) || empty($data['lastName'])) {
+                $res->add(json_encode(array('valid' => false, 'empty' => true)));
+                $res->send();
             }
             $usersDB->updateProfileInfo($_SESSION['id'], $data["firstName"], 
                 $data["middleName"], $data["lastName"], $data["gender"], 

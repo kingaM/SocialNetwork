@@ -181,11 +181,15 @@ function submitInfo() {
         url: "/api/user/" + window.location.pathname.split( '/' )[2] + "/profile",
         data: values,
         success: function(data) {
+            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
             if(valid) {
+                $("#error-unknown").html("");
                 getUserInfo();
                 $("#submit-btn-group").hide();
+            } else if ('empty' in json && json['empty'] == true) {
+                showError("error-unknown", "Your name and surname cannot be empty.");
             } else {
                 showError("error-unknown", "Something went wrong, but we don't know what." +
                     "Please try again later.");

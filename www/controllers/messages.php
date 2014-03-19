@@ -58,7 +58,7 @@
 
         private function addMessageUser($username, $messageText) {
             $usersDB = new UsersHelper();
-            if(!$usersDB->checkUsernameExists($username)) {
+            if(!$usersDB->checkUsernameExists($username) || empty($messageText)) {
                 return json_encode(array('valid' => 0, 'friend' => 0));
             }
             $messagesDB = new MessagesHelper();
@@ -77,7 +77,7 @@
             $messagesDB = new MessagesHelper();
             $friendsDB = new FriendsHelper();
             $circleId = $friendsDB->getCircleId($ownerId, $circleName);
-            if($circleId == -1) {
+            if($circleId == -1 || empty($messageText)) {
                 return json_encode(array('valid' => 0));
             }
             
@@ -93,9 +93,11 @@
             foreach ($data as $key => $value) {
                 $data[$key] = trim($data[$key]);
                 $data[$key] = strip_tags($data[$key]);
-                if($data[$key] == "") {
-                    $data[$key] = null;
-                } 
+            }
+            if(empty($messageText)) {
+                $json = json_encode(array('valid' => 0));
+                $res->add($json);
+                $res->send();
             }
             if( $pos === false) {
                 $json = $this->addMessageUser($username, $data["messageText"]);

@@ -79,9 +79,6 @@
             foreach ($data as $key => $value) {
                 $data[$key] = trim($data[$key]);
                 $data[$key] = strip_tags($data[$key]);
-                if($data[$key] == "") {
-                    $data[$key] = null;
-                } 
             }
 
             $text = $req->data['text'];
@@ -91,7 +88,7 @@
             // settings. This should be checked dynamically with the database.
             $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
                 && intval($privacy) > 0 && intval($privacy) < 7;
-            if($text == null || $name == null || $privacy == null || !$valid) {
+            if(empty($text) || empty($name) || empty($privacy) || !$valid) {
                 $res->add(json_encode($json));
                 $res->send();
             }

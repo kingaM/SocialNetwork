@@ -44,7 +44,8 @@ require_once('libs/FirePHPCore/FirePHP.class.php');
                 $this->pdo = new PDO('mysql:host=localhost;dbname=SocialNetwork', 
                     $this->username, $this->password, array(
                     PDO::ATTR_PERSISTENT => true,
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_ORACLE_NULLS => PDO::NULL_EMPTY_STRING
                 ));
             } catch (PDOException $e) {
                 throw new DatabaseException($e->getMessage(), $e->getCode());

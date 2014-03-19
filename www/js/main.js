@@ -59,7 +59,7 @@ function showError(id, text) {
     $("#" + id).html("<div class=\"alert alert-danger alert-dismissable\">" +
         "<button type=\"button\" class=\"close\" data-dismiss=\"alert\"" +
         "aria-hidden=\"true\">&times;</button>" +
-        "<strong>Error:</strong> " + text + 
+        "<strong>Error: </strong> " + text + 
         "</div>");
 }
 
