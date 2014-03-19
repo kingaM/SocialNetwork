@@ -2,49 +2,24 @@ import random
 from random import choice
 
 boys = ["Jacob",
-"Mason",
-"Ethan",
-"Noah",
-"William",
-"Liam",
-"Jayden",
+"John",
 "Michael",
 "Alexander",
 "Aiden"]
 
 girls = ["Sophia",
-"Emma",
-"Isabella",
-"Olivia",
-"Ava",
-"Emily",
 "Abigail",
-"Mia",
+"Anna",
 "Madison",
 "Elizabeth"]
 
 firstNames = boys + girls
 
 surnames = ["Smith",
-"Johnson",
-"Williams",
-"Jones",
-"Brown",
-"Davis",
-"Miller",
-"Wilson",
-"Moore",
-"Taylor",
-"Anderson",
 "Thomas",
 "Jackson",
 "White",
-"Harris",
-"Martin",
-"Thompson",
-"Garcia",
-"Martinez",
-"Robinson"]
+"Harris"]
 
 countries = ["Germany",
 "Russia",
@@ -85,6 +60,7 @@ about = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget
 " bibendum id. Proin nisi lacus, venenatis at nisl a, convallis euismod lectus. Pellentesque pellentesque lacinia justo id rutrum. Nam lobortis metus" +\
 " sagittis elit tincidunt, at venenatis nisl viverra. In sit amet sem dapibus, eleifend justo a, scelerisque felis."
 
+friends = {}
 
 print "USE SocialNetwork;\n"
 print """INSERT INTO users(first_name, middle_name, last_name, email, login, password, hash, activated)
@@ -99,6 +75,12 @@ for x in firstNames:
 
 print "    ('Test', NULL, 'User', 'fake@gmail.com', 'test', SHA1('test'), SHA1('fake@gmail.com1391362036'), 1);\n";
 
+print """INSERT INTO users(first_name, middle_name, last_name, email, login, password, hash, activated, 
+    admin)
+VALUES
+    ('Site', NULL, 'Admin', 'admin@example.com', 'admin', SHA1('admin'),
+        SHA1('admin@example.com1391362036'), 1, 1);"""
+
 print """INSERT INTO profile(userId, gender, dob, about, locations, languages)
     VALUES"""
 
@@ -112,7 +94,10 @@ for x in firstNames:
         print "    (" + str(i) + ", '" + gender + "', 593136000, '" + about + "', '" + choice(countries) + "', '" + choice(languages) + "'),"
         i = i + 1
 
-print "    (" + str(i) + ", 'Female', 593106000, 'A young woman studying in Cambridge', 'England', 'English');\n"
+print "    (" + str(i) + ", 'Female', 593106000, 'A young woman studying in Cambridge', 'England', 'English'),"
+i += 1
+print "    (" + str(i) + ", 'Male', 593106000, 'I made this site', 'England', 'English');\n"
+i -= 1
 
 print """INSERT INTO friendships(user1, user2, status, startTimestamp)
     VALUES"""
@@ -130,24 +115,31 @@ for j in range(1, i-1):
 
 print "    (" + str(i-1) + ", " + str(i) + ", 1, 1391362436);\n"
 
-# TODO - Finish these off properly
-print """INSERT INTO circles(owner, name)
-VALUES
-    (3, 'Work'),
-    (3, 'Family');
+# print """INSERT INTO circles(owner, name)
+#     VALUES"""
 
-INSERT INTO circle_memberships(user, circle)
-VALUES
-    (1, 1),
-    (2, 1),
-    (2, 2);
+# for j in range(1,i):
+#     pass
 
-INSERT INTO messages(`from`, `to_user`, `to_circle`, `type`, `content`, `timestamp`)
-VALUES
-    (1, 2, NULL, 'P', 'Message', 1391362436),
-    (1, 3, NULL, 'P', 'Message', 1391362436),
-    (2, 3, NULL, 'P', 'Message', 1391362436),
-    (3, 1, NULL, 'P', 'Message', 1391362436),
-    (3, 2, NULL, 'P', 'Message', 1391362436),
-    (3, NULL, 1, 'C', 'Message to Circle', 1391362436),
-    (2, NULL, 1, 'C', 'Message to Circle', 1391362436);"""
+
+# # TODO - Finish these off properly
+# print """INSERT INTO circles(owner, name)
+# VALUES
+#     (3, 'Work'),
+#     (3, 'Family');
+
+# INSERT INTO circle_memberships(user, circle)
+# VALUES
+#     (1, 1),
+#     (2, 1),
+#     (2, 2);
+
+# INSERT INTO messages(`from`, `to_user`, `to_circle`, `type`, `content`, `timestamp`)
+# VALUES
+#     (1, 2, NULL, 'P', 'Message', 1391362436),
+#     (1, 3, NULL, 'P', 'Message', 1391362436),
+#     (2, 3, NULL, 'P', 'Message', 1391362436),
+#     (3, 1, NULL, 'P', 'Message', 1391362436),
+#     (3, 2, NULL, 'P', 'Message', 1391362436),
+#     (3, NULL, 1, 'C', 'Message to Circle', 1391362436),
+#     (2, NULL, 1, 'C', 'Message to Circle', 1391362436);"""
