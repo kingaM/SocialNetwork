@@ -94,7 +94,7 @@
                 $data[$key] = trim($data[$key]);
                 $data[$key] = strip_tags($data[$key]);
             }
-            if(empty($messageText)) {
+            if(empty($data["messageText"])) {
                 $json = json_encode(array('valid' => 0));
                 $res->add($json);
                 $res->send();

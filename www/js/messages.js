@@ -19,7 +19,7 @@ function content() {
     window.setInterval(function(){
         getReciepients();
         showMessages(currentReciepient);
-    }, 1000);
+    }, 5000);
 }
 
 function setupSearch() {
