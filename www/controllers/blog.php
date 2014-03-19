@@ -190,7 +190,7 @@
             $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
                 && intval($privacy) > 0 && intval($privacy) < 7;
 
-            if(!$valid || empty($text) || empty($name)) || empty($url)) || empty($privacy))) {
+            if(!$valid || empty($text) || empty($name) || empty($url) || empty($privacy)) {
                 $res->add(json_encode($json));
                 $res->send();
             }
