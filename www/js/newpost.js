@@ -30,8 +30,17 @@ function content() {
                     var json = $.parseJSON(data);
                     var valid = json['valid'];    
                     if(!valid) {
-                        showError("error-unknown", "Something went wrong, but we don't know what." +
-                            "Please try again later.");
+                        if(json['emptyContent']) {
+                            showError("error-unknown", "The content of the post cannot be empty");
+                        } else if (json['emptyTitle']) {
+                            $("#form-group-title").addClass("has-error");
+                            $("#control-label-title").show();
+                            $("#control-label-title").text("The title cannot be blank");
+                        } else {
+                            showError("error-unknown", "Something went wrong, but we don't " +
+                                "know what. Please try again later.");
+                        }
+                        
                     } else {
                         window.location.replace("/user/" + username + "/blogs/" + 
                             blog + "/pages/1"); 

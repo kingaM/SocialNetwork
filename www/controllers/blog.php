@@ -153,6 +153,16 @@
             }
             $title = $req->data['title'];
             $content = $req->data['content'];
+            $content = preg_replace('~<\s*\bscript\b[^>]*>(.*?)<\s*\/\s*script\s*>~is', '', 
+                $content);
+            $strippedContent = strip_tags($content);
+            $title = strip_tags($title);
+            if(empty($strippedContent) || empty($title)) {
+                $res->add(json_encode(array('valid' => false, 
+                    'emptyContent' => empty($strippedContent),
+                    'emptyTitle' => empty($title))));
+                $res->send();
+            }
             if($blogsDB->addBlogPost($userId, $blogName, $title, $content, time()) < 0) {
                 $res->add(json_encode(array('valid' => false)));
                 $res->send();
