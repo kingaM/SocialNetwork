@@ -41,7 +41,7 @@ function content() {
  *    computer. This photo is then sent to the server, and as the response comes through, either an 
  *    error message appears, or the photo is added to the list, and the photos are re-loaded, to 
  *    match the new item.
- * 7. Enalrged Photo - a user can click on a photo thumbnail to enlarge it. This shows a modal with 
+ * 7. Enlarged Photo - a user can click on a photo thumbnail to enlarge it. This shows a modal with 
  *    a bigger version of the photo as well as comments. In this view the user can add comments to 
  *    the photo.
  * 8. Comments - functions that are relevant for making the comments visible and editable. Those 
@@ -82,7 +82,6 @@ function showPhotoAlbums(albums) {
     });
     $('.collapse').on('hide.bs.collapse', function() {
         var id = $(this).attr('id');
-        currentAlbumId = id;
         $('#icon-' + id).html('<i class="glyphicon glyphicon-plus"></i>');
         $("#" + id).empty();
     });
@@ -172,13 +171,11 @@ function addAlbum(name, text, privacy) {
     values["text"] = text;
     values["name"] = name;
     values["privacy"] = privacy;
-    console.log(values);
     $.ajax({
         type: "post",
         url: "/api/user/" + username + "/photos",
         data: values,
         success: function(data) {
-            console.log(data);
             var json = $.parseJSON(data);
             var valid = json['valid'];
             if (!valid) {
@@ -357,7 +354,7 @@ function uploadFiles(event) {
     });
 }
 
-// Enalrged Photo - a user can click on a photo thumbnail to enlarge it. This shows a modal with a
+// Enalarged Photo - a user can click on a photo thumbnail to enlarge it. This shows a modal with a
 // bigger version of the photo as well as comments. In this view the user can add comments to the
 // photo.
 
