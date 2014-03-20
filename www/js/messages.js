@@ -19,7 +19,7 @@ function content() {
     window.setInterval(function(){
         getReciepients();
         showMessages(currentReciepient);
-    }, 5000);
+    }, 2000);
 }
 
 function setupSearch() {
@@ -74,8 +74,8 @@ function setupDropdown() {
         $("#new-message").val("");
         $("#to").val("");
         $('[data-toggle="dropdown"]').parent().removeClass('open');
-        $("#form-group-to").removeClass("has-error");
-        $("#control-label-to").hide();
+        hideDropdown(true, true);
+        hideDropdownCircles(true);
     });
 }
 
