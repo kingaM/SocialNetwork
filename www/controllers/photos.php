@@ -81,9 +81,9 @@
                 $data[$key] = strip_tags($data[$key]);
             }
 
-            $text = $req->data['text'];
-            $name = $req->data['name'];
-            $privacy = $req->data['privacy'];
+            $text = $data['text'];
+            $name = $data['name'];
+            $privacy = $data['privacy'];
             $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
                 && intval($privacy) > 0 && intval($privacy) < 7;
             if(empty($text) || empty($name) || empty($privacy) || !$valid) {
@@ -336,15 +336,12 @@
             $comment = $req->data['comment'];
             $comment = trim($comment);
             $comment = strip_tags($comment);
-            if($comment == "") {
-                $comment = null;
-            } 
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
             $friendsDB = new FriendsHelper();
             $userId = $usersDB->getIdFromUsername($username);
             if($userId == -1 || !$photosDB->isValidUsernameAlbumPair($userId, $albumId) ||
-                $comment == null || 
+                empty($comment) || 
                 !$this->isVisibleAlbum($_SESSION['id'], $userId, $albumId, $photosDB, $usersDB) ||
                 (!$userId == $_SESSION['id'] && !$friendsDB->isFriend($_SESSION['id'], $userId))) {
                 $res->add(json_encode(array('valid' => false, 'emptyComment' => 
