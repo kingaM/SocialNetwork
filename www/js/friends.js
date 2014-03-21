@@ -67,10 +67,10 @@ function showCircles(circles) {
  
         var listItem =  '<div class="panel panel-default">' + 
                             '<div class="panel-heading">' + 
-                                '<h4 class="panel-title">' + 
-                                    '<a data-toggle="collapse" data-parent="#circlesList"' + 
-                                    ' href="#collapse_' + cName + '">' + cName + '</a>' + 
-                                '</h4>' + 
+                                '<a data-toggle="collapse" data-parent="#circlesList"' + 
+                                    ' href="#collapse_' + cName + '">' +
+                                    '<h4 class="panel-title">' + cName  + '</h4>' + 
+                                '</a>' +
                             '</div>' + 
                             '<div id="collapse_' + cName + '" class="panel-collapse collapse">' + 
                                 '<div class="panel-body">' + buttonHTML + "<br><br>" + tableHTML + 

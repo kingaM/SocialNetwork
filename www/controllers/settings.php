@@ -36,7 +36,7 @@
                 $res->send();
             } else {
                 $_SESSION['username'] = $username;
-                $res->add(json_encode(array('valid' => true, 'succeded' => false)));
+                $res->add(json_encode(array('valid' => true, 'succeded' => true)));
                 $res->send();
             }
         }
