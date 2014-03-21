@@ -1,5 +1,15 @@
 CREATE DATABASE IF NOT EXISTS SocialNetwork;
 
+GRANT SELECT, UPDATE, INSERT, DELETE
+ ON SocialNetwork.*
+ TO 'socialnetwork'@'localhost'
+ IDENTIFIED BY 'socialnetwork';
+
+GRANT SELECT, UPDATE, INSERT, DELETE
+ ON SocialNetwork.*
+ TO 'socialnetwork'@'127.0.0.1'
+ IDENTIFIED BY 'socialnetwork';
+
 USE SocialNetwork;
 
 CREATE TABLE IF NOT EXISTS `privacy_options` (

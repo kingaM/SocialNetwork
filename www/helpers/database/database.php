@@ -23,8 +23,8 @@
      */
     class DatabaseHelper {
 
-        private $username = 'root';
-        private $password = 'root';
+        private $username = 'socialnetwork';
+        private $password = 'socialnetwork';
         private $pdo = NULL;
 
         private $transactionCounter = 0;
