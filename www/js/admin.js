@@ -199,7 +199,10 @@ function showReportedComments(comments) {
         var id = comment['id'];
         var content = comment['content'];
         var date = new Date(comment['timestamp']*1000);
-        var time = date.getHours() + ":" + date.getMinutes();
+        var mins = date.getMinutes();
+        if(mins < 10)
+            mins = "0" + mins;
+        var time = date.getHours() + ":" + mins;
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
         var titleLink = "/user/" + comment['login'];
         var name = comment['fromName'];
