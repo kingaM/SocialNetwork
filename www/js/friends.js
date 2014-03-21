@@ -159,13 +159,13 @@ function addToCircle(circleName, username) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
                 if(key == "error") {
-                    $("#searchUsersGroup_search2").addClass("has-error");
+                    $("#search2").addClass("has-error");
                     var label = '<label id="addToCircleError" class="control-label" ' + 
                         'for="searchUsersGroup_search2">' + val + '</label>';
                     $("#addToCircleError").remove();
                     $(label).insertAfter("#searchUsersGroup_search2");
                 } else if(key == "result") {
-                    $("#searchUsersGroup_search2").removeClass("has-error");
+                    $("#search2").removeClass("has-error");
                     $("#addToCircleError").remove();
                     $("#addToCircle")[0].reset();
                 }
