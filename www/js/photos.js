@@ -394,7 +394,7 @@ function fillModal(title, pictureUrl, pictureId, index) {
         title = '';
     }
     if(pictureUrl == null) {
-        pictureUrl = 'http://placehold.it/100x100';
+        pictureUrl = '/uploads/profile_pics/default.png';
     }
     var header = '<button type="button" class="close" aria-hidden="true" data-dismiss="modal">' + 
             '×' + 
@@ -521,7 +521,7 @@ function showComments(comments) {
 
 function showComment(comment) {
     if(comment['profilePicture'] == null) {
-        var profilePicture = 'http://placehold.it/50x50';
+        var profilePicture = '/uploads/profile_pics/default.png';
     } else {
         var profilePicture = comment['profilePicture'];
     }

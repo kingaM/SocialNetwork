@@ -113,7 +113,7 @@ function showPosts(data) {
         var wallPostID =  id;
         var numOfReplies =  post['comments'].length;
         var toUser = post['to'];
-        var imgURL =  "http://i.imgur.com/r8R1C6B.png";
+        var imgURL =  "/uploads/profile_pics/default.png";
 
         $.ajaxSetup({async:false});
         $.getJSON('/api/user/' + toUser + '/profile/image', function(data) {

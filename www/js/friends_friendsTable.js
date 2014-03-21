@@ -85,7 +85,7 @@ function showFriends (friends, requests) {
         var date = new Date(friends[i]['startTimestamp']*1000);
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
 
-        var image = "http://i.imgur.com/r8R1C6B.png"
+        var image = "/uploads/profile_pics/default.png"
         $.ajaxSetup({async:false});
         $.getJSON('/api/user/' + login + '/profile/image', function(data) {
             if(!data['valid'])

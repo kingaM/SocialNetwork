@@ -16,7 +16,7 @@ function getUser(username) {
         if(user['profilePicture'] != null)
             image = user['profilePicture'];
         else
-            image = "http://i.imgur.com/r8R1C6B.png";
+            image = "/uploads/profile_pics/default.png";
 
         var name;
         if(user['middleName'] == "")

@@ -19,7 +19,7 @@ function showRequests(requests) {
         var loginString = '"' + login + '"';
         var date = new Date(requests[i]['startTimestamp']*1000);
         date = date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
-        var image = "<img src='" + "http://i.imgur.com/r8R1C6B.png" + "' style='max-height:100px;'></img>";
+        var image = "<img src='" + "/uploads/profile_pics/default.png" + "' style='max-height:100px;'></img>";
         var name = "<a href='/user/" + login + "/profile'>" + requests[i]['name'] + "</a>";
         var action =    "<button type='button' class='btn btn-success btn' " + 
                         "onclick='addFriend(" + loginString + ");'>" + 
