@@ -17,9 +17,6 @@
         }
 
         public function addUser($req, $res) {
-
-            $errorMessage = '';
-
             $data = $req->data;
             foreach ($data as $key => $value) {
                 $data[$key] = trim($data[$key]);

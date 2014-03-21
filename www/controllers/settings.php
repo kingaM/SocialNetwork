@@ -83,7 +83,6 @@
         }
 
         public function exportData($req, $res) {
-
             $info = array(
                 'profile' => $this->exportProfile(),
                 'friends' => $this->exportFriends(),
@@ -135,7 +134,6 @@
 
         private function exportFriends() {
             $username = $_SESSION['username'];
-            
             $db = new FriendsHelper();
             $xmlFriends = array();
             $friends = $db->getFriends($username);
@@ -146,9 +144,7 @@
         }
 
         private function exportMessages() {
-
             $id = $_SESSION['id'];
-
             $db = new MessagesHelper();
             $xmlMessages = array();
             $conversations = $db->getReciepients($id);
@@ -198,9 +194,7 @@
         }
 
         private function exportBlogs() {
-            
             $xmlBlogs = array();
-
             $id = $_SESSION['id'];
             $db = new BlogsHelper();
             $blogs = $db->getBlogs($id);
@@ -213,9 +207,7 @@
                     );
 
                 $blogPosts = array();
-
                 $posts = $db->getAllBlogPosts($id, $blog['url']);
-
                 foreach ($posts as $post) {
                     $post = array(
                         'postId' => $post['postId'],
@@ -235,8 +227,6 @@
         public function updateProfilePrivacy($req, $res) {
             $privacy = $req->data['privacy'];
             $userDB = new UsersHelper();
-            // TODO: 7 is hard coded value and assumes that there are only 6 different privacy
-            // settings. This should be checked dynamically with the database.
             $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
                 && intval($privacy) > 0 && intval($privacy) < 7;
             if(!$valid) {

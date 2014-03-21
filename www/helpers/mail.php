@@ -1,5 +1,7 @@
 <?php
 
+require_once('libs/class.phpmailer.php');
+
 class Mail {
     /**
      * Sends an e-mail using a pre-configured gmail account through SMTP.
@@ -11,7 +13,6 @@ class Mail {
      * @return boolean          Returns true if send succeeded, false otherwise.
      */
     public static function sendMail($to,$subject,$body) {
-        require 'libs/class.phpmailer.php';
         $from = "malnotifier.fbhackathon@yahoo.co.uk";
         date_default_timezone_set('Etc/UTC');
         $mail = new PHPMailer();

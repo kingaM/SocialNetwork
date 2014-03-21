@@ -183,8 +183,8 @@
          *         null if the id is not valid. 
          */
         public function getUser($id) {
-            $sql = "SELECT users.id AS id, first_name, middle_name, last_name, gender, dob, about, locations, 
-                languages, email, login, profilePicture, banned, admin, profilePrivacy,
+            $sql = "SELECT users.id AS id, first_name, middle_name, last_name, gender, dob, about, 
+                locations, languages, email, login, profilePicture, banned, admin, profilePrivacy,
                 privacy_options.option AS privacyOption
                 FROM users, profile, privacy_options
                 WHERE users.id = :id AND activated = 1

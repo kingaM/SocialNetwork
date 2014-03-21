@@ -32,8 +32,6 @@ CREATE TABLE IF NOT EXISTS `users` (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-# TODO: Enable multiple locations and languages as a seperate table. Create a table with all 
-# languages and locations for reference and to check the validity of the data. 
 CREATE TABLE IF NOT EXISTS `profile` (
     `userId` INT NOT NULL,
     `gender` VARCHAR(10),
@@ -126,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
     FOREIGN KEY (`blogId`) REFERENCES `blogs` (`blogId`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Seperate table in case a blog post is longer than the value of text, unlikely.
+-- Seperate table in case a blog post is longer than the value of text, not supported at the moment.
 CREATE TABLE IF NOT EXISTS `posts_details` (
     `postDetailId` INT NOT NULL AUTO_INCREMENT,
     `postId` INT NOT NULL, 

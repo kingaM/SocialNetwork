@@ -19,7 +19,7 @@
                     'timeline' => '', 'profile' => '', 'friends' => 'active'));
                 $res->add($m->render('main', array('title' => 'Friends', 'content' => $content)));
                 $res->send();
-            }else {
+            } else {
                 $content = $m->render('friends_small', array());
                 $content = $m->render('user', array('content' => $content, 'username' => $username,
                     'timeline' => '', 'profile' => '', 'friends' => 'active'));

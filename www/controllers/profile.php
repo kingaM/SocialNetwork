@@ -3,7 +3,6 @@
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/FriendsHelper.php');
     require_once('libs/ImageManipulator.php');
-    require_once('libs/FirePHPCore/FirePHP.class.php'); 
 
     class Profile {
         public function getProfile($req, $res) {
@@ -44,8 +43,6 @@
                 $currentUser = false;
             }
             $friendsDB = new FriendsHelper();
-            $firephp = FirePHP::getInstance(true);
-            $firephp->log($friendsDB->getRelationship($_SESSION['id'], $userId));
             if($friendsDB->getRelationship($_SESSION['id'], $userId) <= 
                 $userInfo['profilePrivacy'] || $usersDB->isAdmin($_SESSION['username'])) {
                 $user = array('firstName' => $userInfo['first_name'],

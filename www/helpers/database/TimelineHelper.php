@@ -84,7 +84,8 @@
                 (CASE WHEN fromUser.middle_name IS NULL THEN 
                         CONCAT(fromUser.first_name, ' ', fromUser.last_name) 
                     ELSE 
-                        CONCAT(fromUser.first_name, ' ', fromUser.middle_name, ' ', fromUser.last_name) 
+                        CONCAT(fromUser.first_name, ' ', fromUser.middle_name, ' ', 
+                            fromUser.last_name) 
                 END) as fromName,
                 toUser.login as toLogin, fromUser.login as fromLogin, wp.privacy
                 FROM wall_posts as wp, users as toUser, users as fromUser
@@ -181,7 +182,8 @@
                 (CASE WHEN fromUser.middle_name IS NULL THEN 
                         CONCAT(fromUser.first_name, ' ', fromUser.last_name) 
                     ELSE 
-                        CONCAT(fromUser.first_name, ' ', fromUser.middle_name, ' ', fromUser.last_name) 
+                        CONCAT(fromUser.first_name, ' ', fromUser.middle_name, ' ', 
+                            fromUser.last_name) 
                 END) as fromName,
                 toUser.login as toLogin, fromUser.login as fromLogin, wp.privacy
                 FROM wall_posts as wp, users as toUser, users as fromUser

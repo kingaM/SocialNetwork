@@ -84,8 +84,6 @@
             $text = $req->data['text'];
             $name = $req->data['name'];
             $privacy = $req->data['privacy'];
-            // TODO: 7 is hard coded value and assumes that there are only 6 different privacy
-            // settings. This should be checked dynamically with the database.
             $valid = (filter_var($privacy, FILTER_VALIDATE_INT) !== false)
                 && intval($privacy) > 0 && intval($privacy) < 7;
             if(empty($text) || empty($name) || empty($privacy) || !$valid) {
@@ -163,14 +161,14 @@
                     'photo' => NULL)));
                 $res->send();
             }
-            $jsonPosts = array(
+            $jsonPhotos = array(
                     'id' => $photo['photoId'],
                     'description' => $photo['description'],
                     'timestamp' => $photo['timestamp'],
                     'url' => $photo['url'], 
                     'thumbnailUrl' => $photo['thumbnailUrl']);
             $res->add(json_encode(array('valid' => true, 'currentUser' => $currentUser,
-                'photo' => $jsonPosts)));
+                'photo' => $jsonPhotos)));
             $res->send();
         }
 
@@ -184,9 +182,6 @@
             $data = $req->data;
             $data["description"] = trim($data["description"]);
             $data["description"] = strip_tags($data["description"]);
-            if($data["description"] == "") {
-                $data["description"] = null;
-            } 
             $usersDB = new UsersHelper();
             $photosDB = new PhotosHelper();
             $userId = $usersDB->getIdFromUsername($username);

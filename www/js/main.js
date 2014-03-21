@@ -2,56 +2,51 @@ var sessionUser;
 
 $(document).ready(function() {
     // Main page JS here
+    easyIncludeAutoComplete("top-search");
+    $("#top-center #top-search .input-group").addClass( "input-group-sm" );
     
+    $( ".top-hide" ).hide();
     
-	easyIncludeAutoComplete("top-search");
-	$("#top-center #top-search .input-group").addClass( "input-group-sm" );
-	
-	$( ".top-hide" ).hide();
-	
-	$( "#top-admin-link" ).hide();
-	$.getJSON( "/api/comments", function(data) {
-		$( "#top-admin-link" ).show();
-	});
-	
-	$.ajaxSetup({async:false});
+    $( "#top-admin-link" ).hide();
+    $.getJSON( "/api/comments", function(data) {
+        $( "#top-admin-link" ).show();
+    });
+    
+    $.ajaxSetup({async:false});
 
-	$.getJSON( "/api/currentUser", function(data) {
-	    sessionUser = data["username"];
-	    $( "#profile-link" ).attr( "href", "/user/" + sessionUser );
-	    
-	    $.getJSON( "/api/user/" + sessionUser + "/profile/image", function(data) {
+    $.getJSON( "/api/currentUser", function(data) {
+        sessionUser = data["username"];
+        $( "#profile-link" ).attr( "href", "/user/" + sessionUser );
+        
+        $.getJSON( "/api/user/" + sessionUser + "/profile/image", function(data) {
 
-	    $( ".top-hide" ).show();
-	    var imgUrl = data["image"];
-	
-		if(imgUrl != null) {
-		
-		    $( "#photo-top" ).attr( "src", imgUrl );
-	    }
-	    });
-	});
+        $( ".top-hide" ).show();
+        var imgUrl = data["image"];
+    
+        if(imgUrl != null) {
+        
+            $( "#photo-top" ).attr( "src", imgUrl );
+        }
+        });
+    });
     
     $.ajaxSetup({async:true});
     
     $('#top-search .btn').click(function(){
-		var goToUser = $("#searchUsers_top-search").val();
-		window.location = "/user/" + goToUser;
-	});
-	
-	$("#searchUsers_top-search").bind("keypress", function(event) {
-	    if(event.which == 13) {
-		    event.preventDefault();
-	        var goToUser = $("#searchUsers_top-search").val();
-			window.location = "/user/" + goToUser;
-	    }
-	});
+        var goToUser = $("#searchUsers_top-search").val();
+        window.location = "/user/" + goToUser;
+    });
     
-    
-    content();
-    
+    $("#searchUsers_top-search").bind("keypress", function(event) {
+        if(event.which == 13) {
+            event.preventDefault();
+            var goToUser = $("#searchUsers_top-search").val();
+            window.location = "/user/" + goToUser;
+        }
+    });
 
-    
+    content();
+
 });
 
 /**

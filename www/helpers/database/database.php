@@ -1,6 +1,5 @@
 <?php
 
-require_once('libs/FirePHPCore/FirePHP.class.php');
     /**
      * Exception thrown if there is a problem with the conncection or sql.
      *
@@ -105,9 +104,7 @@ require_once('libs/FirePHPCore/FirePHP.class.php');
          */
         public function fetch($sql, $array = NULL) {
             try {
-                $firephp = FirePHP::getInstance(true);
                 $q = $this->pdo->prepare($sql);
-                // Otherwise ints are treated as strings, should be done for other types too.
                 foreach ($array as $key => $value) {
                     if(is_int($value)) {
                         $q->bindValue($key, $value, PDO::PARAM_INT);

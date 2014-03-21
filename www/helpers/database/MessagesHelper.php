@@ -1,7 +1,6 @@
 <?php
     
     require_once('helpers/database/database.php');
-    require_once('libs/FirePHPCore/FirePHP.class.php');   
 
     /**
      * A helper class consiting of methods used to get information needed for messaging 

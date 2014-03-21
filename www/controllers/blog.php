@@ -3,7 +3,6 @@
     include_once('helpers/database/UsersHelper.php');
     include_once('helpers/database/BlogsHelper.php');
     include_once('helpers/database/FriendsHelper.php');
-    require_once('libs/FirePHPCore/FirePHP.class.php');
 
     class Blog {
 
@@ -34,7 +33,7 @@
             $content = $m->render('userblogs', NULL);
             $content = $m->render('user', array('content' => $content, 'username' => $username,
                 'blog' => 'active'));
-            $res->add($m->render('main', array('title' => 'Profile', 'content' => $content)));
+            $res->add($m->render('main', array('title' => 'Blog', 'content' => $content)));
             $res->send();
         }
 
@@ -70,9 +69,7 @@
             } else {
                 $currentUser = false;
             }
-            $firephp = FirePHP::getInstance(true);
             $relationship = $friendsDB->getRelationship($_SESSION['id'], $userId);
-            $firephp->log($relationship);
             $isAdmin = $usersDB->isAdmin($_SESSION['username']);
             $blogs = $blogsDB->getBlogs($userId);
             $jsonBlogs = array();
