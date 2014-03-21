@@ -179,10 +179,6 @@
                 return True;
             }
 
-            // TODO: What if the user deletes their account in this gap?
-            //       Doesn't matter too much and nothing will be added but it would be nice to
-            //       find a way to let the user know an error instead
-
             // Add request
             $result = $this->db->execute("INSERT INTO friendships(user1, user2, startTimestamp)
                 SELECT :requester, ID as user2, :time 

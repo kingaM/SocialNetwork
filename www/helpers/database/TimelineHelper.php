@@ -1,6 +1,8 @@
 <?php
 
     require_once('helpers/database/database.php');
+    require_once('helpers/database/FriendsHelper.php');
+    require_once('helpers/database/UsersHelper.php');
 
     /**
      * A helper that has database functions related to the Timeline and News Feed feature of the 
@@ -68,10 +70,6 @@
          */
         public function getPosts($username) {
 
-            require_once('helpers/database/FriendsHelper.php');
-            require_once('helpers/database/UsersHelper.php');
-
-            // TODO: Find a nice way to do all of this in 1 statement
             $posts = array();
             $postIDs = array();
 
@@ -156,9 +154,6 @@
          *
          */
         public function getNewsFeed($user) {
-            // TODO: Fix this terrible efficiency!
-            require_once('helpers/database/FriendsHelper.php');
-            require_once('helpers/database/UsersHelper.php');
             $fh = new FriendsHelper();
             $friends = $fh->getFriends($user);
             
