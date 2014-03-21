@@ -5,10 +5,17 @@ function content() {
 function getUser(username) {
     $.getJSON( "/api/user/" + username + "/profile", function(data) {
         if(!data['valid']) {
-            console.log("error");
+            $("#search1").addClass("has-error");
+            var label = '<label id="searchError" class="control-label" ' + 
+                'for="search1">User does not exist</label>';
+            $("#searchError").remove();
+            $(label).insertAfter("#searchUsersGroup_search1");
             return;
-            // TODO: react here
         }
+
+        $("#search1").removeClass("has-error");
+        $("#searchError").remove();
+        $("#searchForm")[0].reset();
 
         var user = data['user'];
 
