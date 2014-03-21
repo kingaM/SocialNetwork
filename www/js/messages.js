@@ -50,6 +50,7 @@ function setupSearch() {
     $("#cancel-reciepients").click(function (e) {
         e.preventDefault();
         inSearch = false;
+        $("#search-reciepients-text").val("");
         getReciepients();
     })
 }

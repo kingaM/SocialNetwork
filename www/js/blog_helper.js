@@ -1,9 +1,12 @@
 function setupSearch() {
     $("#search").click(function(e) {
         e.preventDefault();
-        if ($("#search-txt").val().trim().length === 0) {
+        if ($("#search-txt").val().trim().length == 0 && 
+            window.location.pathname.split( '/' )[5] == 'search') {
             location.replace("/user/" + username + "/blogs/" + 
             blog + "/pages/1")
+        } else if($("#search-txt").val().trim().length == 0) {
+            // do nothing
         } else {
             postSearch($("#search-txt").val());
         }

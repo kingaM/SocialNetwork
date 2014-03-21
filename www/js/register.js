@@ -83,6 +83,9 @@ function setSubmitBtn() {
                 if(!json['valid']) {
                     for (var key in json['errors']) {
                         if (json['errors'].hasOwnProperty(key)) {
+                            if(key == "empty") {
+                                showError("error-unknown", "Some required fields are empty.");
+                            }
                             if(key == "email-valid") {
                                 $("#form-group-email").addClass("has-error");
                                 $("#email-error").show();
@@ -135,6 +138,7 @@ function clearErrors() {
     $("#password-retype-error").hide();
     $("#email-error").hide();
     $("#email-retype-error").hide();
+    $("#error-unknown").html("");
 
 }
 
