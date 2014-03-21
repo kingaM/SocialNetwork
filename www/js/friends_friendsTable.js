@@ -146,7 +146,7 @@ function addFriend(username) {
             var data = $.parseJSON(response);
             $.each( data, function(key, val) {
                 if(key == "error") {
-                    $("#searchUsersGroup_search1").addClass("has-error");
+                    $("#search1").addClass("has-error");
                     var label = '<label id="addError" class="control-label" ' + 
                         'for="searchUsersGroup_search1">' + val + '</label>';
                     $("#addError").remove();
@@ -154,7 +154,7 @@ function addFriend(username) {
                     $("#add_" + username).text("Sent");
                     $("#add_" + username).addClass("disabled");
                 } else if(key == "result" && val == "requested") {
-                    $("#searchUsersGroup_search1").removeClass("has-error");
+                    $("#search1").removeClass("has-error");
                     $("#addError").remove();
                     $("#add_" + username).text("Sent");
                     $("#add_" + username).addClass("disabled");

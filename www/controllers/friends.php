@@ -6,13 +6,13 @@
     class Friends {
 
         public function getPage($req, $res) {
-            require_once('mustache_conf.php');
             $usersDB = new UsersHelper();
             $username = $req->params['username'];
 
             if(!$usersDB->checkUsernameExists($username))
                 $this->return404($res);
 
+            require_once('mustache_conf.php');
             if($username === $_SESSION['username']) {
                 $content = $m->render('friends', array());
                 $content = $m->render('user', array('content' => $content, 'username' => $username,

@@ -1,10 +1,16 @@
 <?php
     
     require_once('helpers/database/TimelineHelper.php');
+    require_once('helpers/database/UsersHelper.php');
 
     class Timeline {
         public function getPage($req, $res) {
+            $usersDB = new UsersHelper();
             $username = $req->params['username'];
+
+            if(!$usersDB->checkUsernameExists($username))
+                $this->return404($res);
+
             require_once('mustache_conf.php');
             $content = $m->render('timeline', array());
             $content = $m->render('user', array('content' => $content, 'username' => $username,
@@ -69,6 +75,16 @@
             $db = new TimelineHelper();
             // Note, check for ability to change this is done in the DB method
             $db->changePrivacy($postID, $privacy);
+        }
+
+        private function return404($res) {
+            require_once('mustache_conf.php');
+            header("Content-Type: text/html;", TRUE, 404);
+            $uri = $_SERVER['REQUEST_URI'];
+            $content = $m->render('404', array('page' => $uri));
+            $res->add($m->render('main', array('title' => '404', 'content' => $content)));
+            $res->send();
+            die();
         }
     }
 ?>

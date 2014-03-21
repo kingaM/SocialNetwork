@@ -24,7 +24,7 @@
     class DatabaseHelper {
 
         private $username = 'socialnetwork';
-        private $password = 'socialnetwork';
+        private $password = 'replace_me_with_sed';
         private $pdo = NULL;
 
         private $transactionCounter = 0;
